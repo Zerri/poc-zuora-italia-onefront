@@ -1,0 +1,4 @@
+[install.scopes]
+"@vapor" = { token = "$NEXUS_RO_ONEFRONT_TOKEN", url = "https://nexus.ts-paas.com/repository/ts-one-front-npm-repo/" }
+"@1f" = { token = "$NEXUS_RO_ONEFRONT_TOKEN", url = "https://nexus.ts-paas.com/repository/ts-one-front-npm-repo/" }
+"@fortawesome" = { token = "$CI_ONEFRONT_FONTAWESOME_TOKEN", url = "https://npm.fontawesome.com/" }

@@ -1,0 +1,28 @@
+services:
+  proxy:
+    environment:
+      LOG_LEVEL: ${PROXY_LOG_LEVEL:-info}
+      REGISTRY_URL: ${REGISTRY_URL:-https://onef-registry-dev.agyo.io/v2}
+      MOCKS_ENABLED: "true"
+      MOCKS_PATH: "/local-mocks"
+      BUSINESS_UNIT: "OneFront"
+      ISLAND: "BOILERPLATE"
+      MODULE: "BOILERPLATE-REACT"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-qO",
+          "-",
+          "http://proxy:8080/healthz"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    image: harbor.ts-paas.com/onefront/proxy-service:1.3.1
+    ports:
+      - "${PROXY_PORT:-4010}:8080"
+    restart: unless-stopped
+    volumes:
+      - ./mocks:/local-mocks
