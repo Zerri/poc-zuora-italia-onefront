@@ -1,23 +1,28 @@
 {
   "name": "@1f/react-boilerplate",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.5.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "update:deps": "npx npm-check-updates --dep dev,prod,optional,peer --root --format group -i"
   },
   "dependencies": {
-    "@1f/react": "^1.0.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@1f/react-sdk": "^1.5.0",
+    "@vapor/react-custom": "^0.6.1",
+    "@vapor/react-extended": "^0.3.0",
+    "@vapor/react-material": "^0.13.1",
+    "@vapor/react-uishell": "^0.2.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.79",
-    "@types/react-dom": "^18.2.25",
-    "@vitejs/plugin-react-swc": "^3.6.0",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.11"
+    "@types/react": "18.2.79",
+    "@types/react-dom": "18.2.25",
+    "@vitejs/plugin-react-swc": "^3.7.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.4"
   }
 }
