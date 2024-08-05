@@ -1,7 +1,7 @@
 {
   "name": "@1f/react-boilerplate",
   "private": true,
-  "version": "1.6.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,7 @@
     "update:deps": "npx npm-check-updates --dep dev,prod,optional,peer --root --format group -i"
   },
   "dependencies": {
-    "@1f/react-sdk": "^1.6.0",
+    "@1f/react-sdk": "^2.0.0",
     "@vapor/react-custom": "^0.6.1",
     "@vapor/react-extended": "^0.3.0",
     "@vapor/react-material": "^0.13.1",
@@ -19,7 +19,7 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@1f/vite-plugin": "^1.5.5",
+    "@1f/vite-plugin": "^2.0.0",
     "@types/react": "18.2.79",
     "@types/react-dom": "18.2.25",
     "@vitejs/plugin-react-swc": "^3.7.0",
