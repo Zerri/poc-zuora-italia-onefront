@@ -9,6 +9,6 @@
 
 ## Documentation
 
-- [Get Started](https://development.teamsystem.com/docs/default/system/one-front/get-started/)
+- [Get Started](https://development.teamsystem.com/docs/default/system/one-front/get-started/creating-an-app/)
 - [Proxy Service](https://development.teamsystem.com/docs/default/system/one-front/proxy-service/)
-- [Mocks Tutorial](https://development.teamsystem.com/docs/default/system/one-front/tutorials/proxy-service/mock-js/)
+- [Mocks Tutorial](https://development.teamsystem.com/docs/default/system/one-front/guides/tutorials/proxy-service/mock-js/)
