@@ -1,0 +1,7 @@
+{
+    "version": "0.0.0",
+    "value": {
+        "welcome_user": "Welcome, {{name}}",
+        "logged_in": "Logged in as: {{name}}"
+    }
+}
