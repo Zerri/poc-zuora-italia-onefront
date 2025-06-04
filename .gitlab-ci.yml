@@ -1,0 +1,104 @@
+stages:
+  - build
+  - deploy
+  - purge-cdn
+
+variables:
+  NODEJS_IMAGE: node:18-alpine
+  APP_PATH: "." #Folder where the app is located
+  BUILD_PATH: $APP_PATH/dist #Folder where the build is located
+
+  ## This VARIABLES should be set in the GitLab CI/CD settings
+  # AZURE_SP_ID: # AZURE SERVICE PRINCIPAL APPLICATION ID
+  # AZURE_SP_SECRET: # AZURE SERVICE PRINCIPAL SECRET
+  # AZURE_SUBSCRIPTION_ID: # AZURE SUBSCRIPTION ID
+  # AZURE_TENANT_ID: # AZURE TENANT ID
+  # AZURE_CDN_NAME: # AZURE FRONTDOOR NAME
+  # AZURE_CDN_ENDPOINT: # AZURE FRONTDOOR ENDPOINT HOSTNAME
+  # AZURE_CDN_RG: # AZURE FRONTDOOR RESOURCE GROUP
+
+### abstract jobs
+.build-frontend:
+  image: $NODEJS_IMAGE
+  stage: build
+  before_script:
+    - cd $APP_PATH
+    - echo "@vapor:registry=https://nexus.ts-paas.com/repository/ts-one-front-npm-repo/" >> .npmrc
+    - echo "@onefront:registry=https://nexus.ts-paas.com/repository/ts-one-front-npm-repo/" >> .npmrc
+    - echo "@1f:registry=https://nexus.ts-paas.com/repository/ts-one-front-npm-repo/" >> .npmrc
+    - echo "@fortawesome:registry=https://npm.fontawesome.com/" >> .npmrc
+    - echo "//nexus.ts-paas.com/repository/ts-one-front-npm-repo/:_authToken=${CI_NEXUS_NPM_TOKEN}" >> .npmrc
+    - echo "//npm.fontawesome.com/:_authToken=${CI_FONTAWESOME_TOKEN}" >> .npmrc
+  script:
+    - npm install
+    - CI=false npm run build
+  artifacts:
+    name: $ARTIFACT_NAME
+    paths:
+      - $BUILD_PATH
+
+.deploy-frontend:
+  stage: deploy
+  image: mcr.microsoft.com/azure-cli
+  script:
+    # az commands belong to azure-cli and expect a connection string env AZURE_STORAGE_CONNECTION_STRING to the azure storage
+    - az config set extension.use_dynamic_install=yes_without_prompt
+    - az storage azcopy blob delete -c "\$web" --recursive
+    - az storage azcopy blob upload -c "\$web" -s "$BUILD_PATH/*" --recursive
+
+.purge-cdn-frontend:
+  stage: purge-cdn
+  image: mcr.microsoft.com/azure-cli
+  script:
+    - az login --service-principal --username $AZURE_SP_ID --password $AZURE_SP_SECRET --tenant $AZURE_TENANT_ID
+    - az account set --subscription $AZURE_SUBSCRIPTION_ID
+    - az afd endpoint purge --name $AZURE_CDN_ENDPOINT --resource-group $AZURE_CDN_RG --profile-name $AZURE_CDN_NAME --content-paths "/*" --no-wait
+  when: manual
+
+### concrete jobs
+build-frontend-dev:
+  extends: .build-frontend
+  environment: dev
+  except:
+    - tags
+
+build-frontend-test:
+  extends: .build-frontend
+  environment: test
+  only:
+    - tags
+
+build-frontend-prod:
+  extends: .build-frontend
+  environment: prod
+  only:
+    - tags
+
+# deploy-frontend-dev:
+#   extends: .deploy-frontend
+#   environment: dev
+#   needs: ["build-frontend-dev"]
+#   except:
+#     - tags
+
+deploy-frontend-test:
+  extends: .deploy-frontend
+  environment: test
+  needs: ["build-frontend-test"]
+  only:
+    - tags
+
+deploy-frontend-prod:
+  extends: .deploy-frontend
+  environment: prod
+  needs: ["build-frontend-prod"]
+  only:
+    - tags
+  when: manual
+
+purge-cdn-frontend-prod:
+  extends: .purge-cdn-frontend
+  environment: prod
+  needs: ["deploy-frontend-prod"]
+  only:
+    - tags
