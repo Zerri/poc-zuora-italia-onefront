@@ -3,6 +3,7 @@ import { NavContent } from "./nav-content";
 
 const BASE_PATH = "/examples";
 
+// @ts-ignore
 export const examples = ({ getConfig }: any) => {
 
   return [
