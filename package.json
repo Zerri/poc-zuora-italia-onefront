@@ -10,13 +10,18 @@
     "update:deps": "npx npm-check-updates --dep dev,prod,optional,peer --root --format group -i"
   },
   "dependencies": {
-    "@1f/react-sdk": "^2.1.0",
-    "@vapor/react-custom": "^0.6.1",
-    "@vapor/react-extended": "^0.3.0",
-    "@vapor/react-material": "^0.13.1",
-    "@vapor/react-uishell": "^0.2.0",
+    "@1f/react-sdk": "^2.2.1",
+    "@1f/react-starter-sdk": "^2.2.1",
+    "@hookform/resolvers": "^3.9.1",
+    "@tanstack/react-query": "^5.59.16",
+    "@tanstack/react-query-devtools": "^5.59.16",
+    "@vapor/v3-components": "^0.1.2",
+    "dayjs": "^1.11.13",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.54.2",
+    "uuid": "^11.0.5",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@1f/vite-plugin": "^2.1.0",
