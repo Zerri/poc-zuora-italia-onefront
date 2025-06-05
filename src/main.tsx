@@ -20,7 +20,22 @@ OneFront.run({
           baseUrl: proxyBaseUrl,
         },
       },
-      layout: { title: "React Boilerplate" },
+      i18n: {
+        options: {
+          // Load all known namespaces
+          // (more namespaces will be loaded on demand)
+          defaultNS: "cpq",
+        }
+      },
+      box: {
+        module: {
+          name: "zuora-poc", // <--- Set to your bu/island name, for example if the URN of your app is "PORTAL://homepage" this value should be "PORTAL"
+        },
+        powerboard: {
+          show: true, // <--- Set to true to show the powerboard instead of the example feature
+        },
+      },
+      layout: { title: "IT Solutions CPQ - Zuora PoC" },
     },
   },
   features: [dashboard, examples],
