@@ -3,7 +3,7 @@ import { List, ListItemButton, ListItemIcon, ListItemText, VaporIcon } from "@va
 import { Link } from "react-router-dom";
 
 export const NavContent = ({ basePath }: { basePath: string }) => (
-  <List>
+  <List disablePadding>
     <ListItemButton component={Link} to={basePath} uishellItem>
       <ListItemIcon variant="menuIcon">
         <VaporIcon icon={faList} color='white' />

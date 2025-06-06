@@ -163,21 +163,21 @@ export const CustomersPage: React.FC = () => {
     <VaporThemeProvider>
       <VaporPage
         title="Clienti"
-        contentToolbar={
-          <VaporToolbar
-            variant="surface"
-            size="large"
-            contentLeft={[
-              <Link to="/">
-                <Button 
-                  variant="contained" 
-                >
-                  Torna alla Home
-                </Button>
-              </Link>
-            ]}
-          />
-        }
+        // contentToolbar={
+        //   <VaporToolbar
+        //     variant="surface"
+        //     size="large"
+        //     // contentLeft={[
+        //     //   <Link to="/">
+        //     //     <Button 
+        //     //       variant="contained" 
+        //     //     >
+        //     //       Torna alla Home
+        //     //     </Button>
+        //     //   </Link>
+        //     // ]}
+        //   />
+        // }
       >
         <VaporPage.Section divider>
           <Box sx={{ textAlign: 'center', mb: 2 }}>

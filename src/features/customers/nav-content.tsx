@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { faUserTie } from "@fortawesome/pro-regular-svg-icons/faUserTie";
 
 export const NavContent = () => (
-	<List>
+	<List disablePadding>
 		<ListItemButton component={Link} to={'/customers'} uishellItem>
 			<ListItemIcon variant="menuIcon">
 				<VaporIcon icon={faUserTie} color='white' />
