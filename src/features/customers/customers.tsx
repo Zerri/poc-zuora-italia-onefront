@@ -4,8 +4,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
   VaporPage,
-  Button, 
-  VaporToolbar, 
+  // Button, 
+  // VaporToolbar, 
   CircularProgress, 
   Alert, 
   Chip,
@@ -15,7 +15,7 @@ import {
   Typography,
   VaporThemeProvider
 } from "@vapor/v3-components";
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import CustomerCard from '../../components/CustomerCard';
 
 // Definizione interfaccia Customer
@@ -269,8 +269,8 @@ export const CustomersPage: React.FC = () => {
                 <Grid item xs={12} md={6} lg={4} xl={3} key={customer._id}>
                   <CustomerCard
                     customer={customer}
-                    onNewQuote={f => f}
-                    onMigration={f => f}
+                    onNewQuote={handleNewQuote}
+                    onMigration={handleMigration}
                     isCreatingQuote={createQuoteMutation.isPending}
                   />
                 </Grid>

@@ -11,6 +11,7 @@ import {
 
 // Definizione dell'interfaccia per il cliente
 interface Customer {
+  _id: string;
   nome: string;
   tipo: string;
   settore: string;
