@@ -1,5 +1,4 @@
-import { VaporPage } from "@vapor/react-custom";
-import { Typography } from "@vapor/react-extended";
+import { VaporPage, Typography } from "@vapor/v3-components";
 
 import { MockUrlRequest } from "./use-request/mock-url-request";
 import { ProxyUrlRequest } from "./use-request/proxy-url-request";

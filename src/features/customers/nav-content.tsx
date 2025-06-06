@@ -1,6 +1,5 @@
-import { List, ListItemButton, ListItemIcon, ListItemText } from '@vapor/v3-components'
+import { List, ListItemButton, ListItemIcon, ListItemText, VaporIcon } from '@vapor/v3-components'
 import { Link } from 'react-router-dom';
-import  VaporIcon from "@vapor/v3-components/VaporIcon";
 import { faUserTie } from "@fortawesome/pro-regular-svg-icons/faUserTie";
 
 export const NavContent = () => (

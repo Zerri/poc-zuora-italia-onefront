@@ -1,12 +1,12 @@
-import { Article } from '@mui/icons-material';
-import { List, ListItemButton, ListItemIcon, ListItemText } from '@vapor/react-material';
+import { faGauge } from "@fortawesome/pro-regular-svg-icons/faGauge";
+import { List, ListItemButton, ListItemIcon, ListItemText, VaporIcon } from '@vapor/v3-components';
 import { Link } from 'react-router-dom';
 
 export const NavContent = () => (
 	<List>
-		<ListItemButton component={Link} to={'/'}>
-			<ListItemIcon>
-				<Article />
+		<ListItemButton component={Link} to={'/'} uishellItem>
+			<ListItemIcon variant="menuIcon">
+				<VaporIcon icon={faGauge} color='white' />
 			</ListItemIcon>
 			<ListItemText primary={'Dashboard'} />
 		</ListItemButton>

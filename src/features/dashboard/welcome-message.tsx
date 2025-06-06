@@ -1,6 +1,5 @@
 import { useTokenData, useTranslation } from '@1f/react-sdk';
-import { Typography } from '@vapor/react-extended';
-import { Box } from '@vapor/react-material';
+import { Box, Typography } from '@vapor/v3-components';
 
 export const WelcomeMessage = () => {
 	const tokenData = useTokenData();

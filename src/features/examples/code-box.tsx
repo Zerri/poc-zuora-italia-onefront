@@ -1,4 +1,4 @@
-import { Box } from "@vapor/react-material";
+import { Box } from "@vapor/v3-components";
 import type { ReactNode } from "react";
 
 export const CodeBox = ({ sx = {}, children }: { sx?: any, children: ReactNode }) => {

@@ -1,6 +1,5 @@
 import { useRequest } from "@1f/react-sdk";
-import { Typography } from "@vapor/react-extended";
-import { Box, Button } from "@vapor/react-material";
+import { Box, Button, Typography } from "@vapor/v3-components";
 
 import { CodeBox } from "../code-box";
 

@@ -1,4 +1,4 @@
-import { VaporPage } from '@vapor/react-custom';
+import { VaporPage } from '@vapor/v3-components';
 
 import { WelcomeMessage } from './welcome-message';
 
