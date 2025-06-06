@@ -3,6 +3,7 @@ import { OneFront } from "@1f/react-sdk";
 import { dashboard } from "./features/dashboard";
 import { examples } from "./features/examples";
 import { customers } from "./features/customers";
+import { quote } from "./features/quote";
 
 const proxyBaseUrl = import.meta.env.VITE_APP_PROXY_BASE_URL || "/api";
 
@@ -39,6 +40,6 @@ OneFront.run({
       layout: { title: "IT Solutions CPQ - Zuora PoC" },
     },
   },
-  features: [dashboard, examples, customers],
+  features: [dashboard, examples, customers, quote],
   services: [],
 }).catch(console.error);

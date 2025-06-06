@@ -57,10 +57,7 @@ interface QuoteResponse {
  */
 export const CustomersPage: React.FC = () => {
   // URL base del backend (configurato per ambiente di sviluppo)
-  
-	// const API_URL = 'customers'; // MOCK
-	const API_URL = `${import.meta.env.VITE_APP_BE}/customers`;
-  
+    
   // State per filtri ricerca
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filterType, setFilterType] = useState<string>('Tutti');
@@ -79,7 +76,7 @@ export const CustomersPage: React.FC = () => {
   } = useQuery<Customer[], Error>({ 
     queryKey: ['customers'], 
     queryFn: async () => {
-      const response = await fetch(API_URL);
+      const response = await fetch(`${import.meta.env.VITE_APP_BE}/customers`);
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
@@ -90,7 +87,7 @@ export const CustomersPage: React.FC = () => {
   // Mutazione per creare un nuovo preventivo
   const createQuoteMutation = useMutation<QuoteResponse, Error, QuoteData>({
     mutationFn: (quoteData: QuoteData) => {
-      return fetch(`${API_URL}/quotes`, {
+      return fetch(`${import.meta.env.VITE_APP_BE}/quotes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
