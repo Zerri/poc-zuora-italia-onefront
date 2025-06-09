@@ -17,6 +17,8 @@ export type TagType =
   | "maximumPurple" 
   | undefined;
 
+export type TagVariant = 'filter' | 'duotone' | 'filled';
+
 // Definizione dell'interfaccia Product condivisa tra i componenti
 export interface Product {
   id: string | number;

@@ -20,4 +20,12 @@ export const quote = () => [
 			element: <QuotePageWithQueryClientProvider />,
 		},
 	},
+	{
+		target: '$ONE_LAYOUT_ROUTE',
+		handler: {
+			exact: true,
+			path: '/quote',
+			element: <QuotePageWithQueryClientProvider />,
+		},
+	},
 ];
