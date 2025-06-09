@@ -1,4 +1,4 @@
-import { fetch } from "@1f/react-sdk"
+import { fetch } from "@1f/react-sdk";
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -394,7 +394,7 @@ export const QuotePage: React.FC = () => {
                     <FormControl fullWidth>
                       <Typography variant="body2" gutterBottom>Data di creazione</Typography>
                       <DatePicker 
-                        value={formState.creationDate as any}
+                        value={formState.creationDate}
                         onChange={(newValue) => handleInputChange('creationDate', newValue)} 
                         slotProps={{ textField: { size: 'small' } }}
                         readOnly={true}
@@ -424,7 +424,7 @@ export const QuotePage: React.FC = () => {
                     <FormControl fullWidth>
                       <Typography variant="body2" gutterBottom>Data validità preventivo</Typography>
                       <DatePicker 
-                        value={formState.validityDate as any} 
+                        value={formState.validityDate} 
                         onChange={(newValue) => handleInputChange('validityDate', newValue)} 
                         slotProps={{ textField: { size: 'small' } }}
                       />
@@ -435,7 +435,7 @@ export const QuotePage: React.FC = () => {
                     <FormControl fullWidth>
                       <Typography variant="body2" gutterBottom>Data inizio assistenza software</Typography>
                       <DatePicker 
-                        value={formState.warrantyStartDate as any} 
+                        value={formState.warrantyStartDate} 
                         onChange={(newValue) => handleInputChange('warrantyStartDate', newValue)} 
                         slotProps={{ textField: { size: 'small' } }}
                       />
