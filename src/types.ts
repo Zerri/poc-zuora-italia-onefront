@@ -23,6 +23,32 @@ export type TagVariant = 'filter' | 'duotone' | 'filled';
 export type ViewMode = 'cards' | 'grid';
 export type CategoryFilter = 'tutti' | string;
 
+export interface Pricing {
+  currency?: string;
+  price?: number;
+  tiers?: {
+    startingUnit: number;
+    endingUnit: number;
+    price: number;
+    priceFormat?: string;
+  }[];
+}
+
+export interface ExtendedCharge extends Charge {
+  id: string | number;
+  model: string;
+  pricing?: Pricing[];
+  defaultQuantity?: string | number;
+  type: string;
+  calculatedPrice?: number;
+  billingPeriod?: string;
+  billingTiming?: string;
+  billingPeriodAlignment?: string;
+  priceFormat?: string;
+  billingDay?: string;
+  uom?: string;
+}
+
 // Definizione dell'interfaccia Product condivisa tra i componenti
 export interface Product {
   id: string | number;
@@ -46,6 +72,15 @@ export interface RatePlan {
   description?: string;
   productRatePlanCharges: Charge[];
   [key: string]: any;
+}
+
+export interface ExtendedRatePlan extends RatePlan {
+  id: string | number;
+  Infrastructure__c?: string;
+  productRatePlanCharges: ExtendedCharge[];
+  status?: string;
+  ModalitaDiVendita__c?: string;
+  UdM__c?: string;
 }
 
 export interface Charge {

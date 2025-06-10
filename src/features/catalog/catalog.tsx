@@ -27,7 +27,7 @@ import { faTableCellsLarge } from "@fortawesome/pro-regular-svg-icons/faTableCel
 import { faCirclePlus } from "@fortawesome/pro-regular-svg-icons/faCirclePlus";
 import SearchBar from "@vapor/v3-components/SearchBar";
 import { Link } from 'react-router-dom';
-// import ProductDrawerAlt from '../components/ProductDrawerAlt';
+import ProductDrawer from '../../components/ProductDrawer/ProductDrawer';
 import ProductCard from '../../components/ProductCard';
 // Import the hook to use the user role context
 // import { useUserRole } from '../context/UserRoleContext';
@@ -631,14 +631,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
         </VaporPage.Section>
 
         {/* External Drawer component */}
-        {/* <ProductDrawerAlt 
+        <ProductDrawer
           open={drawerOpen}
           onClose={handleCloseDrawer}
           product={selectedProduct}
           translateCategory={translateCategory}
           onAddToOffer={handleAddToOffer}
           isAddingToQuote={!!quoteId}  // Pass this prop to drawer
-        /> */}
+        />
         
         {/* Snackbar Component */}
         <Snackbar
