@@ -33,9 +33,10 @@ function ConfiguredProductCard({
 }: ConfiguredProductCardProps) {
   // Calcola lo sconto se c'è un prezzo cliente personalizzato
   const customerPrice = product.customerPrice ?? 0;
-  const hasCustomPrice = product.customerPrice !== undefined && customerPrice !== product.price;
+  const productPrice = product.price ?? 0;
+  const hasCustomPrice = product.customerPrice !== undefined && customerPrice !== productPrice;
   const discount = hasCustomPrice && customerPrice > 0 ? 
-    ((product.price - customerPrice) / product.price * 100).toFixed(2) : '0';
+    ((productPrice - customerPrice) / productPrice * 100).toFixed(2) : '0';
   
   // Prezzo da usare per i calcoli (prezzo cliente se disponibile, altrimenti prezzo di listino)
   const effectivePrice = product.customerPrice || product.price;
@@ -106,7 +107,7 @@ function ConfiguredProductCard({
               <Box sx={{ mt: 0.5 }}>
                 {product.charges.slice(0, 2).map((charge, idx) => (
                   <Typography key={idx} variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-                    {charge.name}: {charge.value} ({formatPrice(charge.calculatedPrice)})
+                    {charge.name}: {charge.value} ({charge.calculatedPrice ? formatPrice(charge.calculatedPrice) : 'N/A'})
                   </Typography>
                 ))}
                 {product.charges.length > 2 && (
@@ -126,7 +127,7 @@ function ConfiguredProductCard({
               Prezzo di listino:
             </Typography>
             <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>
-              {formatPrice(product.price * (product.quantity || 1))}
+              {product.price ? formatPrice(product.price * (product.quantity || 1)) : 'N/A'}
             </Typography>
           </Box>
           
@@ -145,7 +146,7 @@ function ConfiguredProductCard({
               )}
             </Box>
             <Typography variant="body1" fontWeight="bold" sx={{ fontSize: '0.9rem' }}>
-              {formatPrice(effectivePrice * (product.quantity || 1))}
+              {effectivePrice ? formatPrice(effectivePrice * (product.quantity || 1)) : 'N/A'}
             </Typography>
           </Box>
         </Box>

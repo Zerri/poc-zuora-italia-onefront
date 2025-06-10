@@ -9,20 +9,7 @@ import {
 } from "@vapor/v3-components";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
 import ConfiguredProductCard from './ConfiguredProductCard';
-import { TagType } from "../types";
-
-// Define product interface
-interface Product {
-  id: string | number;
-  name: string;
-  category?: string;
-  description?: string;
-  price: number;
-  customerPrice?: number;
-  quantity?: number;
-  // Add other product properties as needed
-  [key: string]: any;
-}
+import { TagType, Product } from "../types";
 
 interface ConfiguredProductListProps {
   products?: Product[];
@@ -55,16 +42,18 @@ function ConfiguredProductList({
   // Funzione per calcolare il totale di listino
   const calculateListTotal = (): number => {
     return products.reduce((total, product) => {
-      return total + (product.price * (product.quantity || 1));
+      const price = product.price || 0;
+      const quantity = product.quantity || 1;
+      return total + (price * quantity);
     }, 0);
   };
 
   // Funzione per calcolare il totale cliente
   const calculateTotal = (): number => {
     return products.reduce((total, product) => {
-      // Utilizza prezzo cliente se disponibile, altrimenti usa prezzo di listino
-      const effectivePrice = product.customerPrice || product.price;
-      return total + (effectivePrice * (product.quantity || 1));
+      const effectivePrice = product.customerPrice || product.price || 0;
+      const quantity = product.quantity || 1;
+      return total + (effectivePrice * quantity);
     }, 0);
   };
 

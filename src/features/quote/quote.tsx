@@ -258,9 +258,9 @@ export const QuotePage: React.FC = () => {
   // Funzione per calcolare il totale cliente
   const calculateTotal = (): number => {
     return formState.selectedProducts.reduce((total, product) => {
-      // Utilizza prezzo cliente se disponibile, altrimenti usa prezzo di listino
-      const effectivePrice = product.customerPrice || product.price;
-      return total + (effectivePrice * (product.quantity || 1));
+      const effectivePrice = product.customerPrice || product.price || 0;
+      const quantity = product.quantity || 1;
+      return total + (effectivePrice * quantity);
     }, 0);
   };
 

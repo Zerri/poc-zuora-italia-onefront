@@ -156,7 +156,7 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
   };
 
   // FIX: Versione corretta di calculateChargeTotal che prende in considerazione i valori utente
-  const calculateChargeTotal = (charge: ExtendedCharge, ratePlanId: string | number = selectedProductRatePlan): number => {
+  const calculateChargeTotal = (charge: ExtendedCharge, _ratePlanId: string | number = selectedProductRatePlan): number => {
     if (!charge) return 0;
     
     // Ottieni il valore inserito dall'utente per questa charge
