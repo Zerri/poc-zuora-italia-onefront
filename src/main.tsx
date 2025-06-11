@@ -8,6 +8,7 @@ import { quotes } from "./features/quotes";
 import { catalog } from "./features/catalog";
 import { report } from "./features/report";
 import { settings } from "./features/settings";
+import { migration } from "./features/migration";
 
 const proxyBaseUrl = import.meta.env.VITE_APP_PROXY_BASE_URL || "/api";
 
@@ -44,6 +45,6 @@ OneFront.run({
       layout: { title: "IT Solutions CPQ - Zuora PoC" },
     },
   },
-  features: [dashboard, examples, customers, quote, quotes, catalog, report, settings],
+  features: [dashboard, examples, customers, quote, quotes, catalog, report, settings, migration],
   services: [],
 }).catch(console.error);

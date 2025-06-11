@@ -62,6 +62,7 @@ export interface Product {
   ratePlan?: RatePlan;
   charges?: Charge[];
   productRatePlans?: RatePlan[];
+  replacesProductId?: string;
   [key: string]: any;
 }
 
