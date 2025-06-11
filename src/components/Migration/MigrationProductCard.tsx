@@ -18,17 +18,6 @@ import { faTrash } from "@fortawesome/pro-regular-svg-icons/faTrash";
 
 import { Product, TagType } from '../../types';
 
-interface RatePlan {
-  name: string;
-  Infrastructure__c?: string;
-}
-
-interface Charge {
-  name: string;
-  value: string | number;
-  calculatedPrice: number;
-}
-
 interface MigrationProductCardProps {
   product: Product;
   onRemove?: (id: string | number) => void;

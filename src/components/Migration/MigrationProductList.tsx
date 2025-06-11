@@ -43,27 +43,6 @@ export const MigrationProductList: React.FC<MigrationProductListProps> = ({
   translateCategory, 
   getCategoryTagType 
 }) => {
-  // Funzione per calcolare il totale di listino
-  const calculateListTotal = (): number => {
-    return products.reduce((total, product) => {
-      const price = product.price || 0;
-      const quantity = product.quantity || 1;
-      return total + (price * quantity);
-    }, 0);
-  };
-
-  // Funzione per calcolare il totale cliente
-  const calculateTotal = (): number => {
-    return products.reduce((total, product) => {
-      const effectivePrice = product.customerPrice || product.price || 0;
-      const quantity = product.quantity || 1;
-      return total + (effectivePrice * quantity);
-    }, 0);
-  };
-
-  // Calcolo dello sconto totale
-  const listTotal = calculateListTotal();
-  const customerTotal = calculateTotal();
   
   // Funzione per formattare i prezzi
   const formatPrice = (price: number): string => {

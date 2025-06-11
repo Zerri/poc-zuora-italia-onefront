@@ -143,7 +143,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
   });
 
   // Gestione cambio tab
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number): void => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number): void => {
     setActiveTab(newValue);
   };
 
