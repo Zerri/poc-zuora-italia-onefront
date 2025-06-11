@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CatalogPage } from './catalog';
-import { NavContent } from './nav-content';
+// import { NavContent } from './nav-content';
 
 const queryClient = new QueryClient();
 
@@ -13,12 +13,12 @@ const CatalogPageWithQueryClientProvider = () => {
 };
 
 export const catalog = () => [
-  {
-    target: '$ONE_LAYOUT_NAV_CONTENT',
-    handler: {
-      component: NavContent,
-    },
-  },
+  // {
+  //   target: '$ONE_LAYOUT_NAV_CONTENT',
+  //   handler: {
+  //     component: NavContent,
+  //   },
+  // },
   {
     target: '$ONE_LAYOUT_ROUTE',
     handler: {
