@@ -1,5 +1,6 @@
 import { OneFront } from "@1f/react-sdk";
 
+import { foobar } from "./features/foobar";
 import { shellNav } from "./features/shellNav";
 import { dashboard } from "./features/dashboard";
 import { examples } from "./features/examples";
@@ -43,9 +44,11 @@ OneFront.run({
           show: true, // <--- Set to true to show the powerboard instead of the example feature
         },
       },
-      layout: { title: "IT Solutions CPQ - Zuora PoC" },
+      layout: { 
+        title: "IT Solutions CPQ - Zuora PoC",
+      },
     },
   },
-  features: [shellNav, dashboard, examples, customers, quote, quotes, catalog, report, settings, migration],
+  features: [foobar, shellNav, dashboard, examples, customers, quote, quotes, catalog, report, settings, migration],
   services: [],
 }).catch(console.error);

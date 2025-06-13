@@ -9,6 +9,12 @@
   <link rel="apple-touch-icon" href="/logo192.png" />
   <title>React Boilerplate</title>
   <link rel="manifest" href="/manifest.json" />
+  <style>
+    /* Sovrascrivo la direzione flexbox nell'area ONE_TOOLBAR_CONTENT_RIGHT */
+    .MuiToolbar-root .MuiBox-root.css-0:nth-child(2) > div:first-child {
+      flex-direction: row-reverse !important;
+    }
+  </style>
 </head>
 
 <body>
