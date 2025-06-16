@@ -29,8 +29,7 @@ import SearchBar from "@vapor/v3-components/SearchBar";
 import { Link } from 'react-router-dom';
 import ProductDrawer from '../../components/ProductDrawer/ProductDrawer';
 import ProductCard from '../../components/ProductCard';
-// Import the hook to use the user role context
-// import { useUserRole } from '../context/UserRoleContext';
+import { useRole } from '../../contexts/RoleContext';
 // Import shared type definitions
 import { 
   Product, 
@@ -80,8 +79,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
   const quoteId = searchParams.get('quoteId');
 
   // Get user role from context
-  // const { userRole } = useUserRole();
-  const userRole = 'admin'; // Temporary hardcoded role for testing, replace with useUserRole() in production
+  const { role } = useRole();
   
   // Force component update
   const [refreshKey, setRefreshKey] = useState<number>(0);
@@ -92,19 +90,19 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
     setRefreshKey(prevKey => prevKey + 1);
     
     // Manually invalidate products query
-    queryClient.invalidateQueries({ queryKey: ['products', userRole] });
-  }, [userRole, queryClient]);
+    queryClient.invalidateQueries({ queryKey: ['products', role] });
+  }, [role, queryClient]);
 
-  // Query to get products, using userRole from context
+  // Query to get products, using role from context
   const { 
     data: products = [], 
     isLoading, 
     error,
   } = useQuery<Product[], Error>({ 
-    queryKey: ['products', userRole, refreshKey], // Add refreshKey to query key
+    queryKey: ['products', role, refreshKey], // Add refreshKey to query key
     queryFn: async () => {
-      console.log(`Fetching products for user role: ${userRole}`); // Debug log
-      const response = await fetch(`${import.meta.env.VITE_APP_BE}/products1?userId=${userRole}`);
+      console.log(`Fetching products for user role: ${role}`); // Debug log
+      const response = await fetch(`${import.meta.env.VITE_APP_BE}/products1?userId=${role}`);
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
@@ -486,7 +484,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
               }}>
                 <VaporIcon icon={faInfoCircle} color="primary" size="l" />
                 <Typography variant="body2" color="text.secondary">
-                  {isLoadingQuote ? <span>Caricamento informazioni preventivo...</span> : <span>Stai aggiungendo prodotti al preventivo:</span>} <strong>{quoteData?.number || quoteId}</strong> | Ruolo: <strong>{userRole}</strong> | Prodotti disponibili: <strong>{products.length}</strong> | Prodotti visibili: <strong>{filteredProducts.length}</strong>
+                  {isLoadingQuote ? <span>Caricamento informazioni preventivo...</span> : <span>Stai aggiungendo prodotti al preventivo:</span>} <strong>{quoteData?.number || quoteId}</strong> | Ruolo: <strong>{role}</strong> | Prodotti disponibili: <strong>{products.length}</strong> | Prodotti visibili: <strong>{filteredProducts.length}</strong>
                 </Typography>
               </Box>
             </Box>

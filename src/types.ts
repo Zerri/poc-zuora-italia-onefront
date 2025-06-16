@@ -1,3 +1,5 @@
+export type Role = 'admin' | 'sales' | 'touchpoint';
+
 export type TagType = 
   | "success" 
   | "error" 

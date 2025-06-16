@@ -11,6 +11,7 @@ import { catalog } from "./features/catalog";
 import { report } from "./features/report";
 import { settings } from "./features/settings";
 import { migration } from "./features/migration";
+import { layout_provider } from "./features/layout-provider";
 
 const proxyBaseUrl = import.meta.env.VITE_APP_PROXY_BASE_URL || "/api";
 
@@ -49,6 +50,6 @@ OneFront.run({
       },
     },
   },
-  features: [foobar, shellNav, dashboard, examples, customers, quote, quotes, catalog, report, settings, migration],
+  features: [layout_provider, foobar, shellNav, dashboard, examples, customers, quote, quotes, catalog, report, settings, migration],
   services: [],
 }).catch(console.error);
