@@ -80,7 +80,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
   const [targetProducts, setTargetProducts] = useState<Product[]>([]);
 
   // Query per recuperare i dati della migrazione
-  const { isLoading, error, data: migrationData = {} as MigrationData } = useQuery({
+  const { isLoading, error, data: migrationData } = useQuery({
     queryKey: ['migration', subscriptionId],
     queryFn: async () => {
       const response = await fetch(`migration/${subscriptionId}`);
