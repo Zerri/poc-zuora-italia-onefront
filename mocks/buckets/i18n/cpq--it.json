@@ -4,6 +4,31 @@
         "logged_in": "Collegato come: {{name}}",
         "common": {
             "welcome_user": "Benvenuto, {{name}}"
+        },
+        "nav": {
+            "dashboard": "Dashboard",
+            "customers": "Clienti",
+            "quotes": "Preventivi",
+            "catalog": "Catalogo",
+            "reports": "Report",
+            "reports_items": {
+                "invoicing": "Fatturazione",
+                "invoices": "Fatture",
+                "reminders": "Solleciti",
+                "subscriptions": "Abbonamenti",
+                "customers": "Clienti",
+                "customer_groups": "Gruppi di clienti",
+                "customer_setup": "Configurazione Cliente",
+                "packages": "Package",
+                "shipments": "Spedizioni"
+            },
+            "settings": "Impostazioni",
+            "settings_items": {
+                "vendors": "Fornitori",
+                "purchase_orders": "Ordini di acquisto",
+                "purchase_receives": "Ricevute di acquisto",
+                "bills": "Fatture"
+            }   
         }
     }
 }

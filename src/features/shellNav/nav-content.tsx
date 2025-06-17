@@ -8,82 +8,84 @@ import { faGauge } from "@fortawesome/pro-regular-svg-icons/faGauge";
 import { faUserTie } from "@fortawesome/pro-regular-svg-icons/faUserTie";
 import { faFileInvoice } from "@fortawesome/pro-regular-svg-icons/faFileInvoice";
 import { faBook } from "@fortawesome/pro-regular-svg-icons/faBook";
+import { useTranslation } from '@1f/react-sdk';
 
 export const NavContent = () => {
+  const { t, ready } = useTranslation();
   const navigate = useNavigate();
   const { setMenuTree } = useMenu();
 
   const settingsItems = [
     {
-      label: "Vendors",
+      label: t("nav.settings_items.vendors"),
       onClickFunction: () => {},
       // closePopoverAfterClick: true
     },
     {
-      label: "Purchase orders", 
+      label: t("nav.settings_items.purchase_orders"),
       onClickFunction: () => {},
       // closePopoverAfterClick: true
     },
     {
-      label: "Purchase receives",
+      label: t("nav.settings_items.purchase_receives"),
       onClickFunction: () => {},
       // closePopoverAfterClick: true
     },
     {
-      label: "Bills",
+      label: t("nav.settings_items.bills"),
       onClickFunction: () => {},
       // closePopoverAfterClick: true
     }
   ];
 
-  const reportItems = [
+  const reportsItems = [
     {
-      label: "Invoicing",
+      label: t("nav.reports_items.invoicing"),
       children: [
         {
-          label: "Invoices",
+          label: t("nav.reports_items.invoices"),
           onClickFunction: () => {},
           // closePopoverAfterClick: true
         },
         {
-          label: "Reminders",
+          label: t("nav.reports_items.reminders"),
           onClickFunction: () => {},
           // closePopoverAfterClick: true
         },
         {
-          label: "Subscriptions",
+          label: t("nav.reports_items.subscriptions"),
           onClickFunction: () => {},
           // closePopoverAfterClick: true
         }
       ]
     },
     {
-      label: "Customers",
+      label: t("nav.reports_items.customers"),
       children: [
         {
-          label: "Customers",
+          label: t("nav.reports_items.customers"),
           onClickFunction: () => {},
           // closePopoverAfterClick: true
         },
         {
-          label: "Customer groups",
+          label: t("nav.reports_items.customer_groups"),
           onClickFunction: () => {},
           // closePopoverAfterClick: true
         },
         {
-          label: "Customer setup",
+          label: t("nav.reports_items.customer_setup"),
           onClickFunction: () => {},
           // closePopoverAfterClick: true
         }
       ]
     },
     {
-      label: "Packages",
+      label: t("nav.reports_items.packages"),
       onClickFunction: () => {},
       // closePopoverAfterClick: true
     },
     {
-      label: "Shipments",
+      label: t("nav.reports_items.shipments"),
       onClickFunction: () => {},
       // closePopoverAfterClick: true
     }
@@ -91,7 +93,7 @@ export const NavContent = () => {
 
   const menuTree = [
     {
-      label: "Dashboard",
+      label: t("nav.dashboard"),
       icon: <VaporIcon icon={faGauge} />,
       // children: dashboardItems
       onClickFunction: () => {
@@ -99,7 +101,7 @@ export const NavContent = () => {
       },
     },
     {
-      label: "Clienti",
+      label: t("nav.customers"),
       icon: <VaporIcon icon={faUserTie} />,
       // children: customersItems
       onClickFunction: () => {
@@ -107,7 +109,7 @@ export const NavContent = () => {
       },
     },
     {
-      label: "Preventivi",
+      label: t("nav.quotes"),
       icon: <VaporIcon icon={faFileInvoice} />,
       // children: quotesItems
       onClickFunction: () => {
@@ -115,7 +117,7 @@ export const NavContent = () => {
       },
     },
     {
-      label: "Catalogo",
+      label: t("nav.catalog"),
       icon: <VaporIcon icon={faBook} />,
       // children: catalogItems
       onClickFunction: () => {
@@ -123,24 +125,26 @@ export const NavContent = () => {
       },
     },
     {
-      label: "Reports",
+      label: t("nav.reports"),
       icon: <VaporIcon icon={faChartSimple} />,
       badgeProps: {
         variant: "dot",
         color: "primary"
       },
-      children: reportItems
+      children: reportsItems
     },
     {
-      label: "Settings",
+      label: t("nav.settings"),
       icon: <VaporIcon icon={faSliders} />,
       children: settingsItems
     },
   ];
   
   useEffect(() => {
-    setMenuTree(menuTree);
-  }, []);
+    if (ready) {
+      setMenuTree(menuTree);
+    }
+  }, [ready]);
 
   return null;
 };
