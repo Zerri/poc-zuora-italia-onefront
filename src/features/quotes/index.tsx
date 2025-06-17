@@ -1,16 +1,5 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { QuotesPage } from './quotes';
 // import { NavContent } from './nav-content';
-
-const queryClient = new QueryClient();
-
-const QuotesPageWithQueryClientProvider = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <QuotesPage />
-    </QueryClientProvider>
-  );
-};
 
 export const quotes = () => [
   // {
@@ -24,7 +13,7 @@ export const quotes = () => [
     handler: {
       exact: true,
       path: '/quotes',
-      element: <QuotesPageWithQueryClientProvider />,
+      element: <QuotesPage />,
     },
   },
 ];

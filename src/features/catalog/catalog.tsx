@@ -80,36 +80,15 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
 
   // Get user role from context
   const { role } = useRole();
-  
-  // Force component update
-  const [refreshKey, setRefreshKey] = useState<number>(0);
-  
-  // Effect to refresh view when user role changes
-  useEffect(() => {
-    // Increment refreshKey to force a re-render
-    setRefreshKey(prevKey => prevKey + 1);
-    
-    // Manually invalidate products query
-    queryClient.invalidateQueries({ queryKey: ['products', role] });
-  }, [role, queryClient]);
 
   // Query to get products, using role from context
-  const { 
-    data: products = [], 
-    isLoading, 
-    error,
-  } = useQuery<Product[], Error>({ 
-    queryKey: ['products', role, refreshKey], // Add refreshKey to query key
+  const { data: products = [], isLoading, error } = useQuery<Product[], Error>({ 
+    queryKey: ['products', role], // Solo questo
     queryFn: async () => {
-      console.log(`Fetching products for user role: ${role}`); // Debug log
       const response = await fetch(`${import.meta.env.VITE_APP_BE}/products1?userId=${role}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
       return response.json();
-    },
-    staleTime: 0, // Always consider data "stale" (old)
-    gcTime: 0  // Don't store results in cache
+    }
   });
 
   // Query to get categories

@@ -1,16 +1,5 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CatalogPage } from './catalog';
 // import { NavContent } from './nav-content';
-
-const queryClient = new QueryClient();
-
-const CatalogPageWithQueryClientProvider = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <CatalogPage />
-    </QueryClientProvider>
-  );
-};
 
 export const catalog = () => [
   // {
@@ -24,7 +13,7 @@ export const catalog = () => [
     handler: {
       exact: true,
       path: '/catalog',
-      element: <CatalogPageWithQueryClientProvider />,
+      element: <CatalogPage />,
     },
   },
 ];
