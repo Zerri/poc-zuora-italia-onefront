@@ -17,11 +17,12 @@ const queryClient = new QueryClient({
 // Componente che wrappa tutti i provider necessari
 const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RoleProvider>
-        {children}
-      </RoleProvider>
-    </QueryClientProvider>
+    
+      <QueryClientProvider client={queryClient}>
+        <RoleProvider>
+          {children}
+        </RoleProvider>
+      </QueryClientProvider>
   );
 };
 

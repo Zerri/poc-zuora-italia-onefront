@@ -15,7 +15,22 @@ export const RoleSelector: React.FC<RoleSelectorProps> = () => {
 
   return (
     <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
-      <FormControl>
+      <FormControl
+        size="small"
+        variant="outlined"
+        sx={{ 
+          minWidth: 120,
+          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          borderRadius: 1,
+          '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+          '& .MuiSelect-select': { 
+            display: 'flex',
+            alignItems: 'center',
+            py: 1,
+            pl: 1
+          }
+        }}
+      >
         <Select
           id="role-selector"
           onChange={handleRoleChange}
