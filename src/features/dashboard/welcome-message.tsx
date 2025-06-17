@@ -7,7 +7,7 @@ export const WelcomeMessage = () => {
 
 	return (
 		<Box>
-			<Typography>{t('welcome_user', { name: tokenData?.name })}</Typography>
+			<Typography>{t('common.welcome_user', { name: tokenData?.name })}</Typography>
 		</Box>
 	);
 };
