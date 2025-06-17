@@ -136,3 +136,13 @@ export interface SnackbarState {
   message: string;
   severity: 'success' | 'error' | 'info' | 'warning';
 }
+
+export interface MigrationPath {
+  id: string;
+  title: string;
+  description: string;
+  totalValue: number;
+  percentChange?: string;
+  benefits?: string[];
+  products?: Product[];
+}

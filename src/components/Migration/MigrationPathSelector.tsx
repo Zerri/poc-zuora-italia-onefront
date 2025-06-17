@@ -11,16 +11,7 @@ import {
 } from "@vapor/v3-components";
 import { faCloudArrowUp } from "@fortawesome/pro-regular-svg-icons/faCloudArrowUp";
 import { faServer } from "@fortawesome/pro-regular-svg-icons/faServer";
-
-interface MigrationPath {
-  id: string;
-  title: string;
-  description: string;
-  totalValue: number;
-  percentChange?: string;
-  benefits?: string[];
-  products?: any[];
-}
+import { MigrationPath } from '../../types';
 
 interface MigrationPathSelectorProps {
   paths: Record<string, MigrationPath>;

@@ -27,7 +27,7 @@ import { faServer } from "@fortawesome/pro-regular-svg-icons/faServer";
 import MigrationProductList from '../../components/Migration/MigrationProductList';
 import MigrationPathSelector from '../../components/Migration/MigrationPathSelector';
 
-import { Product, TagType } from "../../types";
+import { Product, TagType, MigrationPath } from "../../types";
 
 // Definizione delle interfacce
 interface Customer {
@@ -35,13 +35,6 @@ interface Customer {
   name: string;
   sector: string;
   email: string;
-}
-
-interface MigrationPath {
-  title: string;
-  description: string;
-  totalValue: number;
-  products: Product[];
 }
 
 interface MigrationData {
@@ -80,7 +73,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
   const [targetProducts, setTargetProducts] = useState<Product[]>([]);
 
   // Query per recuperare i dati della migrazione
-  const { isLoading, error, data: migrationData } = useQuery({
+  const { isLoading, error, data: migrationData } = useQuery<MigrationData>({
     queryKey: ['migration', subscriptionId],
     queryFn: async () => {
       const response = await fetch(`migration/${subscriptionId}`);
@@ -94,7 +87,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
 
   // Effect per aggiornare i prodotti target quando viene selezionato un percorso di migrazione
   useEffect(() => {
-    if (selectedPath && migrationData.migrationPaths && migrationData.migrationPaths[selectedPath]) {
+    if (selectedPath && migrationData?.migrationPaths?.[selectedPath]?.products) {
       setTargetProducts(migrationData.migrationPaths[selectedPath].products);
     } else {
       setTargetProducts([]);
@@ -164,7 +157,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
 
   // Funzione per calcolare il totale di listino dei prodotti sorgente
   const calculateCurrentTotal = (): number => {
-    if (!migrationData.sourceProducts) return 0;
+    if (!migrationData?.sourceProducts) return 0;
     return migrationData.sourceProducts.reduce((total: number, product: Product) => {
       const price = product.price || 0;
       const quantity = product.quantity || 1;
@@ -174,7 +167,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
 
   // Funzione per calcolare il totale cliente dei prodotti sorgente (con sconti)
   const calculateCurrentCustomerTotal = (): number => {
-    if (!migrationData.sourceProducts) return 0;
+    if (!migrationData?.sourceProducts) return 0;
     return migrationData.sourceProducts.reduce((total: number, product: Product) => {
       const effectivePrice = product.customerPrice || product.price || 0;
       const quantity = product.quantity || 1;
@@ -202,6 +195,8 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
 
   // Funzione per salvare la migrazione
   const handleSaveMigration = (): void => {
+    if (!migrationData) return;
+    
     saveMigrationMutation.mutate({
       customerId: migrationData.customer?.id,
       sourceProducts: migrationData.sourceProducts,
@@ -241,7 +236,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
   const createReplacementMap = (): Record<string, string> => {
     const replacementMap: Record<string, string> = {};
     
-    if (selectedPath && migrationData.migrationPaths && migrationData.migrationPaths[selectedPath]) {
+    if (selectedPath && migrationData?.migrationPaths?.[selectedPath]?.products) {
       migrationData.migrationPaths[selectedPath].products.forEach((product: Product) => {
         if (product.replacesProductId) {
           replacementMap[product.replacesProductId] = `${product.id}`;
@@ -271,6 +266,16 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
           <Typography color="error">
             Errore nel caricamento dei dati: {error instanceof Error ? error.message : 'Errore sconosciuto'}
           </Typography>
+        </Box>
+      </VaporPage>
+    );
+  }
+
+  if (!migrationData) {
+    return (
+      <VaporPage>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+          <Typography>Nessun dato disponibile</Typography>
         </Box>
       </VaporPage>
     );
