@@ -307,6 +307,15 @@
                 "selectedItems": "Articoli selezionati",
                 "listTotal": "Totale di listino:",
                 "customerTotal": "Totale cliente:"
+            },
+            "customerCard": {
+                "lastContact": "Ultimo contatto",
+                "value": "Valore",
+                "actions": {
+                    "creating": "Creazione...",
+                    "newOffer": "Nuova offerta",
+                    "migration": "Migrazione"
+                }
             }
         }
     }

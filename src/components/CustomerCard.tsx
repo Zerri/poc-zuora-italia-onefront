@@ -8,6 +8,7 @@ import {
   Box,
   Button
 } from "@vapor/v3-components";
+import { useTranslation } from '@1f/react-sdk';
 
 // Definizione dell'interfaccia per il cliente
 interface Customer {
@@ -39,6 +40,7 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
   onMigration, 
   isCreatingQuote = false 
 }) => {
+  const { t } = useTranslation();
   // Funzione per formattare la data
   const formatDate = (dateString: string | undefined): string => {
     if (!dateString) return 'N/A';
@@ -104,7 +106,7 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
         }}>
           <Box sx={{ textAlign: 'left' }}>
             <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-              Ultimo contatto
+              {t('components.customerCard.lastContact')}
             </Typography>
             <Typography variant="body2" fontWeight="medium" sx={{ fontSize: '0.75rem' }}>
               {formatDate(customer.ultimoContatto)}
@@ -114,7 +116,7 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
           {customer.valoreAnnuo && (
             <Box sx={{ textAlign: 'right' }}>
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                Valore
+                {t('components.customerCard.value')}
               </Typography>
               <Typography variant="body2" fontWeight="bold" sx={{ fontSize: '0.75rem' }}>
                 {customer.valoreAnnuo}
@@ -134,7 +136,7 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
             disabled={isCreatingQuote}
             sx={{ fontSize: '0.9rem', py: 0.75 }}
           >
-            {isCreatingQuote ? 'Creazione...' : 'Nuova offerta'}
+            {isCreatingQuote ? t('components.customerCard.actions.creating') : t('components.customerCard.actions.newOffer')}
           </Button>
           
           {customer.tipo === 'Cliente' && customer.migrabile && (
@@ -147,7 +149,7 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
               disabled={isCreatingQuote}
               sx={{ fontSize: '0.9rem', py: 0.75, minWidth: 'auto', px: 1.5 }}
             >
-              Migrazione
+              {t('components.customerCard.actions.migration')}
             </Button>
           )}
         </Box>
