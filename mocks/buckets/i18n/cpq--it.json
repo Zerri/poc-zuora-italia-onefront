@@ -284,6 +284,15 @@
                     "noNotes": "Nessuna nota disponibile."
                 }
             }
+        }, 
+        "components": {
+            "roleSelector": {
+                "roles": {
+                    "admin": "Admin",
+                    "sales": "Sales",
+                    "touchpoint": "Touchpoint"
+                }
+            }
         }
     }
 }

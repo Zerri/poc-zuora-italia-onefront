@@ -1,10 +1,12 @@
 import { Box, FormControl, Select, MenuItem  } from "@vapor/v3-components";
 import { useRole } from '../contexts/RoleContext';
 import { Role } from "../types";
+import { useTranslation } from "@1f/react-sdk";
 
 interface RoleSelectorProps {}
 
 export const RoleSelector: React.FC<RoleSelectorProps> = () => {
+  const { t } = useTranslation();
   const { role, setRole } = useRole();
   
   const handleRoleChange = (event: any) => {
@@ -36,9 +38,9 @@ export const RoleSelector: React.FC<RoleSelectorProps> = () => {
           onChange={handleRoleChange}
           value={role}
         >
-          <MenuItem value="admin">Admin</MenuItem>
-          <MenuItem value="sales">Sales</MenuItem>
-          <MenuItem value="touchpoint">Touchpoint</MenuItem>
+          <MenuItem value="admin">{t("components.roleSelector.roles.admin")}</MenuItem>
+          <MenuItem value="sales">{t("components.roleSelector.roles.sales")}</MenuItem>
+          <MenuItem value="touchpoint">{t("components.roleSelector.roles.touchpoint")}</MenuItem>
         </Select>
       </FormControl>
     </Box>
