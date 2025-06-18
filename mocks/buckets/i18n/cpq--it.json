@@ -300,6 +300,13 @@
                 "listPrice": "Prezzo di listino:",
                 "customerPrice": "Prezzo cliente:",
                 "remove": "Rimuovi"
+            },
+            "configuredProductList": {
+                "emptyState": "Non ci sono articoli selezionati. Aggiungi articoli dal catalogo per creare il preventivo.",
+                "addItem": "Aggiungi articolo",
+                "selectedItems": "Articoli selezionati",
+                "listTotal": "Totale di listino:",
+                "customerTotal": "Totale cliente:"
             }
         }
     }

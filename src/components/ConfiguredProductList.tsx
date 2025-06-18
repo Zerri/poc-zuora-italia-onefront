@@ -6,10 +6,11 @@ import {
   Button, 
   VaporIcon,
   Chip
-} from "@vapor/v3-components";
-import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
+} from '@vapor/v3-components';
+import { faPlus } from '@fortawesome/pro-regular-svg-icons/faPlus';
 import ConfiguredProductCard from './ConfiguredProductCard';
-import { TagType, Product } from "../types";
+import { TagType, Product } from '../types';
+import { useTranslation } from '@1f/react-sdk';
 
 interface ConfiguredProductListProps {
   products?: Product[];
@@ -39,6 +40,7 @@ function ConfiguredProductList({
   emptyStateComponent = null,
   columnLayout = "grid" // Parametro per controllare il layout: "grid" o "vertical"
 }: ConfiguredProductListProps) {
+  const { t } = useTranslation();
   // Funzione per calcolare il totale di listino
   const calculateListTotal = (): number => {
     return products.reduce((total, product) => {
@@ -79,7 +81,7 @@ function ConfiguredProductList({
         border: '1px dashed #ccc'
       }}>
         <Typography variant="body1" color="text.secondary">
-          Non ci sono articoli selezionati. Aggiungi articoli dal catalogo per creare il preventivo.
+          {t("components.configuredProductList.emptyState")}
         </Typography>
         <Button 
           size="small" 
@@ -88,7 +90,7 @@ function ConfiguredProductList({
           onClick={onAddProduct}
           sx={{ mt: 2 }}
         >
-          Aggiungi articolo
+          {t("components.configuredProductList.addItem")}
         </Button>
       </Box>
     );
@@ -99,7 +101,7 @@ function ConfiguredProductList({
       {!hideHeader && (
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6" component="h2" fontWeight="bold">
-            Articoli selezionati
+            {t("components.configuredProductList.selectedItems")}
           </Typography>
           
           {products.length > 0 && (
@@ -114,7 +116,7 @@ function ConfiguredProductList({
             }}>
               <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
                 <Typography variant="body2" color="text.secondary">
-                  Totale di listino:
+                  {t("components.configuredProductList.listTotal")}
                 </Typography>
                 <Typography variant="body2" fontWeight="medium">
                   {formatPrice(listTotal)}
@@ -123,7 +125,7 @@ function ConfiguredProductList({
               
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                 <Typography variant="body1" fontWeight="bold">
-                  Totale cliente:
+                  {t("components.configuredProductList.customerTotal")}
                 </Typography>
                 {hasDiscount && (
                   <Chip 
