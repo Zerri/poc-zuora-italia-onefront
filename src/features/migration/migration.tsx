@@ -2,7 +2,8 @@ import { fetch } from "@1f/react-sdk"
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
+import {
+  VaporThemeProvider, 
   VaporPage,
   Typography,
   Button,
@@ -252,34 +253,40 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
   // Visualizzazione durante il caricamento
   if (isLoading) {
     return (
-      <VaporPage>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
-          <Typography>{t("features.migration.loading")}</Typography>
-        </Box>
-      </VaporPage>
+      <VaporThemeProvider>
+        <VaporPage>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+            <Typography>{t("features.migration.loading")}</Typography>
+          </Box>
+        </VaporPage>
+      </VaporThemeProvider>
     );
   }
 
   // Visualizzazione in caso di errore
   if (error) {
     return (
-      <VaporPage>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
-          <Typography color="error">
-            {t("features.migration.errors.loading")} {error instanceof Error ? error.message : t("features.migration.errors.unknown")}
-          </Typography>
-        </Box>
-      </VaporPage>
+      <VaporThemeProvider>
+        <VaporPage>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+            <Typography color="error">
+              {t("features.migration.errors.loading")} {error instanceof Error ? error.message : t("features.migration.errors.unknown")}
+            </Typography>
+          </Box>
+        </VaporPage>
+      </VaporThemeProvider>
     );
   }
 
   if (!migrationData) {
     return (
-      <VaporPage>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
-          <Typography>{t("features.migration.errors.noData")}</Typography>
-        </Box>
-      </VaporPage>
+      <VaporThemeProvider>
+        <VaporPage>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+            <Typography>{t("features.migration.errors.noData")}</Typography>
+          </Box>
+        </VaporPage>
+      </VaporThemeProvider>
     );
   }
 
@@ -287,315 +294,317 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
   const replacementMap = createReplacementMap();
 
   return (
-    <VaporPage>
-      <Title
-        leftItems={[
-          <IconButton key="back-button" color="primary" size="small" onClick={handleGoBack}>
-            <VaporIcon icon={faArrowLeft} size="xl" />
-          </IconButton>
-        ]}
-        rightItems={[
-          <Button 
-            key="add-article" 
-            size="small" 
-            variant="contained" 
-            startIcon={<VaporIcon icon={faPlus} />}
-            onClick={() => navigate(`/catalog?migrationId=${subscriptionId || 'mock'}`)}
-            disabled={!selectedPath}
-          >
-            {t("features.migration.actions.addItem")}
-          </Button>,
-          <Button 
-            key="save-migration" 
-            size="small" 
-            variant="outlined" 
-            startIcon={<VaporIcon icon={faFloppyDisk} />}
-            onClick={handleSaveMigration}
-            disabled={saveMigrationMutation.isPending || !selectedPath}
-          >
-            {saveMigrationMutation.isPending ? t("features.migration.actions.saving") : t("features.migration.actions.complete")}
-          </Button>,
-          <IconButton key="options" size="small">
-            <VaporIcon icon={faEllipsisVertical} size="xl" />
-          </IconButton>
-        ]}
-        size="small"
-        title={t("features.migration.title", { customerName: migrationData.customer?.name || '' })}
-      />
+    <VaporThemeProvider>
+      <VaporPage>
+        <Title
+          leftItems={[
+            <IconButton key="back-button" color="primary" size="small" onClick={handleGoBack}>
+              <VaporIcon icon={faArrowLeft} size="xl" />
+            </IconButton>
+          ]}
+          rightItems={[
+            <Button 
+              key="add-article" 
+              size="small" 
+              variant="contained" 
+              startIcon={<VaporIcon icon={faPlus} />}
+              onClick={() => navigate(`/catalog?migrationId=${subscriptionId || 'mock'}`)}
+              disabled={!selectedPath}
+            >
+              {t("features.migration.actions.addItem")}
+            </Button>,
+            <Button 
+              key="save-migration" 
+              size="small" 
+              variant="outlined" 
+              startIcon={<VaporIcon icon={faFloppyDisk} />}
+              onClick={handleSaveMigration}
+              disabled={saveMigrationMutation.isPending || !selectedPath}
+            >
+              {saveMigrationMutation.isPending ? t("features.migration.actions.saving") : t("features.migration.actions.complete")}
+            </Button>,
+            <IconButton key="options" size="small">
+              <VaporIcon icon={faEllipsisVertical} size="xl" />
+            </IconButton>
+          ]}
+          size="small"
+          title={t("features.migration.title", { customerName: migrationData.customer?.name || '' })}
+        />
 
-      <VaporPage.Section>
-        <ExtendedTabs value={activeTab} onChange={handleTabChange} size="small" variant="standard">
-          <ExtendedTab label={t("features.migration.tabs.migration")} />
-          <ExtendedTab label={t("features.migration.tabs.customer")} />
-          <ExtendedTab label={t("features.migration.tabs.documents")} />
-        </ExtendedTabs>
+        <VaporPage.Section>
+          <ExtendedTabs value={activeTab} onChange={handleTabChange} size="small" variant="standard">
+            <ExtendedTab label={t("features.migration.tabs.migration")} />
+            <ExtendedTab label={t("features.migration.tabs.customer")} />
+            <ExtendedTab label={t("features.migration.tabs.documents")} />
+          </ExtendedTabs>
 
-        {activeTab === 0 && (
-          <Box sx={{ mt: 3 }}>
-            {/* Riepilogo migrazione (mostrato solo se un percorso è selezionato) */}
-            <Box sx={{ 
-              mb: 2,
-              p: 2,
-              bgcolor: 'background.paper',
-              borderRadius: 1,
-              boxShadow: 1
-            }}>
-              <Typography variant="h6" fontWeight="bold" gutterBottom>
-                {t("features.migration.summary.title")}
-              </Typography>
-              
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={4}>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("features.migration.summary.currentValue")}
-                  </Typography>
-                  <Typography variant="body1" fontWeight="bold">
-                    {formatPrice(calculateCurrentTotal())} {t("features.migration.summary.perYear")}
-                  </Typography>
-                  {calculateCurrentCustomerTotal() < calculateCurrentTotal() && (
-                    <Typography variant="body2" color="success.main">
-                      {formatPrice(calculateCurrentCustomerTotal())} {t("features.migration.summary.withDiscounts")}
-                    </Typography>
-                  )}
-                </Grid>
+          {activeTab === 0 && (
+            <Box sx={{ mt: 3 }}>
+              {/* Riepilogo migrazione (mostrato solo se un percorso è selezionato) */}
+              <Box sx={{ 
+                mb: 2,
+                p: 2,
+                bgcolor: 'background.paper',
+                borderRadius: 1,
+                boxShadow: 1
+              }}>
+                <Typography variant="h6" fontWeight="bold" gutterBottom>
+                  {t("features.migration.summary.title")}
+                </Typography>
                 
-                {selectedPath && (
+                <Grid container spacing={3}>
                   <Grid item xs={12} sm={4}>
                     <Typography variant="body2" color="text.secondary">
-                      {t("features.migration.summary.newValue")}
+                      {t("features.migration.summary.currentValue")}
                     </Typography>
                     <Typography variant="body1" fontWeight="bold">
-                      {formatPrice(calculateNewTotal())} {t("features.migration.summary.perYear")}
+                      {formatPrice(calculateCurrentTotal())} {t("features.migration.summary.perYear")}
                     </Typography>
-                    {calculateNewCustomerTotal() < calculateNewTotal() && (
+                    {calculateCurrentCustomerTotal() < calculateCurrentTotal() && (
                       <Typography variant="body2" color="success.main">
-                        {formatPrice(calculateNewCustomerTotal())} {t("features.migration.summary.withDiscounts")}
+                        {formatPrice(calculateCurrentCustomerTotal())} {t("features.migration.summary.withDiscounts")}
                       </Typography>
                     )}
                   </Grid>
-                )}
-                
-                {selectedPath && (
-                  <Grid item xs={12} sm={4}>
-                    <Typography variant="body2" color="text.secondary">
-                      {t("features.migration.summary.difference")}
-                    </Typography>
-                    <Typography 
-                      variant="body1" 
-                      fontWeight="bold" 
-                      color={(calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) >= 0 ? 'error.main' : 'success.main'}
-                    >
-                      {formatPrice(calculateNewCustomerTotal() - calculateCurrentCustomerTotal())} {t("features.migration.summary.perYear")}
-                      {' '}
-                      ({((calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) / calculateCurrentCustomerTotal() * 100).toFixed(1)}%)
-                    </Typography>
-                  </Grid>
-                )}
-              </Grid>
-            </Box>
+                  
+                  {selectedPath && (
+                    <Grid item xs={12} sm={4}>
+                      <Typography variant="body2" color="text.secondary">
+                        {t("features.migration.summary.newValue")}
+                      </Typography>
+                      <Typography variant="body1" fontWeight="bold">
+                        {formatPrice(calculateNewTotal())} {t("features.migration.summary.perYear")}
+                      </Typography>
+                      {calculateNewCustomerTotal() < calculateNewTotal() && (
+                        <Typography variant="body2" color="success.main">
+                          {formatPrice(calculateNewCustomerTotal())} {t("features.migration.summary.withDiscounts")}
+                        </Typography>
+                      )}
+                    </Grid>
+                  )}
+                  
+                  {selectedPath && (
+                    <Grid item xs={12} sm={4}>
+                      <Typography variant="body2" color="text.secondary">
+                        {t("features.migration.summary.difference")}
+                      </Typography>
+                      <Typography 
+                        variant="body1" 
+                        fontWeight="bold" 
+                        color={(calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) >= 0 ? 'error.main' : 'success.main'}
+                      >
+                        {formatPrice(calculateNewCustomerTotal() - calculateCurrentCustomerTotal())} {t("features.migration.summary.perYear")}
+                        {' '}
+                        ({((calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) / calculateCurrentCustomerTotal() * 100).toFixed(1)}%)
+                      </Typography>
+                    </Grid>
+                  )}
+                </Grid>
+              </Box>
 
-            {/* Struttura a due colonne per i prodotti */}
-            <Grid container spacing={3}>
-              {/* Colonna sinistra: prodotti originali */}
-              <Grid item xs={12} md={6}>
-                <Box sx={{ 
-                  p: 2, 
-                  bgcolor: 'background.paper', 
-                  borderRadius: 1,
-                  boxShadow: 1
-                }}>
-                  {/* Utilizziamo il nuovo componente MigrationProductList */}
-                  <MigrationProductList 
-                    products={migrationData.sourceProducts || []}
-                    isMigrationSource={true}
-                    nonMigrableProductIds={migrationData.nonMigrableProductIds || []}
-                    nonMigrableReasons={migrationData.nonMigrableReasons || {}}
-                    replacementMap={replacementMap}
-                    translateCategory={translateCategory}
-                    getCategoryTagType={getCategoryTagType}
-                    title={t("features.migration.products.current")}
-                  />
-                </Box>
-              </Grid>
-              
-              {/* Colonna destra: percorsi di migrazione o prodotti proposti */}
-              <Grid item xs={12} md={6}>
-                <Box sx={{ 
-                  p: 2, 
-                  bgcolor: 'background.paper', 
-                  borderRadius: 1,
-                  boxShadow: 1
-                }}>
-                  {!selectedPath ? (
-                    <MigrationPathSelector 
-                      paths={migrationData.migrationPaths || {}}
-                      onSelectPath={handlePathSelect}
-                      currentValue={calculateCurrentTotal()}
+              {/* Struttura a due colonne per i prodotti */}
+              <Grid container spacing={3}>
+                {/* Colonna sinistra: prodotti originali */}
+                <Grid item xs={12} md={6}>
+                  <Box sx={{ 
+                    p: 2, 
+                    bgcolor: 'background.paper', 
+                    borderRadius: 1,
+                    boxShadow: 1
+                  }}>
+                    {/* Utilizziamo il nuovo componente MigrationProductList */}
+                    <MigrationProductList 
+                      products={migrationData.sourceProducts || []}
+                      isMigrationSource={true}
+                      nonMigrableProductIds={migrationData.nonMigrableProductIds || []}
+                      nonMigrableReasons={migrationData.nonMigrableReasons || {}}
+                      replacementMap={replacementMap}
+                      translateCategory={translateCategory}
+                      getCategoryTagType={getCategoryTagType}
+                      title={t("features.migration.products.current")}
                     />
-                  ) : (
-                    <>
-                      {/* Mostra l'intestazione del percorso selezionato */}
-                      <Box sx={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        p: 2, 
-                        backgroundColor: 'secondary.light',
-                        borderRadius: 1,
-                        mb: 3
-                      }}>
+                  </Box>
+                </Grid>
+                
+                {/* Colonna destra: percorsi di migrazione o prodotti proposti */}
+                <Grid item xs={12} md={6}>
+                  <Box sx={{ 
+                    p: 2, 
+                    bgcolor: 'background.paper', 
+                    borderRadius: 1,
+                    boxShadow: 1
+                  }}>
+                    {!selectedPath ? (
+                      <MigrationPathSelector 
+                        paths={migrationData.migrationPaths || {}}
+                        onSelectPath={handlePathSelect}
+                        currentValue={calculateCurrentTotal()}
+                      />
+                    ) : (
+                      <>
+                        {/* Mostra l'intestazione del percorso selezionato */}
                         <Box sx={{ 
-                          width: 32, 
-                          height: 32, 
-                          borderRadius: '50%', 
                           display: 'flex', 
                           alignItems: 'center', 
-                          justifyContent: 'center',
-                          backgroundColor: 'primary.main',
-                          color: 'white',
-                          mr: 2
+                          p: 2, 
+                          backgroundColor: 'secondary.light',
+                          borderRadius: 1,
+                          mb: 3
                         }}>
-                          <VaporIcon 
-                            icon={selectedPath === 'saas' ? faCloudArrowUp : faServer} 
-                            size="s" 
-                          />
-                        </Box>
-                        
-                        <Box sx={{ flex: 1 }}>
-                          <Typography variant="subtitle1" fontWeight="bold">
-                            {t("features.migration.products.migrationPath")} {migrationData.migrationPaths?.[selectedPath]?.title}
-                          </Typography>
-                          <Typography variant="body2">
-                            {migrationData.migrationPaths?.[selectedPath]?.description}
-                          </Typography>
-                        </Box>
-                        
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <Box sx={{ textAlign: 'right', mr: 2 }}>
-                            <Typography variant="body2" color="text.secondary">
-                              {t("features.migration.products.estimatedCost")}
-                            </Typography>
+                          <Box sx={{ 
+                            width: 32, 
+                            height: 32, 
+                            borderRadius: '50%', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center',
+                            backgroundColor: 'primary.main',
+                            color: 'white',
+                            mr: 2
+                          }}>
+                            <VaporIcon 
+                              icon={selectedPath === 'saas' ? faCloudArrowUp : faServer} 
+                              size="s" 
+                            />
+                          </Box>
+                          
+                          <Box sx={{ flex: 1 }}>
                             <Typography variant="subtitle1" fontWeight="bold">
-                              {formatPrice(migrationData.migrationPaths?.[selectedPath]?.totalValue || 0)}{t("features.migration.products.perYear")}
+                              {t("features.migration.products.migrationPath")} {migrationData.migrationPaths?.[selectedPath]?.title}
+                            </Typography>
+                            <Typography variant="body2">
+                              {migrationData.migrationPaths?.[selectedPath]?.description}
                             </Typography>
                           </Box>
                           
-                          <Button 
-                            variant="outlined"
-                            size="small"
-                            onClick={() => setSelectedPath(null)}
-                          >
-                            {t("features.migration.actions.change")}
-                          </Button>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Box sx={{ textAlign: 'right', mr: 2 }}>
+                              <Typography variant="body2" color="text.secondary">
+                                {t("features.migration.products.estimatedCost")}
+                              </Typography>
+                              <Typography variant="subtitle1" fontWeight="bold">
+                                {formatPrice(migrationData.migrationPaths?.[selectedPath]?.totalValue || 0)}{t("features.migration.products.perYear")}
+                              </Typography>
+                            </Box>
+                            
+                            <Button 
+                              variant="outlined"
+                              size="small"
+                              onClick={() => setSelectedPath(null)}
+                            >
+                              {t("features.migration.actions.change")}
+                            </Button>
+                          </Box>
                         </Box>
-                      </Box>
-                      
-                      {/* Utilizziamo il nuovo componente MigrationProductList per i prodotti target */}
-                      <MigrationProductList 
-                        products={targetProducts}
-                        onRemoveProduct={handleRemoveProduct}
-                        onAddProduct={() => navigate(`/catalog?migrationId=${subscriptionId || 'mock'}`)}
-                        translateCategory={translateCategory}
-                        getCategoryTagType={getCategoryTagType}
-                        title={t("features.migration.products.new")}
-                      />
-                    </>
-                  )}
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-        )}
-
-        {/* Tab Cliente */}
-        {activeTab === 1 && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="h6" component="h2" fontWeight="bold" sx={{ mb: 3 }}>
-              {t("features.migration.customer.info")}
-            </Typography>
-            
-            <Box sx={{ p: 3, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={4}>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    {t("features.migration.customer.name")}
-                  </Typography>
-                  <Typography variant="body1" fontWeight="medium">
-                    {migrationData.customer?.name || ''}
-                  </Typography>
-                </Grid>
-                
-                <Grid item xs={12} sm={4}>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    {t("features.migration.customer.sector")}
-                  </Typography>
-                  <Typography variant="body1" fontWeight="medium">
-                    {migrationData.customer?.sector || ''}
-                  </Typography>
-                </Grid>
-                
-                <Grid item xs={12} sm={4}>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    {t("features.migration.customer.email")}
-                  </Typography>
-                  <Typography variant="body1" fontWeight="medium">
-                    {migrationData.customer?.email || ''}
-                  </Typography>
+                        
+                        {/* Utilizziamo il nuovo componente MigrationProductList per i prodotti target */}
+                        <MigrationProductList 
+                          products={targetProducts}
+                          onRemoveProduct={handleRemoveProduct}
+                          onAddProduct={() => navigate(`/catalog?migrationId=${subscriptionId || 'mock'}`)}
+                          translateCategory={translateCategory}
+                          getCategoryTagType={getCategoryTagType}
+                          title={t("features.migration.products.new")}
+                        />
+                      </>
+                    )}
+                  </Box>
                 </Grid>
               </Grid>
             </Box>
-          </Box>
-        )}
-        
-        {/* Tab Documenti */}
-        {activeTab === 2 && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="h6" component="h2" fontWeight="bold" sx={{ mb: 3 }}>
-              {t("features.migration.documents.title")}
-            </Typography>
-            
-            <Box sx={{ p: 3, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
-              <Typography variant="body1" color="text.secondary">
-                {t("features.migration.documents.description")}
+          )}
+
+          {/* Tab Cliente */}
+          {activeTab === 1 && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="h6" component="h2" fontWeight="bold" sx={{ mb: 3 }}>
+                {t("features.migration.customer.info")}
               </Typography>
               
-              <Box sx={{ 
-                mt: 2, 
-                p: 2, 
-                border: '1px dashed', 
-                borderColor: 'divider',
-                borderRadius: 1,
-                textAlign: 'center'
-              }}>
-                <Typography variant="body2" color="text.secondary">
-                  {t("features.migration.documents.empty")}
-                </Typography>
-                <Button 
-                  variant="outlined" 
-                  size="small" 
-                  sx={{ mt: 1 }}
-                  startIcon={<VaporIcon icon={faPlus} />}
-                >
-                  {t("features.migration.actions.addDocument")}
-                </Button>
+              <Box sx={{ p: 3, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={4}>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                      {t("features.migration.customer.name")}
+                    </Typography>
+                    <Typography variant="body1" fontWeight="medium">
+                      {migrationData.customer?.name || ''}
+                    </Typography>
+                  </Grid>
+                  
+                  <Grid item xs={12} sm={4}>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                      {t("features.migration.customer.sector")}
+                    </Typography>
+                    <Typography variant="body1" fontWeight="medium">
+                      {migrationData.customer?.sector || ''}
+                    </Typography>
+                  </Grid>
+                  
+                  <Grid item xs={12} sm={4}>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                      {t("features.migration.customer.email")}
+                    </Typography>
+                    <Typography variant="body1" fontWeight="medium">
+                      {migrationData.customer?.email || ''}
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Box>
             </Box>
-          </Box>
-        )}
-      </VaporPage.Section>
+          )}
+          
+          {/* Tab Documenti */}
+          {activeTab === 2 && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="h6" component="h2" fontWeight="bold" sx={{ mb: 3 }}>
+                {t("features.migration.documents.title")}
+              </Typography>
+              
+              <Box sx={{ p: 3, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
+                <Typography variant="body1" color="text.secondary">
+                  {t("features.migration.documents.description")}
+                </Typography>
+                
+                <Box sx={{ 
+                  mt: 2, 
+                  p: 2, 
+                  border: '1px dashed', 
+                  borderColor: 'divider',
+                  borderRadius: 1,
+                  textAlign: 'center'
+                }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {t("features.migration.documents.empty")}
+                  </Typography>
+                  <Button 
+                    variant="outlined" 
+                    size="small" 
+                    sx={{ mt: 1 }}
+                    startIcon={<VaporIcon icon={faPlus} />}
+                  >
+                    {t("features.migration.actions.addDocument")}
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+          )}
+        </VaporPage.Section>
 
-      {/* Snackbar per notifiche */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => setSnackbar({...snackbar, open: false})}
-      >
-        <Alert
-          severity={snackbar.severity}
+        {/* Snackbar per notifiche */}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
           onClose={() => setSnackbar({...snackbar, open: false})}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </VaporPage>
+          <Alert
+            severity={snackbar.severity}
+            onClose={() => setSnackbar({...snackbar, open: false})}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      </VaporPage>
+    </VaporThemeProvider>
   );
 };

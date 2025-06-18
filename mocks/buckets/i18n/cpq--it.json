@@ -338,6 +338,16 @@
                 "value": "Valore",
                 "perYear": "/anno",
                 "edit": "Modifica"
+            },
+            "migrationPathSelector": {
+                "title": "Scegli un percorso di migrazione",
+                "description": "Il sistema ha identificato due percorsi di migrazione compatibili con la sottoscrizione del cliente. Seleziona quello più adatto in base alle esigenze operative e agli obiettivi del cliente.",
+                "mainBenefits": "Vantaggi principali:",
+                "estimatedCost": "Costo stimato:",
+                "perYear": "/anno",
+                "comparedToCurrent": "rispetto all'attuale",
+                "proposedProducts": "prodotti proposti",
+                "select": "Seleziona"
             }
         }
     }

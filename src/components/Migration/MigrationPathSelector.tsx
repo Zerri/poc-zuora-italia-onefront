@@ -12,6 +12,7 @@ import {
 import { faCloudArrowUp } from "@fortawesome/pro-regular-svg-icons/faCloudArrowUp";
 import { faServer } from "@fortawesome/pro-regular-svg-icons/faServer";
 import { MigrationPath } from '../../types';
+import { useTranslation } from '@1f/react-sdk';
 
 interface MigrationPathSelectorProps {
   paths: Record<string, MigrationPath>;
@@ -29,6 +30,7 @@ export const MigrationPathSelector: React.FC<MigrationPathSelectorProps> = ({
   onSelectPath, 
   currentValue = 0 
 }) => {
+  const { t } = useTranslation();
   // Funzione per formattare i prezzi come valuta
   const formatPrice = (price: number): string => {
     return new Intl.NumberFormat('it-IT', { 
@@ -62,10 +64,10 @@ export const MigrationPathSelector: React.FC<MigrationPathSelectorProps> = ({
     <Box>
       <Box sx={{ mb: 2 }}>
         <Typography variant="subtitle1" fontWeight="bold">
-          Scegli un percorso di migrazione
+          {t('components.migrationPathSelector.title')}
         </Typography>
         <Typography variant="bodySmallRegular" color="text.secondary">
-          Il sistema ha identificato due percorsi di migrazione compatibili con la sottoscrizione del cliente. Seleziona quello più adatto in base alle esigenze operative e agli obiettivi del cliente.
+          {t('components.migrationPathSelector.description')}
         </Typography>
       </Box>
       
@@ -116,7 +118,7 @@ export const MigrationPathSelector: React.FC<MigrationPathSelectorProps> = ({
                   <Divider sx={{ my: 2 }} />
                   
                   <Typography variant="subtitle2" gutterBottom>
-                    Vantaggi principali:
+                    {t('components.migrationPathSelector.mainBenefits')}
                   </Typography>
                   
                   <Box component="ul" sx={{ pl: 2, mb: 2 }}>
@@ -132,13 +134,13 @@ export const MigrationPathSelector: React.FC<MigrationPathSelectorProps> = ({
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box>
                       <Typography variant="body2" color="text.secondary">
-                        Costo stimato:
+                        {t('components.migrationPathSelector.estimatedCost')}
                       </Typography>
                       <Typography variant="h6" fontWeight="bold" color="primary.main">
-                        {formatPrice(path.totalValue)}/anno
+                        {formatPrice(path.totalValue)}{t('components.migrationPathSelector.perYear')}
                       </Typography>
                       <Typography variant="caption" color={getChangeColor(percentChange)}>
-                        {percentChange} rispetto all'attuale
+                        {percentChange} {t('components.migrationPathSelector.comparedToCurrent')}
                       </Typography>
                     </Box>
                     
@@ -147,13 +149,13 @@ export const MigrationPathSelector: React.FC<MigrationPathSelectorProps> = ({
                       color="primary"
                       size="small"
                     >
-                      Seleziona
+                      {t('components.migrationPathSelector.select')}
                     </Button>
                   </Box>
                   
                   <Box sx={{ mt: 1 }}>
                     <Typography variant="caption" color="text.secondary">
-                      {path.products ? path.products.length : 0} prodotti proposti
+                      {path.products ? path.products.length : 0} {t('components.migrationPathSelector.proposedProducts')}
                     </Typography>
                   </Box>
                 </CardContent>
