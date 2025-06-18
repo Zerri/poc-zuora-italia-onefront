@@ -43,6 +43,7 @@ import {
   TagType
 } from '../../types';
 import { GridColDef } from "@mui/x-data-grid-pro";
+import { useTranslation } from '@1f/react-sdk';
 
 // Define Props interface for the component
 interface CatalogPageProps {}
@@ -52,6 +53,8 @@ interface CatalogPageProps {}
  * @description Page that shows the TeamSystem product catalog filtered by user permissions
  */
 export const CatalogPage: React.FC<CatalogPageProps> = () => {
+  const { t } = useTranslation();
+
   // For query management
   const queryClient = useQueryClient();
   
@@ -155,7 +158,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
       // Show success message
       setSnackbar({
         open: true,
-        message: 'Prodotto aggiunto al preventivo con successo',
+        message: t("features.catalog.success.addProduct"),
         severity: 'success'
       });
       
@@ -277,10 +280,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
   // Function to translate category name
   const translateCategory = (category?: string): string => {
     const translations: Record<string, string> = {
-      'enterprise': 'Enterprise',
-      'professional': 'Professional',
-      'hr': 'HR',
-      'cross': 'Cross'
+      'enterprise': t("features.catalog.categories.enterprise"),
+      'professional': t("features.catalog.categories.professional"),
+      'hr': t("features.catalog.categories.hr"),
+      'cross': t("features.catalog.categories.cross"),
     };
     return translations[category || ''] || category || 'N/A';
   };
@@ -292,14 +295,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
         <VaporPage>
           <VaporPage.Section>
             <Alert severity="error" sx={{ mb: 3 }}>
-              Errore nel caricamento del preventivo: {quoteError.message}
+              {t("features.catalog.error.quote")}: {quoteError.message}
             </Alert>
             <Button 
               variant="contained"
               onClick={() => navigate('/quotes')}
               startIcon={<VaporIcon icon={faArrowLeft} />}
             >
-              Torna alla lista preventivi
+              {t("features.catalog.navigation.backToQuotesList")}
             </Button>
           </VaporPage.Section>
         </VaporPage>
@@ -311,7 +314,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
   const columns: GridColDef<Product>[] = [
     { 
       field: 'name', 
-      headerName: 'Nome', 
+      headerName: t("features.catalog.grid.name"), 
       flex: 1.5,
       renderCell: (params: any) => (
         <Box sx={{ py: 1 }}>
@@ -331,7 +334,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
     },
     { 
       field: 'description', 
-      headerName: 'Descrizione', 
+      headerName: t("features.catalog.grid.description"),  
       flex: 2,
       renderCell: (params: any) => (
         <Box sx={{ py: 1 }}>
@@ -344,14 +347,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
               textAlign: 'left'
             }}
           >
-            {params.value || 'Nessuna descrizione disponibile.'}
+            {params.value || t("features.catalog.grid.noDescription")}
           </Typography>
         </Box>
       )
     },
     { 
       field: 'productRatePlans', 
-      headerName: 'Rate Plans', 
+      headerName: t("features.catalog.grid.ratePlans"),
       flex: 1.5,
       renderCell: (params: any) => (
         <Box sx={{ py: 1 }}>
@@ -365,11 +368,11 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
               }}
             >
               {params.value.slice(0, 3).map((plan: RatePlan) => plan.name).join(', ')}
-              {params.value.length > 3 && ` e altri ${params.value.length - 3}...`}
+              {params.value.length > 3 && `${t("features.catalog.grid.otherPlans", { count: params.value.length - 3 })}`}
             </Typography>
           ) : (
             <Typography variant="body2" color="text.secondary">
-              Nessun piano disponibile
+              {t("features.catalog.grid.noPlans")}
             </Typography>
           )}
         </Box>
@@ -377,7 +380,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
     },
     {
       field: 'actions',
-      headerName: 'Azioni',
+      headerName: t("features.catalog.grid.actions"), 
       flex: 0.8,
       align: 'center',
       headerAlign: 'center',
@@ -390,7 +393,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
             onClick={() => handleOpenDrawer(params.row)}
             startIcon={<VaporIcon icon={faCirclePlus} />}
           >
-            Aggiungi
+            {t("features.catalog.grid.addButton")}
           </Button>
         </Box>
       )
@@ -416,7 +419,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
   return (
     <VaporThemeProvider>
       <VaporPage
-        title="Catalogo Prodotti"
+        title={t("features.catalog.title")}
         contentToolbar={
           <VaporToolbar
             variant="surface"
@@ -429,14 +432,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
                   onClick={handleReturnToQuote}
                   startIcon={<VaporIcon icon={faArrowLeft} />}
                 >
-                  Torna al Preventivo
+                  {t("backToQuote")}
                 </Button>
               ) : (
                 <Link to="/">
                   <Button 
                     variant="contained"
                   >
-                    Torna alla Home
+                    {t("backToHome")}
                   </Button>
                 </Link>
               )
@@ -463,7 +466,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
               }}>
                 <VaporIcon icon={faInfoCircle} color="primary" size="l" />
                 <Typography variant="body2" color="text.secondary">
-                  {isLoadingQuote ? <span>Caricamento informazioni preventivo...</span> : <span>Stai aggiungendo prodotti al preventivo:</span>} <strong>{quoteData?.number || quoteId}</strong> | Ruolo: <strong>{role}</strong> | Prodotti disponibili: <strong>{products.length}</strong> | Prodotti visibili: <strong>{filteredProducts.length}</strong>
+                  {isLoadingQuote ? <span>{t("features.catalog.loading.quote")}</span> : <span>{t("features.catalog.info.quoteAdd")}:</span>} <strong>{quoteData?.number || quoteId}</strong> | {t("features.catalog.info.role")}: <strong>{role}</strong> | {t("features.catalog.info.availableProducts")}: <strong>{products.length}</strong> | {t("features.catalog.info.visibleProducts")}: <strong>{filteredProducts.length}</strong>
                 </Typography>
               </Box>
             </Box>
@@ -475,16 +478,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
               gutterBottom
               variant="headingsPage"
             >
-              Cerca e seleziona un prodotto
+              {t("features.catalog.searchTitle")}
             </Typography>
             <Typography
               component="div"
               gutterBottom
               variant="bodyLargeRegular"
             >
-              {quoteId 
-                ? 'Scegli un prodotto dal catalogo TeamSystem da aggiungere al preventivo' 
-                : 'Scegli un prodotto dal catalogo TeamSystem da aggiungere all\'offerta'}
+              {quoteId ? t("features.catalog.quoteSubtitle") : t("features.catalog.offerSubtitle")}
             </Typography>
           </Box>
           
@@ -495,7 +496,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
                 value={searchTerm}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
                 handleClear={() => setSearchTerm("")}
-                placeholder="Cerca per nome o descrizione..."
+                placeholder={t("features.catalog.searchPlaceholder")}
                 size='medium'
                 sx={{ width: '100%' }}
               />
@@ -503,7 +504,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
             
             <Box sx={{ display: 'flex', gap: 2, mb: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
               <Chip 
-                label="Tutti" 
+                label={t("features.catalog.categories.all")}
                 variant={filterCategory === 'tutti' ? 'filled' : 'outlined'}
                 onClick={() => handleFilterChange('tutti')}
                 color={filterCategory === 'tutti' ? 'primary' : 'default'}
@@ -530,7 +531,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
           {/* Toggle to change view */}
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
             <ButtonGroup variant="outlined" size="small">
-              <Tooltip title="Vista a schede">
+              <Tooltip title={t("features.catalog.view.cards")}>
                 <IconButton 
                   color={viewMode === 'cards' ? 'primary' : 'default'}
                   onClick={() => setViewMode('cards')}
@@ -538,7 +539,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
                   <VaporIcon icon={faTableCellsLarge} />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Vista a tabella">
+              <Tooltip title={t("features.catalog.view.table")}>
                 <IconButton
                   color={viewMode === 'grid' ? 'primary' : 'default'}
                   onClick={() => setViewMode('grid')}
@@ -556,11 +557,11 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
             </Box>
           ) : error ? (
             <Alert severity="error" sx={{ mb: 3 }}>
-              Errore durante il caricamento dei prodotti: {error.message}
+              {t("features.catalog.error.products")}: {error.message}
             </Alert>
           ) : filteredProducts.length === 0 ? (
             <Alert severity="info">
-              Nessun prodotto corrisponde ai criteri di ricerca o ai permessi del tuo ruolo.
+              {t("features.catalog.alert.noProducts")}
             </Alert>
           ) : (
             <>

@@ -29,6 +29,42 @@
                 "purchase_receives": "Ricevute di acquisto",
                 "bills": "Fatture"
             }   
+        },
+        "features": {
+            "catalog": {
+                "title": "Catalogo Prodotti",
+                "backToQuote": "Torna al Preventivo",
+                "backToHome": "Torna alla Home",
+                "searchTitle": "Cerca e seleziona un prodotto",
+                "quoteSubtitle": "Scegli un prodotto dal catalogo TeamSystem da aggiungere al preventivo",
+                "offerSubtitle": "Scegli un prodotto dal catalogo TeamSystem da aggiungere all'offerta",
+                "navigation.backToQuotesList": "Torna alla lista dei preventivi",
+                "searchPlaceholder": "Cerca per nome o descrizione...",
+                "categories.all": "Tutti",
+                "categories.enterprise": "Enterprise",
+                "categories.professional": "Professional",
+                "categories.hr": "HR",
+                "categories.cross": "Cross",
+                "view.cards": "Vista a schede",
+                "view.table": "Vista a tabella",
+                "grid.name": "Nome",
+                "grid.description": "Descrizione",
+                "grid.ratePlans": "Rate Plans",
+                "grid.actions": "Azioni",
+                "grid.noDescription": "Nessuna descrizione disponibile.",
+                "grid.noPlans": "Nessun piano disponibile",
+                "grid.addButton": "Aggiungi",
+                "grid.othersPlans": "e altri {{count}}...",
+                "loading.quote": "Caricamento informazioni preventivo...",
+                "info.quoteAdd": "Stai aggiungendo prodotti al preventivo",
+                "info.role": "Ruolo",
+                "info.availableProducts": "Prodotti disponibili",
+                "info.visibleProducts": "Prodotti visibili",
+                "error.quote": "Errore nel caricamento del preventivo",
+                "error.products": "Errore durante il caricamento dei prodotti",
+                "alert.noProducts": "Nessun prodotto corrisponde ai criteri di ricerca o ai permessi del tuo ruolo.",
+                "success.addProduct": "Prodotto aggiunto al preventivo con successo"
+            }
         }
     }
 }
