@@ -34,8 +34,9 @@ import { faTableCells } from "@fortawesome/pro-regular-svg-icons/faTableCells";
 import { faTableCellsLarge } from "@fortawesome/pro-regular-svg-icons/faTableCellsLarge";
 import { QuoteCard } from '../../components/QuoteCard';
 import { GridColDef } from "@mui/x-data-grid-pro";
-
+import { useTranslation } from '@1f/react-sdk';
 import { TagType, TagVariant } from '../../types';
+
 
 // Definizione tipi
 type QuoteStatus = 'Draft' | 'Sent' | 'Accepted' | 'Rejected' | 'Migration';
@@ -78,7 +79,8 @@ interface TypeTranslations {
  * @component QuotesPage
  * @description Pagina che mostra la lista dei preventivi
  */
-export const QuotesPage: React.FC = () => {  
+export const QuotesPage: React.FC = () => {
+  const { t } = useTranslation();
   // State per filtri ricerca
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filterStatus, setFilterStatus] = useState<string>('All');
@@ -88,19 +90,19 @@ export const QuotesPage: React.FC = () => {
   
   // Mappa per tradurre gli stati in italiano per l'interfaccia
   const statusTranslations: StatusTranslations = {
-    'All': 'Tutti',
-    'Draft': 'Bozza',
-    'Sent': 'Inviato',
-    'Accepted': 'Accettato',
-    'Rejected': 'Rifiutato',
-    'Migration': 'Migrazione'
+    'All': t("features.quotes.status.all"),
+    'Draft': t("features.quotes.status.draft"),
+    'Sent': t("features.quotes.status.sent"),
+    'Accepted': t("features.quotes.status.accepted"),
+    'Rejected': t("features.quotes.status.rejected"),
+    'Migration': t("features.quotes.status.migration")
   };
 
   // Mappa per tradurre i tipi di preventivo in italiano
   const typeTranslations: TypeTranslations = {
-    'New': 'Nuova offerta',
-    'Migration': 'Migrazione',
-    'Upgrade': 'Upgrade'
+    'New': t("features.quotes.type.new"),
+    'Migration': t("features.quotes.type.migration"),
+    'Upgrade': t("features.quotes.type.upgrade")
   };
   
   // State per gestione drawer
@@ -224,7 +226,7 @@ export const QuotesPage: React.FC = () => {
   const columns: GridColDef<Quote>[] = [
     { 
       field: 'number', 
-      headerName: 'Numero', 
+      headerName: t("features.quotes.grid.number"), 
       flex: 1,
       renderCell: (params: any) => (
         <Box sx={{ py: 1 }}>
@@ -244,7 +246,7 @@ export const QuotesPage: React.FC = () => {
     },
     { 
       field: 'customer', 
-      headerName: 'Cliente', 
+      headerName: t("features.quotes.grid.customer"),  
       flex: 1.5,
       renderCell: (params: any) => (
         <Box sx={{ py: 1 }}>
@@ -277,7 +279,7 @@ export const QuotesPage: React.FC = () => {
     },
     { 
       field: 'status', 
-      headerName: 'Stato', 
+      headerName: t("features.quotes.grid.stato"), 
       flex: 0.8,
       renderCell: (params: any) => (
         <Box sx={{ py: 1 }}>
@@ -292,7 +294,7 @@ export const QuotesPage: React.FC = () => {
     },
     { 
       field: 'type', 
-      headerName: 'Tipo', 
+      headerName: t("features.quotes.grid.type"),  
       flex: 0.8,
       renderCell: (params: any) => (
         <Box sx={{ py: 1 }}>
@@ -307,7 +309,7 @@ export const QuotesPage: React.FC = () => {
     },
     { 
       field: 'createdAt', 
-      headerName: 'Data creazione', 
+      headerName: t("features.quotes.grid.creationDate"), 
       flex: 1,
       renderCell: (params: any) => (
         <Box sx={{ py: 1 }}>
@@ -319,7 +321,7 @@ export const QuotesPage: React.FC = () => {
     },
     { 
       field: 'value', 
-      headerName: 'Valore', 
+      headerName: t("features.quotes.grid.value"), 
       flex: 1,
       renderCell: (params: any) => {
         const calculatedValue = params.row.products && params.row.products.length > 0 
@@ -337,7 +339,7 @@ export const QuotesPage: React.FC = () => {
     },
     {
       field: 'actions',
-      headerName: 'Azioni',
+      headerName: t("features.quotes.grid.actions"), 
       flex: 1,
       align: 'center',
       headerAlign: 'center',
@@ -350,7 +352,7 @@ export const QuotesPage: React.FC = () => {
               size="small"
               startIcon={<VaporIcon icon={faPen} />}
             >
-              Modifica
+              {t("features.quotes.actions.edit")}
             </Button>
           </Link>
           <IconButton 
@@ -388,14 +390,14 @@ export const QuotesPage: React.FC = () => {
         <Title
           rightItems={[
             <Link to="/quote">
-              <Button key="1" size="small" variant="contained" startIcon={<VaporIcon icon={faPlus} />}>Nuovo preventivo</Button>
+              <Button key="1" size="small" variant="contained" startIcon={<VaporIcon icon={faPlus} />}>{t("features.quotes.actions.new")}</Button>
             </Link>,
             <IconButton key="2" size="small">
               <VaporIcon icon={faEllipsisVertical} size="xl" />
             </IconButton>
           ]}
           size="small"
-          title="Preventivi"
+          title={t("features.quotes.title")}
         />
         <VaporPage.Section divider>
           <Box sx={{ textAlign: 'center', mb: 2 }}>
@@ -404,14 +406,14 @@ export const QuotesPage: React.FC = () => {
               gutterBottom
               variant="headingsPage"
             >
-              Gestisci i tuoi preventivi
+              {t("features.quotes.heading")}
             </Typography>
             <Typography
               component="div"
               gutterBottom
               variant="bodyLargeRegular"
             >
-              Visualizza, modifica e crea nuove offerte per i tuoi clienti
+              {t("features.quotes.subtitle")}
             </Typography>
           </Box>
           
@@ -422,7 +424,7 @@ export const QuotesPage: React.FC = () => {
                 value={searchTerm}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
                 handleClear={() => setSearchTerm("")}
-                placeholder="Cerca per cliente, numero preventivo..."
+                placeholder={t("features.quotes.searchPlaceholder")}
                 size='medium'
                 sx={{ width: '100%' }}
               />
@@ -430,7 +432,7 @@ export const QuotesPage: React.FC = () => {
             
             <Box sx={{ display: 'flex', gap: 2, mb: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
               <Chip 
-                label="Tutti" 
+                label={t("features.quotes.filters.all")} 
                 variant={filterStatus === 'All' ? 'filled' : 'outlined'}
                 onClick={() => handleFilterChange('All')}
                 color={filterStatus === 'All' ? 'primary' : 'default'}
@@ -456,12 +458,12 @@ export const QuotesPage: React.FC = () => {
               component="div"
               variant="bodyLargeHeavy"
             >
-              Preventivi Recenti
+              {t("features.quotes.recentQuotes")}
             </Typography>
             
             {/* Toggle per cambiare vista */}
             <ButtonGroup variant="outlined" size="small">
-              <Tooltip title="Vista a schede">
+              <Tooltip title={t("features.quotes.tooltips.cardView")}>
                 <IconButton 
                   color={viewMode === 'cards' ? 'primary' : 'default'}
                   onClick={() => setViewMode('cards')}
@@ -469,7 +471,7 @@ export const QuotesPage: React.FC = () => {
                   <VaporIcon icon={faTableCellsLarge} />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Vista a tabella">
+              <Tooltip title={t("features.quotes.tooltips.tableView")}>
                 <IconButton
                   color={viewMode === 'grid' ? 'primary' : 'default'}
                   onClick={() => setViewMode('grid')}
@@ -487,11 +489,11 @@ export const QuotesPage: React.FC = () => {
             </Box>
           ) : error ? (
             <Alert severity="error" sx={{ mb: 3 }}>
-              Errore durante il caricamento dei preventivi: {error.message}
+              {t("features.quotes.errors.loading")} {error.message}
             </Alert>
           ) : quotes.length === 0 ? (
             <Alert severity="info">
-              Nessun preventivo corrisponde ai criteri di ricerca.
+              {t("features.quotes.alerts.noResults")}
             </Alert>
           ) : (
             <>
@@ -556,7 +558,7 @@ export const QuotesPage: React.FC = () => {
             <>
               <Title
                 title={selectedQuote.customer.name}
-                description={`Preventivo #${selectedQuote.number}`}
+                description={t("features.quotes.drawer.quoteNumber", { number: selectedQuote.number })}
                 divider
                 rightItems={[
                   <IconButton size="small" variant='outlined' onClick={handleCloseDrawer}>
@@ -568,7 +570,7 @@ export const QuotesPage: React.FC = () => {
               <Box sx={{ p: 4, flex: 1, overflowY: 'auto' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                   <Typography variant="body1" fontWeight="medium">
-                    Settore: {selectedQuote.customer.sector}
+                    {t("features.quotes.drawer.sector", { sector: selectedQuote.customer.sector })}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     <Tag 
@@ -589,18 +591,18 @@ export const QuotesPage: React.FC = () => {
                 <Divider sx={{ my: 3 }} />
                 
                 <Typography variant="h6" gutterBottom>
-                  Dettagli preventivo
+                  {t("features.quotes.drawer.quoteDetails")}
                 </Typography>
                 
                 <Grid container spacing={2} sx={{ mb: 3 }}>
                   <Grid item xs={6}>
-                    <Typography variant="body2" color="text.secondary">Creato il</Typography>
+                    <Typography variant="body2" color="text.secondary">{t("features.quotes.drawer.createdOn")}</Typography>
                     <Typography variant="body1" fontWeight="medium">{formatDate(selectedQuote.createdAt)}</Typography>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography variant="body2" color="text.secondary">Valore totale</Typography>
+                    <Typography variant="body2" color="text.secondary">{t("features.quotes.drawer.totalValue")}</Typography>
                     <Typography variant="body1" fontWeight="medium">
-                      {formatCurrency(selectedQuote.products && selectedQuote.products.length > 0 ? calculateQuoteValue(selectedQuote.products) : selectedQuote.value || 0)}/anno
+                      {formatCurrency(selectedQuote.products && selectedQuote.products.length > 0 ? calculateQuoteValue(selectedQuote.products) : selectedQuote.value || 0)}{t("features.quotes.drawer.perYear")}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -608,7 +610,7 @@ export const QuotesPage: React.FC = () => {
                 <Divider sx={{ my: 3 }} />
                 
                 <Typography variant="h6" gutterBottom>
-                  Prodotti inclusi
+                  {t("features.quotes.drawer.includedProducts")}
                 </Typography>
                 
                 {selectedQuote.products && selectedQuote.products.length > 0 ? (
@@ -619,7 +621,7 @@ export const QuotesPage: React.FC = () => {
                           <Typography variant="subtitle1" fontWeight="medium">{product.name}</Typography>
                           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
                             <Typography variant="body2">
-                              Quantità: {product.quantity}
+                              {t("features.quotes.drawer.quantity", { quantity: product.quantity })}
                             </Typography>
                             <Typography variant="body2" fontWeight="bold">
                               {formatCurrency(product.price * product.quantity)}
@@ -631,7 +633,7 @@ export const QuotesPage: React.FC = () => {
                   </Box>
                 ) : (
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                    Nessun prodotto incluso in questo preventivo.
+                    {t("features.quotes.drawer.noProducts")}
                   </Typography>
                 )}
                 
@@ -640,10 +642,10 @@ export const QuotesPage: React.FC = () => {
                 {selectedQuote.notes && (
                   <>
                     <Typography variant="h6" gutterBottom>
-                      Note
+                      {t("features.quotes.drawer.notes")}
                     </Typography>
                     <Typography variant="body2" paragraph>
-                      {selectedQuote.notes || "Nessuna nota disponibile."}
+                      {selectedQuote.notes || t("features.quotes.drawer.noNotes")}
                     </Typography>
                   </>
                 )}
@@ -656,14 +658,14 @@ export const QuotesPage: React.FC = () => {
                     color="secondary"
                     onClick={handleCloseDrawer}
                   >
-                    Chiudi
+                    {t("features.quotes.actions.close")}
                   </Button>,
                   <Link to={`/quote/${selectedQuote._id}`}>
                     <Button 
                       variant="contained" 
                       color="primary"
                     >
-                      Modifica preventivo
+                      {t("features.quotes.actions.editQuote")}
                     </Button>
                   </Link>
                 ]}

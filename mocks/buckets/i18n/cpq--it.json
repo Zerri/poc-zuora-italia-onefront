@@ -222,6 +222,67 @@
                     "created": "Preventivo creato con successo",
                     "error": "Errore: {{message}}"
                 }
+            },
+            "quotes": {
+                "title": "Preventivi",
+                "heading": "Gestisci i tuoi preventivi",
+                "subtitle": "Visualizza, modifica e crea nuove offerte per i tuoi clienti",
+                "searchPlaceholder": "Cerca per cliente, numero preventivo...",
+                "recentQuotes": "Preventivi Recenti",
+                "errors": {
+                    "loading": "Errore durante il caricamento dei preventivi:"
+                },
+                "alerts": {
+                    "noResults": "Nessun preventivo corrisponde ai criteri di ricerca."
+                },
+                "tooltips": {
+                    "cardView": "Vista a schede",
+                    "tableView": "Vista a tabella"
+                },
+                "filters": {
+                    "all": "Tutti"
+                },
+                "status": {
+                    "all": "Tutti",
+                    "draft": "Bozza",
+                    "sent": "Inviato",
+                    "accepted": "Accettato", 
+                    "rejected": "Rifiutato",
+                    "migration": "Migrazione"
+                },
+                "type": {
+                    "new": "Nuova offerta",
+                    "migration": "Migrazione",
+                    "upgrade": "Upgrade"
+                },
+                "grid": {
+                    "number": "Numero",
+                    "customer": "Cliente",
+                    "status": "Stato",
+                    "type": "Tipo",
+                    "creationDate": "Data creazione",
+                    "value": "Valore",
+                    "actions": "Azioni"
+                },
+                "actions": {
+                    "new": "Nuovo preventivo",
+                    "edit": "Modifica",
+                    "close": "Chiudi",
+                    "editQuote": "Modifica preventivo"
+                },
+                "drawer": {
+                    "quoteNumber": "Preventivo #{{number}}",
+                    "sector": "Settore: {{sector}}",
+                    "quoteDetails": "Dettagli preventivo",
+                    "createdOn": "Creato il",
+                    "totalValue": "Valore totale",
+                    "perYear": "/anno",
+                    "includedProducts": "Prodotti inclusi",
+                    "noProducts": "Nessun prodotto incluso in questo preventivo.",
+                    "quantity": "Quantità: {{quantity}}",
+                    "notes": "Note",
+                    "noNotes": "Nessuna nota disponibile."
+                }
             }
         }
     }
