@@ -15,7 +15,7 @@ import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons/faExclam
 import { faInfoCircle } from "@fortawesome/pro-solid-svg-icons/faInfoCircle";
 import { faArrowRight } from "@fortawesome/pro-regular-svg-icons/faArrowRight";
 import { faTrash } from "@fortawesome/pro-regular-svg-icons/faTrash";
-
+import { useTranslation } from '@1f/react-sdk';
 import { Product, TagType } from '../../types';
 
 interface MigrationProductCardProps {
@@ -48,6 +48,7 @@ export const MigrationProductCard: React.FC<MigrationProductCardProps> = ({
   hasReplacement = false,
   replacesProductId = null
 }) => {
+  const { t } = useTranslation();
   // Calcola lo sconto se c'è un prezzo cliente personalizzato
   const hasCustomPrice = product.customerPrice && product.customerPrice !== product.price;
   const discount = hasCustomPrice && product.price && product.customerPrice
@@ -89,7 +90,7 @@ export const MigrationProductCard: React.FC<MigrationProductCardProps> = ({
         </Box>
         
         <Typography variant="body2" color="text.secondary" gutterBottom sx={{ minHeight: '40px' }}>
-          {product.description || 'Nessuna descrizione disponibile'}
+          {product.description || t('components.migrationProductCard.noDescription')}
         </Typography>
         
         <Divider sx={{ my: 1 }} />
@@ -98,11 +99,11 @@ export const MigrationProductCard: React.FC<MigrationProductCardProps> = ({
         {product.ratePlan && (
           <Box sx={{ my: 1 }}>
             <Typography variant="body2" color="text.primary" fontWeight="bold">
-              Piano: {product.ratePlan.name}
+              {t('components.migrationProductCard.plan', { name: product.ratePlan.name})}
             </Typography>
             {product.ratePlan.Infrastructure__c && (
               <Typography variant="body2" color="text.secondary">
-                Infrastruttura: {product.ratePlan.Infrastructure__c}
+                {t('components.migrationProductCard.infrastructure', { name: product.ratePlan.Infrastructure__c})}
               </Typography>
             )}
             {product.charges && product.charges.length > 0 && (
@@ -114,7 +115,7 @@ export const MigrationProductCard: React.FC<MigrationProductCardProps> = ({
                 ))}
                 {product.charges.length > 2 && (
                   <Typography variant="body2" color="text.secondary" fontStyle="italic">
-                    ...e altri componenti
+                    {t('components.migrationProductCard.otherComponents')}
                   </Typography>
                 )}
               </Box>
@@ -135,7 +136,7 @@ export const MigrationProductCard: React.FC<MigrationProductCardProps> = ({
           }}>
             <VaporIcon icon={faArrowRight} size="s" color="primary" />
             <Typography variant="body2" color="text.secondary">
-              Sostituisce un prodotto precedente
+              {t('components.migrationProductCard.replacesProduct')}
             </Typography>
           </Box>
         )}
@@ -154,7 +155,7 @@ export const MigrationProductCard: React.FC<MigrationProductCardProps> = ({
             mb: 1
           }}>
             <Tooltip 
-              title={isMigratable ? "Questo prodotto può essere migrato" : nonMigratableReason}
+              title={isMigratable ? t('components.migrationProductCard.migratableTooltip') : nonMigratableReason}
             >
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <VaporIcon 
@@ -167,7 +168,7 @@ export const MigrationProductCard: React.FC<MigrationProductCardProps> = ({
                   color="contentLight"
                   sx={{ ml: 0.5 }}
                 >
-                  {isMigratable ? "Migrabile" : "Non migrabile"}
+                  {isMigratable ? t('components.migrationProductCard.migratable') : t('components.migrationProductCard.nonMigratable')}
                 </Typography>
               </Box>
             </Tooltip>
@@ -180,24 +181,24 @@ export const MigrationProductCard: React.FC<MigrationProductCardProps> = ({
             <>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                 <Typography variant="body2" color="text.secondary">
-                  Prezzo di listino:
+                  {t('components.migrationProductCard.listPrice')}
                 </Typography>
                 <Typography variant="body2" sx={{ textDecoration: 'line-through' }}>
-                  {formatPrice((product.price || 0) * (product.quantity || 1))}/anno
+                  {formatPrice((product.price || 0) * (product.quantity || 1))}{t('components.migrationProductCard.perYear')}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography variant="body2" color="success.main" fontWeight="bold">
-                  Prezzo con sconto:
+                  {t('components.migrationProductCard.discountedPrice')}
                 </Typography>
                 <Typography variant="body1" fontWeight="bold" color="success.main">
-                  {formatPrice((effectivePrice || 0) * (product.quantity || 1))}/anno
+                  {formatPrice((effectivePrice || 0) * (product.quantity || 1))}{t('components.migrationProductCard.perYear')}
                 </Typography>
               </Box>
             </>
           ) : (
             <Typography variant="body1" fontWeight="bold">
-              {formatPrice((effectivePrice || 0) * (product.quantity || 1))}/anno
+              {formatPrice((effectivePrice || 0) * (product.quantity || 1))}{t('components.migrationProductCard.perYear')}
             </Typography>
           )}
         </Box>
@@ -222,9 +223,9 @@ export const MigrationProductCard: React.FC<MigrationProductCardProps> = ({
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {/* Badge per prodotti con sostituto */}
             {isMigrationSource && isMigratable && hasReplacement && (
-              <Tooltip title="Questo prodotto verrà sostituito con una versione più recente">
+              <Tooltip title={t('components.migrationProductCard.replacementTooltip')}>
                 <Chip
-                  label="Con sostituto"
+                  label={t('components.migrationProductCard.withReplacement')}
                   color="primary"
                   size="small"
                 />
@@ -233,9 +234,9 @@ export const MigrationProductCard: React.FC<MigrationProductCardProps> = ({
             
             {/* Badge per prodotti che sostituiscono altri */}
             {!isMigrationSource && replacesProductId && (
-              <Tooltip title="Questo prodotto sostituisce un prodotto precedente">
+              <Tooltip title={t('components.migrationProductCard.substitutiveTooltip')}>
                 <Chip
-                  label="Sostitutivo"
+                  label={t('components.migrationProductCard.substitutive')}
                   color="primary"
                   size="small"
                 />
@@ -244,7 +245,7 @@ export const MigrationProductCard: React.FC<MigrationProductCardProps> = ({
             
             {/* Pulsante rimuovi */}
             {!isMigrationSource && onRemove && (
-              <Tooltip title="Rimuovi prodotto">
+              <Tooltip title={t('components.migrationProductCard.removeProduct')}>
                 <IconButton
                   color="error"
                   size="small"

@@ -348,6 +348,24 @@
                 "comparedToCurrent": "rispetto all'attuale",
                 "proposedProducts": "prodotti proposti",
                 "select": "Seleziona"
+            },
+            "migrationProductCard": {
+                "noDescription": "Nessuna descrizione disponibile",
+                "plan": "Piano: {{name}}",
+                "infrastructure": "Infrastruttura: {{name}}",
+                "otherComponents": "...e altri componenti",
+                "replacesProduct": "Sostituisce un prodotto precedente",
+                "migratable": "Migrabile",
+                "nonMigratable": "Non migrabile",
+                "migratableTooltip": "Questo prodotto può essere migrato",
+                "listPrice": "Prezzo di listino:",
+                "perYear": "/anno",
+                "discountedPrice": "Prezzo con sconto:",
+                "withReplacement": "Con sostituto",
+                "replacementTooltip": "Questo prodotto verrà sostituito con una versione più recente",
+                "substitutive": "Sostitutivo",
+                "substitutiveTooltip": "Questo prodotto sostituisce un prodotto precedente",
+                "removeProduct": "Rimuovi prodotto"
             }
         }
     }
