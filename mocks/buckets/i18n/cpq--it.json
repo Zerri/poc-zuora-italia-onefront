@@ -366,6 +366,26 @@
                 "substitutive": "Sostitutivo",
                 "substitutiveTooltip": "Questo prodotto sostituisce un prodotto precedente",
                 "removeProduct": "Rimuovi prodotto"
+            },
+            "migrationProductList": {
+                "defaultTitle": "Articoli selezionati",
+                "nonMigratableReason": "Questo prodotto non può essere migrato",
+                "sourceHeader": {
+                    "title": "Procedura Lynfa Azienda",
+                    "subscription": "Subscription: Prodotti Attuali ({{count}})"
+                },
+                "chips": {
+                    "nonMigratable": "Non Migrabili ({{count}})",
+                    "migratable": "Migrabili ({{count}})"
+                },
+                "emptyStates": {
+                    "noCurrentProducts": "Nessun prodotto presente nella sottoscrizione attuale",
+                    "noProposedProducts": "Nessun prodotto proposto. Aggiungi prodotti dal catalogo."
+                },
+                "actions": {
+                    "addFromCatalog": "Aggiungi dal catalogo",
+                    "add": "Aggiungi"
+                }
             }
         }
     }

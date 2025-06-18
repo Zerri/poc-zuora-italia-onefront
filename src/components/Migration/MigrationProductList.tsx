@@ -10,7 +10,7 @@ import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
 import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons/faExclamationTriangle";
 import ConfiguredProductList from '../ConfiguredProductList';
 import MigrationProductCard from './MigrationProductCard';
-
+import { useTranslation } from '@1f/react-sdk';
 import { Product, TagType } from '../../types';
 
 interface MigrationProductListProps {
@@ -35,7 +35,7 @@ export const MigrationProductList: React.FC<MigrationProductListProps> = ({
   products = [], 
   onRemoveProduct, 
   onAddProduct,
-  title = "Articoli selezionati",
+  title = "No Title",
   isMigrationSource = false,
   nonMigrableProductIds = [],
   nonMigrableReasons = {},
@@ -43,7 +43,7 @@ export const MigrationProductList: React.FC<MigrationProductListProps> = ({
   translateCategory, 
   getCategoryTagType 
 }) => {
-  
+  const { t } = useTranslation();
   // Funzione per formattare i prezzi
   const formatPrice = (price: number): string => {
     return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(price);
@@ -62,7 +62,7 @@ export const MigrationProductList: React.FC<MigrationProductListProps> = ({
 
   // Ottiene la ragione della non migrabilità
   const getNonMigratableReason = (productId: string): string => {
-    return nonMigrableReasons[productId] || "Questo prodotto non può essere migrato";
+    return nonMigrableReasons[productId] || t('components.migrationProductList.nonMigratableReason');
   };
 
   // Verifica se un prodotto ha un sostituto
@@ -86,19 +86,19 @@ export const MigrationProductList: React.FC<MigrationProductListProps> = ({
             Procedura Lynfa Azienda
           </Typography>
           <Typography variant="bodySmallRegular" color="text.secondary">
-            Subscription: Prodotti Attuali ({products.length})
+            {t('components.migrationProductList.sourceHeader.subscription', { count: products.length })}
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Chip
-            label={`Non Migrabili (${nonMigrableCount})`}
+            label={t('components.migrationProductList.chips.nonMigratable', { count: nonMigrableCount ?? 0 })}
             color="error"
             variant="outlined"
             size="small"
             icon={<VaporIcon icon={faExclamationTriangle} size="s" />}
           />
           <Chip
-            label={`Migrabili (${migrableCount})`}
+            label={t('components.migrationProductList.chips.migratable', { count: migrableCount ?? 0 })}
             color="success"
             variant="outlined"
             size="small"
@@ -121,7 +121,7 @@ export const MigrationProductList: React.FC<MigrationProductListProps> = ({
           borderColor: 'divider'
         }}>
           <Typography variant="body2" color="text.secondary">
-            Nessun prodotto presente nella sottoscrizione attuale
+            {t('components.migrationProductList.emptyStates.noCurrentProducts')}
           </Typography>
         </Box>
       );
@@ -137,7 +137,7 @@ export const MigrationProductList: React.FC<MigrationProductListProps> = ({
         borderColor: 'divider'
       }}>
         <Typography variant="body2" color="text.secondary" gutterBottom>
-          Nessun prodotto proposto. Aggiungi prodotti dal catalogo.
+          {t('components.migrationProductList.emptyStates.noProposedProducts')}
         </Typography>
         {onAddProduct && (
           <Button
@@ -147,7 +147,7 @@ export const MigrationProductList: React.FC<MigrationProductListProps> = ({
             onClick={onAddProduct}
             sx={{ mt: 1 }}
           >
-            Aggiungi dal catalogo
+            {t('components.migrationProductList.actions.addFromCatalog')}
           </Button>
         )}
       </Box>
@@ -178,7 +178,7 @@ export const MigrationProductList: React.FC<MigrationProductListProps> = ({
               startIcon={<VaporIcon icon={faPlus} />}
               onClick={onAddProduct}
             >
-              Aggiungi
+              {t('components.migrationProductList.actions.add')}
             </Button>
           )}
         </Box>
