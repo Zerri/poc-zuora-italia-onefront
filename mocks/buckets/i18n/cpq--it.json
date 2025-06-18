@@ -64,6 +64,30 @@
                 "error.products": "Errore durante il caricamento dei prodotti",
                 "alert.noProducts": "Nessun prodotto corrisponde ai criteri di ricerca o ai permessi del tuo ruolo.",
                 "success.addProduct": "Prodotto aggiunto al preventivo con successo"
+            },
+            "customers": {
+                "title": "Clienti",
+                "searchTitle": "Cerca e seleziona un cliente",
+                "subtitle": "Inizia una nuova offerta selezionando un Cliente o Prospect",
+                "searchPlaceholder": "Cerca per nome settore o email...",
+                "filters": {
+                    "all": "Tutti",
+                    "customer": "Cliente",
+                    "prospect": "Prospect"
+                },
+                "recent": "Recenti",
+                "errors": {
+                    "loading": "Errore durante il caricamento dei clienti",
+                    "createQuote": "Errore durante la creazione del preventivo",
+                    "quoteFailed": "Impossibile creare il preventivo. Riprova più tardi."
+                },
+                "alerts": {
+                    "noCustomers": "Nessun cliente trovato nel database.",
+                    "noResults": "Nessun cliente corrisponde ai criteri di ricerca."
+                },
+                "quote": {
+                    "created": "Preventivo creato per {{name}}",
+                }
             }
         }
     }

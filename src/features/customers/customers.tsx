@@ -17,6 +17,7 @@ import {
 } from "@vapor/v3-components";
 // import { Link } from 'react-router-dom';
 import CustomerCard from '../../components/CustomerCard';
+import { useTranslation } from '@1f/react-sdk';
 
 // Definizione interfaccia Customer
 interface Customer {
@@ -56,7 +57,7 @@ interface QuoteResponse {
  * @description Pagina che mostra la lista dei clienti importati dal database
  */
 export const CustomersPage: React.FC = () => {
-  // URL base del backend (configurato per ambiente di sviluppo)
+  const { t } = useTranslation();
     
   // State per filtri ricerca
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -95,7 +96,7 @@ export const CustomersPage: React.FC = () => {
         body: JSON.stringify(quoteData)
       }).then(response => {
         if (!response.ok) {
-          throw new Error('Errore durante la creazione del preventivo');
+          throw new Error(t("features.customers.errors.createQuote"));
         }
         return response.json();
       });
@@ -108,7 +109,7 @@ export const CustomersPage: React.FC = () => {
     },
     onError: (error: Error) => {
       console.error('Errore:', error);
-      alert('Impossibile creare il preventivo. Riprova più tardi.');
+      alert(t("features.customers.errors.quoteFailed"));
     }
   });
   
@@ -126,11 +127,11 @@ export const CustomersPage: React.FC = () => {
         email: customer.email,
         id: customer._id
       },
-      status: 'Draft',
-      type: 'New',
+      status: "Draft",
+      type: "New",
       value: 0,
       products: [],
-      notes: `Preventivo creato per ${customer.nome}`
+      notes: t("features.customers.quote.created", {name: customer.nome})
     });
   };
   
@@ -159,7 +160,7 @@ export const CustomersPage: React.FC = () => {
   return (
     <VaporThemeProvider>
       <VaporPage
-        title="Clienti"
+        title={t("features.customers.title")}
         // contentToolbar={
         //   <VaporToolbar
         //     variant="surface"
@@ -183,14 +184,14 @@ export const CustomersPage: React.FC = () => {
               gutterBottom
               variant="headingsPage"
             >
-              Cerca e seleziona un cliente
+              {t("features.customers.searchTitle")}
             </Typography>
             <Typography
               component="div"
               gutterBottom
               variant="bodyLargeRegular"
             >
-              Inizia una nuova offerta selezionando un Cliente o Prospect
+              {t("features.customers.subtitle")}
             </Typography>
           </Box>
           
@@ -201,7 +202,7 @@ export const CustomersPage: React.FC = () => {
                 value={searchTerm}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
                 handleClear={() => setSearchTerm("")}
-                placeholder="Cerca per nome settore o email..."
+                placeholder={t("features.customers.searchPlaceholder")}
                 size='medium'
                 sx={{ width: '100%' }}
               />
@@ -209,19 +210,19 @@ export const CustomersPage: React.FC = () => {
             
             <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
               <Chip 
-                label="Tutti" 
+                label={t("features.customers.filters.all")} 
                 variant={filterType === 'Tutti' ? 'filled' : 'outlined'}
                 onClick={() => handleFilterChange('Tutti')}
                 color={filterType === 'Tutti' ? 'primary' : 'default'}
               />
               <Chip 
-                label="Cliente" 
+                label={t("features.customers.filters.customer")}  
                 variant={filterType === 'Cliente' ? 'filled' : 'outlined'}
                 onClick={() => handleFilterChange('Cliente')}
                 color={filterType === 'Cliente' ? 'primary' : 'default'}
               />
               <Chip 
-                label="Prospect" 
+                label={t("features.customers.filters.prospect")} 
                 variant={filterType === 'Prospect' ? 'filled' : 'outlined'}
                 onClick={() => handleFilterChange('Prospect')}
                 color={filterType === 'Prospect' ? 'primary' : 'default'}
@@ -236,7 +237,7 @@ export const CustomersPage: React.FC = () => {
             gutterBottom
             variant="bodyLargeHeavy"
           >
-            Recenti
+            {t("features.customers.recent")} 
           </Typography>
           
           {/* Visualizzazione dei clienti */}
@@ -248,17 +249,17 @@ export const CustomersPage: React.FC = () => {
           
           {error && (
             <Alert severity="error" sx={{ mb: 3 }}>
-              Errore durante il caricamento dei clienti: {error.message}
+              {t("features.customers.errors.loading")} {error.message}
             </Alert>
           )}
           
           {customers.length === 0 && !isLoading ? (
             <Alert severity="info">
-              Nessun cliente trovato nel database.
+              {t("features.customers.alerts.noCustomers")}
             </Alert>
           ) : filteredCustomers.length === 0 ? (
             <Alert severity="info">
-              Nessun cliente corrisponde ai criteri di ricerca.
+              {t("features.customers.alerts.noResults")}
             </Alert>
           ) : (
             <Grid container spacing={3}>
