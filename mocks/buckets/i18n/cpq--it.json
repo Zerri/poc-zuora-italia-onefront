@@ -321,6 +321,23 @@
                 "checking": "Verifica DB...",
                 "error": "Errore DB",
                 "errorTooltip": "Errore connessione DB: {{message}}"
+            },
+            "productCard": {
+                "noDescription": "Nessuna descrizione disponibile.",
+                "availableRatePlans": "Rate plans disponibili:",
+                "otherPlans": "+{{count}} altri piani...",
+                "noPlans": "Nessun piano disponibile",
+                "actions": {
+                    "addToQuote": "Aggiungi al preventivo",
+                    "add": "Aggiungi"
+                }
+            },
+            "quoteCard": {
+                "quoteNumber": "Preventivo #{{number}}",
+                "createdOn": "Creato il",
+                "value": "Valore",
+                "perYear": "/anno",
+                "edit": "Modifica"
             }
         }
     }

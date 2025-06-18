@@ -9,6 +9,7 @@ import {
 } from "@vapor/v3-components";
 import { faCirclePlus } from "@fortawesome/pro-regular-svg-icons/faCirclePlus";
 import { Product, TagType } from '../types';
+import { useTranslation } from '@1f/react-sdk';
 
 interface ProductCardProps {
   product: Product;
@@ -27,6 +28,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onAddProduct,
   isAddingToQuote = false
 }) => {
+  const { t } = useTranslation();
   return (
     <Card sx={{ 
       height: '100%', 
@@ -63,7 +65,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             lineHeight: 1.4,
             minHeight: '30px'
           }}>
-            {product.description || 'Nessuna descrizione disponibile.'}
+            {product.description || t('components.productCard.noDescription')}
           </Typography>
         </Box>
         
@@ -76,7 +78,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           mb: 1.5
         }}>
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-            Rate plans disponibili:
+            {t('components.productCard.availableRatePlans')}
           </Typography>
           {product.productRatePlans && product.productRatePlans.length > 0 ? (
             <Box>
@@ -87,13 +89,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               ))}
               {product.productRatePlans.length > 2 && (
                 <Typography variant="body2" sx={{ fontSize: '0.75rem', fontStyle: 'italic', color: 'text.secondary' }}>
-                  +{product.productRatePlans.length - 2} altri piani...
+                  {t('components.productCard.otherPlans', { count: product.productRatePlans.length - 2 })}
                 </Typography>
               )}
             </Box>
           ) : (
             <Typography variant="body2" sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
-              Nessun piano disponibile
+              {t('components.productCard.noPlans')}
             </Typography>
           )}
         </Box>
@@ -109,7 +111,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             startIcon={<VaporIcon icon={faCirclePlus} />}
             sx={{ fontSize: '0.9rem', py: 0.75 }}
           >
-            {isAddingToQuote ? 'Aggiungi al preventivo' : 'Aggiungi'}
+            {isAddingToQuote ? t('components.productCard.actions.addToQuote') : t('components.productCard.actions.add')}
           </Button>
         </Box>
       </CardContent>

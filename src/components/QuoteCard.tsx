@@ -14,6 +14,7 @@ import { faPen } from "@fortawesome/pro-regular-svg-icons/faPen";
 import { faEllipsisVertical } from "@fortawesome/pro-regular-svg-icons/faEllipsisVertical";
 
 import { TagType, TagVariant } from '../types';
+import { useTranslation  } from '@1f/react-sdk';
 
 // Interfacce
 type QuoteStatus = 'Draft' | 'Sent' | 'Accepted' | 'Rejected' | 'Migration';
@@ -80,6 +81,7 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
   statusTranslations,
   typeTranslations
 }) => {
+  const { t } = useTranslation();
   return (
     <Card sx={{ 
       height: '100%', 
@@ -126,7 +128,7 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
             {quote.customer.sector}
           </Typography>
           <Typography variant="body2" fontWeight="medium" sx={{ fontSize: '0.9rem' }}>
-            Preventivo #{quote.number}
+            {t('components.quoteCard.quoteNumber', { number: quote.number })}
           </Typography>
         </Box>
         
@@ -143,7 +145,7 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
         }}>
           <Box sx={{ textAlign: 'left' }}>
             <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-              Creato il
+              {t('components.quoteCard.createdOn')}
             </Typography>
             <Typography variant="body2" fontWeight="medium" sx={{ fontSize: '0.75rem' }}>
               {formatDate(quote.createdAt)}
@@ -152,12 +154,12 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
           
           <Box sx={{ textAlign: 'right' }}>
             <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-              Valore
+              {t('components.quoteCard.value')}
             </Typography>
             <Typography variant="body2" fontWeight="bold" sx={{ fontSize: '0.75rem' }}>
               {formatCurrency(quote.products && quote.products.length > 0 
                 ? calculateQuoteValue(quote.products) 
-                : quote.value || 0)}/anno
+                : quote.value || 0)}{t('components.quoteCard.perYear')}
             </Typography>
           </Box>
         </Box>
@@ -173,7 +175,7 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
               startIcon={<VaporIcon icon={faPen} />}
               sx={{ fontSize: '0.9rem', py: 0.75 }}
             >
-              Modifica
+              {t('components.quoteCard.edit')}
             </Button>
           </Link>
           <IconButton 
