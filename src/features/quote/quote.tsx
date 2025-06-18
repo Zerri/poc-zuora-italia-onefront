@@ -34,6 +34,7 @@ import { faPaperPlane } from "@fortawesome/pro-regular-svg-icons/faPaperPlane";
 import dayjs, { Dayjs } from 'dayjs';
 import ConfiguredProductList from '../../components/ConfiguredProductList';
 import { TagType, Product } from '../../types';
+import { useTranslation } from '@1f/react-sdk';
 
 // Interface for customer
 interface Customer {
@@ -93,6 +94,7 @@ interface SnackbarState {
 * @description Componente per la creazione e modifica di un preventivo
 */
 export const QuotePage: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -172,14 +174,14 @@ export const QuotePage: React.FC = () => {
       
       setSnackbar({
         open: true,
-        message: isEditMode ? 'Preventivo aggiornato con successo' : 'Preventivo creato con successo',
+        message: isEditMode ? t("features.quote.notifications.updated") : t("features.quote.notifications.created"),
         severity: 'success'
       });
     },
     onError: (error: Error) => {
       setSnackbar({
         open: true,
-        message: `Errore: ${error.message}`,
+        message: t("features.quote.notifications.error", {message: error.message}),
         severity: 'error'
       });
     }
@@ -291,7 +293,7 @@ export const QuotePage: React.FC = () => {
       <VaporThemeProvider>
         <VaporPage>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
-            <Typography>Caricamento preventivo in corso...</Typography>
+            <Typography>{t("features.quote.loading")} </Typography>
           </Box>
         </VaporPage>
       </VaporThemeProvider>
@@ -303,7 +305,7 @@ export const QuotePage: React.FC = () => {
       <VaporThemeProvider>
         <VaporPage>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
-            <Typography color="error">Errore nel caricamento del preventivo: {(quoteError as Error).message}</Typography>
+            <Typography color="error">{t("features.quote.errors.loading")} {(quoteError as Error).message}</Typography>
           </Box>
         </VaporPage>
       </VaporThemeProvider>
@@ -328,7 +330,7 @@ export const QuotePage: React.FC = () => {
                 startIcon={<VaporIcon icon={faPlus} />}
                 onClick={() => navigate(`/catalog?quoteId=${id}`)}
               >
-                Aggiungi articolo
+                {t("features.quote.actions.addItem")}
               </Button>,
               <Button 
                 key="save-quote" 
@@ -338,7 +340,7 @@ export const QuotePage: React.FC = () => {
                 onClick={handleSaveQuote}
                 disabled={saveQuoteMutation.isPending}
               >
-                {saveQuoteMutation.isPending ? 'Salvataggio...' : 'Salva preventivo'}
+                {saveQuoteMutation.isPending ? t("features.quote.actions.saving") : t("features.quote.actions.save")}
               </Button>,
               <Button 
                 key="send-quote" 
@@ -346,34 +348,34 @@ export const QuotePage: React.FC = () => {
                 variant="outlined" 
                 startIcon={<VaporIcon icon={faPaperPlane} />}
               >
-                Invia al cliente
+                {t("features.quote.actions.sendToCustomer")}
               </Button>,
               <IconButton key="options" size="small">
                 <VaporIcon icon={faEllipsisVertical} size="xl" />
               </IconButton>
             ].filter(Boolean)}
             size="small"
-            title={isEditMode ? `Preventivo ${quoteData?.number || ''}` : 'Nuovo Preventivo'}
-            description={formState.customer?.name ? `Cliente: ${formState.customer.name}` : undefined}
+            title={isEditMode ? t("features.quote.title.edit", {number: quoteData?.number || ''}) : t("features.quote.title.new")}
+            description={formState.customer?.name ? t("features.quote.customer", {name: formState.customer.name}) : undefined}
           />
           <VaporPage.Section>
             <ExtendedTabs value={activeTab} onChange={handleTabChange} size="small" variant="standard">
-              <ExtendedTab label="Preventivo" />
-              <ExtendedTab label="Cliente" />
-              <ExtendedTab label="Documenti" />
+              <ExtendedTab label={t("features.quote.tabs.quote")} />
+              <ExtendedTab label={t("features.quote.tabs.customer")}  />
+              <ExtendedTab label={t("features.quote.tabs.documents")}  />
             </ExtendedTabs>
 
             {activeTab === 0 && (
               <Box>
                 <Typography variant="h6" component="h2" fontWeight="bold" sx={{ mb: 2, mt: 2 }}>
-                  Informazioni generali
+                  {t("features.quote.generalInfo")} 
                 </Typography>
                 
                 <Grid container spacing={3}>
                   {/* Prima riga (5 colonne) */}
                   <Grid item xs={12} sm={6} md={2.4}>
                     <FormControl fullWidth>
-                      <Typography variant="body2" gutterBottom>Stato</Typography>
+                      <Typography variant="body2" gutterBottom>{t("features.quote.fields.status")}</Typography>
                       <Select
                         value={formState.status}
                         onChange={(e) => handleInputChange('status', e.target.value)}
@@ -381,18 +383,18 @@ export const QuotePage: React.FC = () => {
                         fullWidth
                         size="small"
                       >
-                        <MenuItem value="">Seleziona stato</MenuItem>
-                        <MenuItem value="Draft">Bozza</MenuItem>
-                        <MenuItem value="Sent">Inviato</MenuItem>
-                        <MenuItem value="Accepted">Accettato</MenuItem>
-                        <MenuItem value="Rejected">Rifiutato</MenuItem>
+                        <MenuItem value="">{t("features.quote.placeholders.selectStatus")}</MenuItem>
+                        <MenuItem value="Draft">{t("features.quote.status.draft")}</MenuItem>
+                        <MenuItem value="Sent">{t("features.quote.status.sent")}</MenuItem>
+                        <MenuItem value="Accepted">{t("features.quote.status.accepted")}</MenuItem>
+                        <MenuItem value="Rejected">{t("features.quote.status.rejected")}</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
                   
                   <Grid item xs={12} sm={6} md={2.4}>
                     <FormControl fullWidth>
-                      <Typography variant="body2" gutterBottom>Data di creazione</Typography>
+                      <Typography variant="body2" gutterBottom>{t("features.quote.fields.creationDate")}</Typography>
                       <DatePicker 
                         value={formState.creationDate}
                         onChange={(newValue) => handleInputChange('creationDate', newValue)} 
@@ -404,7 +406,7 @@ export const QuotePage: React.FC = () => {
                   
                   <Grid item xs={12} sm={6} md={2.4}>
                     <FormControl fullWidth>
-                      <Typography variant="body2" gutterBottom>Tipologia di preventivo</Typography>
+                      <Typography variant="body2" gutterBottom>{t("features.quote.fields.type")}</Typography>
                       <Select
                         value={formState.type}
                         onChange={(e) => handleInputChange('type', e.target.value)}
@@ -412,17 +414,17 @@ export const QuotePage: React.FC = () => {
                         fullWidth
                         size="small"
                       >
-                        <MenuItem value="">Seleziona tipologia</MenuItem>
-                        <MenuItem value="New">Nuova vendita</MenuItem>
-                        <MenuItem value="Migration">Migrazione</MenuItem>
-                        <MenuItem value="Upgrade">Upgrade</MenuItem>
+                        <MenuItem value="">{t("features.quote.placeholders.selectType")}</MenuItem>
+                        <MenuItem value="New">{t("features.quote.type.new")}</MenuItem>
+                        <MenuItem value="Migration">{t("features.quote.type.migration")}</MenuItem>
+                        <MenuItem value="Upgrade">{t("features.quote.type.upgrade")}</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
 
                   <Grid item xs={12} sm={6} md={2.4}>
                     <FormControl fullWidth>
-                      <Typography variant="body2" gutterBottom>Data validità preventivo</Typography>
+                      <Typography variant="body2" gutterBottom>{t("features.quote.fields.validityDate")}</Typography>
                       <DatePicker 
                         value={formState.validityDate} 
                         onChange={(newValue) => handleInputChange('validityDate', newValue)} 
@@ -433,7 +435,7 @@ export const QuotePage: React.FC = () => {
                   
                   <Grid item xs={12} sm={6} md={2.4}>
                     <FormControl fullWidth>
-                      <Typography variant="body2" gutterBottom>Data inizio assistenza software</Typography>
+                      <Typography variant="body2" gutterBottom>{t("features.quote.fields.warrantyStartDate")}</Typography>
                       <DatePicker 
                         value={formState.warrantyStartDate} 
                         onChange={(newValue) => handleInputChange('warrantyStartDate', newValue)} 
@@ -445,7 +447,7 @@ export const QuotePage: React.FC = () => {
                   {/* Seconda riga (5 colonne) */}
                   <Grid item xs={12} sm={6} md={2.4}>
                     <FormControl fullWidth>
-                      <Typography variant="body2" gutterBottom>Mesi prima della cancellazione</Typography>
+                      <Typography variant="body2" gutterBottom>{t("features.quote.fields.cancellationMonths")}</Typography>
                       <Select
                         value={formState.cancellationNoticeMonths}
                         onChange={(e) => handleInputChange('cancellationNoticeMonths', e.target.value)}
@@ -453,18 +455,18 @@ export const QuotePage: React.FC = () => {
                         fullWidth
                         size="small"
                       >
-                        <MenuItem value="">Seleziona</MenuItem>
-                        <MenuItem value="1">1 mese</MenuItem>
-                        <MenuItem value="3">3 mesi</MenuItem>
-                        <MenuItem value="6">6 mesi</MenuItem>
-                        <MenuItem value="12">12 mesi</MenuItem>
+                        <MenuItem value="">{t("features.quote.placeholders.selectCancellation")}</MenuItem>
+                        <MenuItem value="1">{t("features.quote.cancellation.1")}</MenuItem>
+                        <MenuItem value="3">{t("features.quote.cancellation.3")}</MenuItem>
+                        <MenuItem value="6">{t("features.quote.cancellation.6")}</MenuItem>
+                        <MenuItem value="12">{t("features.quote.cancellation.12")}</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
 
                   <Grid item xs={12} sm={6} md={2.4}>
                     <FormControl fullWidth>
-                      <Typography variant="body2" gutterBottom>Periodicità fatturazione</Typography>
+                      <Typography variant="body2" gutterBottom>{t("features.quote.fields.billingFrequency")}</Typography>
                       <Select
                         value={formState.billingFrequency}
                         onChange={(e) => handleInputChange('billingFrequency', e.target.value)}
@@ -472,11 +474,11 @@ export const QuotePage: React.FC = () => {
                         fullWidth
                         size="small"
                       >
-                        <MenuItem value="">Seleziona</MenuItem>
-                        <MenuItem value="mensile">Mensile</MenuItem>
-                        <MenuItem value="trimestrale">Trimestrale</MenuItem>
-                        <MenuItem value="semestrale">Semestrale</MenuItem>
-                        <MenuItem value="annuale">Annuale</MenuItem>
+                        <MenuItem value="">{t("features.quote.placeholders.selectBilling")}</MenuItem>
+                        <MenuItem value="mensile">{t("features.quote.billing.monthly")}</MenuItem>
+                        <MenuItem value="trimestrale">{t("features.quote.billing.quarterly")}</MenuItem>
+                        <MenuItem value="semestrale">{t("features.quote.billing.biannual")}</MenuItem>
+                        <MenuItem value="annuale">{t("features.quote.billing.annual")}</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
@@ -490,7 +492,7 @@ export const QuotePage: React.FC = () => {
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('renewable', e.target.checked)}
                           />
                         }
-                        label="Rinnovabile"
+                        label={t("features.quote.fields.renewable")}
                       />
                     </Box>
                   </Grid>
@@ -504,7 +506,7 @@ export const QuotePage: React.FC = () => {
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('istat', e.target.checked)}
                           />
                         }
-                        label="Istat"
+                        label={t("features.quote.fields.istat")}
                       />
                     </Box>
                   </Grid>
@@ -518,7 +520,7 @@ export const QuotePage: React.FC = () => {
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('priceBlocked', e.target.checked)}
                           />
                         }
-                        label="Price blocked"
+                        label={t("features.quote.fields.priceBlocked")}
                       />
                     </Box>
                   </Grid>
@@ -526,14 +528,14 @@ export const QuotePage: React.FC = () => {
                   {/* Note aggiuntive (occupa 2 colonne su 5) */}
                   <Grid item xs={12} sm={12} md={4.8}>
                     <FormControl fullWidth>
-                      <Typography variant="body2" gutterBottom>Note aggiuntive</Typography>
+                      <Typography variant="body2" gutterBottom>{t("features.quote.fields.notes")}</Typography>
                       <TextField
                         multiline
                         rows={4}
                         value={formState.notes}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('notes', e.target.value)}
                         fullWidth
-                        placeholder="Inserisci eventuali note aggiuntive..."
+                        placeholder={t("features.quote.placeholders.notes")}
                       />
                     </FormControl>
                   </Grid>
@@ -556,18 +558,18 @@ export const QuotePage: React.FC = () => {
             {activeTab === 1 && (
               <Box sx={{ mt: 2 }}>
                 <Typography variant="h6" component="h2" fontWeight="bold" sx={{ mb: 3 }}>
-                  Informazioni cliente
+                  {t("features.quote.customerInfo.info")}
                 </Typography>
                 
                 {isEditMode ? (
                   <Grid container spacing={3}>
                     <Grid item xs={12} sm={4}>
                       <FormControl fullWidth>
-                        <Typography variant="body2" gutterBottom>Nome cliente</Typography>
+                        <Typography variant="body2" gutterBottom>{t("features.quote.customerInfo.name")}</Typography>
                         <TextField
                           value={formState.customer?.name || ''}
                           fullWidth
-                          placeholder="Nome del cliente"
+                          placeholder={t("features.quote.customerInfo.name")}
                           size="small"
                           disabled
                           variant="outlined"
@@ -585,11 +587,11 @@ export const QuotePage: React.FC = () => {
                     
                     <Grid item xs={12} sm={4}>
                       <FormControl fullWidth>
-                        <Typography variant="body2" gutterBottom>Settore</Typography>
+                        <Typography variant="body2" gutterBottom>{t("features.quote.customerInfo.sector")}</Typography>
                         <TextField
                           value={formState.customer?.sector || ''}
                           fullWidth
-                          placeholder="Settore di attività"
+                          placeholder={t("features.quote.customerInfo.sector")}
                           size="small"
                           disabled
                           variant="outlined"
@@ -607,11 +609,11 @@ export const QuotePage: React.FC = () => {
 
                     <Grid item xs={12} sm={4}>
                       <FormControl fullWidth>
-                        <Typography variant="body2" gutterBottom>Email</Typography>
+                        <Typography variant="body2" gutterBottom>{t("features.quote.customerInfo.email")}</Typography>
                         <TextField
                           value={formState.customer?.email || ''}
                           fullWidth
-                          placeholder="Email del cliente"
+                          placeholder={t("features.quote.customerInfo.email")}
                           size="small"
                           disabled
                           variant="outlined"
@@ -639,7 +641,7 @@ export const QuotePage: React.FC = () => {
                     backgroundColor: '#f9f9f9'
                   }}>
                     <Typography variant="body1" gutterBottom>
-                      Seleziona un cliente esistente per associarlo a questo preventivo
+                      {t("features.quote.customerInfo.selectPrompt")}
                     </Typography>
                     <Button 
                       variant="contained" 
@@ -647,7 +649,7 @@ export const QuotePage: React.FC = () => {
                       sx={{ mt: 2 }}
                       onClick={() => navigate('/customers')}
                     >
-                      Seleziona cliente
+                      {t("features.quote.actions.selectCustomer")}
                     </Button>
                   </Box>
                 )}
@@ -658,11 +660,11 @@ export const QuotePage: React.FC = () => {
             {activeTab === 2 && (
               <Box sx={{ mt: 2 }}>
                 <Typography variant="h6" component="h2" fontWeight="bold" sx={{ mb: 3 }}>
-                  Documenti associati
+                  {t("features.quote.documentsInfo.title")}
                 </Typography>
                 
                 <Typography variant="body1" color="text.secondary">
-                  Questa sezione conterrà i documenti allegati al preventivo, come condizioni contrattuali e documentazione tecnica.
+                  {t("features.quote.documentsInfo.description")}
                 </Typography>
               </Box>
             )}

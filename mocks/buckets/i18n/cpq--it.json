@@ -139,6 +139,89 @@
                 "notifications": {
                     "success": "Migrazione completata con successo"
                 }
+            },
+            "quote": {
+                "title": {
+                    "new": "Nuovo Preventivo",
+                    "edit": "Preventivo {{number}}"
+                },
+                "customer": "Cliente: {{name}}",
+                "tabs": {
+                    "quote": "Preventivo",
+                    "customer": "Cliente",
+                    "documents": "Documenti"
+                },
+                "generalInfo": "Informazioni generali",
+                "loading": "Caricamento preventivo in corso...",
+                "errors": {
+                    "loading": "Errore nel caricamento del preventivo:"
+                },
+                "fields": {
+                    "status": "Stato",
+                    "creationDate": "Data di creazione",
+                    "type": "Tipologia di preventivo",
+                    "validityDate": "Data validità preventivo",
+                    "warrantyStartDate": "Data inizio assistenza software",
+                    "cancellationMonths": "Mesi prima della cancellazione",
+                    "billingFrequency": "Periodicità fatturazione",
+                    "renewable": "Rinnovabile",
+                    "istat": "Istat",
+                    "priceBlocked": "Price blocked",
+                    "notes": "Note aggiuntive"
+                },
+                "placeholders": {
+                    "selectStatus": "Seleziona stato",
+                    "selectType": "Seleziona tipologia",
+                    "selectCancellation": "Seleziona",
+                    "selectBilling": "Seleziona",
+                    "notes": "Inserisci eventuali note aggiuntive..."
+                },
+                "status": {
+                    "draft": "Bozza",
+                    "sent": "Inviato",
+                    "accepted": "Accettato",
+                    "rejected": "Rifiutato"
+                },
+                "type": {
+                    "new": "Nuova vendita",
+                    "migration": "Migrazione",
+                    "upgrade": "Upgrade"
+                },
+                "cancellation": {
+                    "1": "1 mese",
+                    "3": "3 mesi",
+                    "6": "6 mesi",
+                    "12": "12 mesi"
+                },
+                "billing": {
+                    "monthly": "Mensile",
+                    "quarterly": "Trimestrale",
+                    "biannual": "Semestrale",
+                    "annual": "Annuale"
+                },
+                "actions": {
+                    "addItem": "Aggiungi articolo",
+                    "saving": "Salvataggio...",
+                    "save": "Salva preventivo",
+                    "sendToCustomer": "Invia al cliente",
+                    "selectCustomer": "Seleziona cliente"
+                },
+                "customerInfo": {
+                    "info": "Informazioni cliente",
+                    "name": "Nome cliente",
+                    "sector": "Settore",
+                    "email": "Email",
+                    "selectPrompt": "Seleziona un cliente esistente per associarlo a questo preventivo"
+                },
+                "documentsInfo": {
+                    "title": "Documenti associati",
+                    "description": "Questa sezione conterrà i documenti allegati al preventivo, come condizioni contrattuali e documentazione tecnica."
+                },
+                "notifications": {
+                    "updated": "Preventivo aggiornato con successo",
+                    "created": "Preventivo creato con successo",
+                    "error": "Errore: {{message}}"
+                }
             }
         }
     }
