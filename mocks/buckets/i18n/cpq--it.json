@@ -316,6 +316,11 @@
                     "newOffer": "Nuova offerta",
                     "migration": "Migrazione"
                 }
+            },
+            "databaseStatus": {
+                "checking": "Verifica DB...",
+                "error": "Errore DB",
+                "errorTooltip": "Errore connessione DB: {{message}}"
             }
         }
     }

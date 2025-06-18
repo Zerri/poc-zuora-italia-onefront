@@ -10,6 +10,7 @@ import {
 import { faDatabase } from "@fortawesome/pro-regular-svg-icons/faDatabase";
 import { faCloud } from "@fortawesome/pro-regular-svg-icons/faCloud";
 import { faServer } from "@fortawesome/pro-regular-svg-icons/faServer";
+import { useTranslation } from '@1f/react-sdk';
 
 // Tipizzazione della risposta dell'API
 interface DatabaseInfo {
@@ -32,7 +33,8 @@ interface DatabaseStatus {
  * @component DatabaseStatus
  * @description Mostra lo stato della connessione al database e informazioni sul tipo di ambiente
  */
-export const DatabaseStatus: React.FC = () => { 
+export const DatabaseStatus: React.FC = () => {
+  const { t } = useTranslation();
   const { data: dbInfo, isLoading, error } = useQuery<DatabaseInfo, Error>({
     queryKey: ['database-info'],
     queryFn: async (): Promise<DatabaseInfo> => {
@@ -49,7 +51,7 @@ export const DatabaseStatus: React.FC = () => {
   if (isLoading) {
     return (
       <Chip
-        label="Verifica DB..."
+        label={t('components.databaseStatus.checking')}
         color="default"
         size="small"
         variant="outlined"
@@ -60,9 +62,9 @@ export const DatabaseStatus: React.FC = () => {
 
   if (error) {
     return (
-      <Tooltip title={`Errore connessione DB: ${error.message}`}>
+      <Tooltip title={t('components.databaseStatus.errorTooltip', { message: error.message})}>
         <Chip
-          label="DB Error"
+          label={t('components.databaseStatus.error')}
           color="error"
           size="small"
           variant="filled"
