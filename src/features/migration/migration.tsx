@@ -28,6 +28,7 @@ import MigrationProductList from '../../components/Migration/MigrationProductLis
 import MigrationPathSelector from '../../components/Migration/MigrationPathSelector';
 
 import { Product, TagType, MigrationPath } from "../../types";
+import { useTranslation } from '@1f/react-sdk';
 
 // Definizione delle interfacce
 interface Customer {
@@ -59,6 +60,7 @@ interface MigrationProps {}
 * con supporto per diversi percorsi di migrazione (SaaS/IaaS)
 */
 export const MigrationPage: React.FC<MigrationProps> = () => {
+  const { t } = useTranslation();
   const { subscriptionId } = useParams<{ subscriptionId: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -78,7 +80,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
     queryFn: async () => {
       const response = await fetch(`migration/${subscriptionId}`);
       if (!response.ok) {
-        throw new Error('Errore nel recupero dei dati di migrazione');
+        throw new Error(t("features.migration.errors.fetch"));
       }
       return response.json();
     },
@@ -106,7 +108,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
       });
       
       if (!response.ok) {
-        throw new Error('Errore durante il salvataggio della migrazione');
+        throw new Error(t("features.migration.errors.save"));
       }
       
       return response.json();
@@ -114,7 +116,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
     onSuccess: () => {
       setSnackbar({
         open: true,
-        message: 'Migrazione completata con successo',
+        message: t("features.migration.notifications.success"),
         severity: 'success'
       });
       
@@ -252,7 +254,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
     return (
       <VaporPage>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
-          <Typography>Caricamento dati migrazione in corso...</Typography>
+          <Typography>{t("features.migration.loading")}</Typography>
         </Box>
       </VaporPage>
     );
@@ -264,7 +266,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
       <VaporPage>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
           <Typography color="error">
-            Errore nel caricamento dei dati: {error instanceof Error ? error.message : 'Errore sconosciuto'}
+            {t("features.migration.errors.loading")} {error instanceof Error ? error.message : t("features.migration.errors.unknown")}
           </Typography>
         </Box>
       </VaporPage>
@@ -275,7 +277,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
     return (
       <VaporPage>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
-          <Typography>Nessun dato disponibile</Typography>
+          <Typography>{t("features.migration.errors.noData")}</Typography>
         </Box>
       </VaporPage>
     );
@@ -301,7 +303,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
             onClick={() => navigate(`/catalog?migrationId=${subscriptionId || 'mock'}`)}
             disabled={!selectedPath}
           >
-            Aggiungi articolo
+            {t("features.migration.actions.addItem")}
           </Button>,
           <Button 
             key="save-migration" 
@@ -311,21 +313,21 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
             onClick={handleSaveMigration}
             disabled={saveMigrationMutation.isPending || !selectedPath}
           >
-            {saveMigrationMutation.isPending ? 'Salvataggio...' : 'Completa Migrazione'}
+            {saveMigrationMutation.isPending ? t("features.migration.actions.saving") : t("features.migration.actions.complete")}
           </Button>,
           <IconButton key="options" size="small">
             <VaporIcon icon={faEllipsisVertical} size="xl" />
           </IconButton>
         ]}
         size="small"
-        title={`Migrazione per ${migrationData.customer?.name || ''}`}
+        title={t("features.migration.title", { customerName: migrationData.customer?.name || '' })}
       />
 
       <VaporPage.Section>
         <ExtendedTabs value={activeTab} onChange={handleTabChange} size="small" variant="standard">
-          <ExtendedTab label="Migrazione" />
-          <ExtendedTab label="Cliente" />
-          <ExtendedTab label="Documenti" />
+          <ExtendedTab label={t("features.migration.tabs.migration")} />
+          <ExtendedTab label={t("features.migration.tabs.customer")} />
+          <ExtendedTab label={t("features.migration.tabs.documents")} />
         </ExtendedTabs>
 
         {activeTab === 0 && (
@@ -339,20 +341,20 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
               boxShadow: 1
             }}>
               <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Riepilogo Migrazione
+                {t("features.migration.summary.title")}
               </Typography>
               
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={4}>
                   <Typography variant="body2" color="text.secondary">
-                    Valore di listino attuale:
+                    {t("features.migration.summary.currentValue")}
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {formatPrice(calculateCurrentTotal())} / anno
+                    {formatPrice(calculateCurrentTotal())} {t("features.migration.summary.perYear")}
                   </Typography>
                   {calculateCurrentCustomerTotal() < calculateCurrentTotal() && (
                     <Typography variant="body2" color="success.main">
-                      {formatPrice(calculateCurrentCustomerTotal())} con sconti
+                      {formatPrice(calculateCurrentCustomerTotal())} {t("features.migration.summary.withDiscounts")}
                     </Typography>
                   )}
                 </Grid>
@@ -360,14 +362,14 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
                 {selectedPath && (
                   <Grid item xs={12} sm={4}>
                     <Typography variant="body2" color="text.secondary">
-                      Nuovo valore di listino:
+                      {t("features.migration.summary.newValue")}
                     </Typography>
                     <Typography variant="body1" fontWeight="bold">
-                      {formatPrice(calculateNewTotal())} / anno
+                      {formatPrice(calculateNewTotal())} {t("features.migration.summary.perYear")}
                     </Typography>
                     {calculateNewCustomerTotal() < calculateNewTotal() && (
                       <Typography variant="body2" color="success.main">
-                        {formatPrice(calculateNewCustomerTotal())} con sconti
+                        {formatPrice(calculateNewCustomerTotal())} {t("features.migration.summary.withDiscounts")}
                       </Typography>
                     )}
                   </Grid>
@@ -376,14 +378,14 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
                 {selectedPath && (
                   <Grid item xs={12} sm={4}>
                     <Typography variant="body2" color="text.secondary">
-                      Differenza (con sconti):
+                      {t("features.migration.summary.difference")}
                     </Typography>
                     <Typography 
                       variant="body1" 
                       fontWeight="bold" 
                       color={(calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) >= 0 ? 'error.main' : 'success.main'}
                     >
-                      {formatPrice(calculateNewCustomerTotal() - calculateCurrentCustomerTotal())} / anno
+                      {formatPrice(calculateNewCustomerTotal() - calculateCurrentCustomerTotal())} {t("features.migration.summary.perYear")}
                       {' '}
                       ({((calculateNewCustomerTotal() - calculateCurrentCustomerTotal()) / calculateCurrentCustomerTotal() * 100).toFixed(1)}%)
                     </Typography>
@@ -411,7 +413,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
                     replacementMap={replacementMap}
                     translateCategory={translateCategory}
                     getCategoryTagType={getCategoryTagType}
-                    title="Prodotti Attuali"
+                    title={t("features.migration.products.current")}
                   />
                 </Box>
               </Grid>
@@ -460,7 +462,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
                         
                         <Box sx={{ flex: 1 }}>
                           <Typography variant="subtitle1" fontWeight="bold">
-                            Percorso di migrazione: {migrationData.migrationPaths?.[selectedPath]?.title}
+                            {t("features.migration.products.migrationPath")} {migrationData.migrationPaths?.[selectedPath]?.title}
                           </Typography>
                           <Typography variant="body2">
                             {migrationData.migrationPaths?.[selectedPath]?.description}
@@ -470,10 +472,10 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                           <Box sx={{ textAlign: 'right', mr: 2 }}>
                             <Typography variant="body2" color="text.secondary">
-                              Costo stimato:
+                              {t("features.migration.products.estimatedCost")}
                             </Typography>
                             <Typography variant="subtitle1" fontWeight="bold">
-                              {formatPrice(migrationData.migrationPaths?.[selectedPath]?.totalValue || 0)}/anno
+                              {formatPrice(migrationData.migrationPaths?.[selectedPath]?.totalValue || 0)}{t("features.migration.products.perYear")}
                             </Typography>
                           </Box>
                           
@@ -482,7 +484,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
                             size="small"
                             onClick={() => setSelectedPath(null)}
                           >
-                            Cambia
+                            {t("features.migration.actions.change")}
                           </Button>
                         </Box>
                       </Box>
@@ -494,7 +496,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
                         onAddProduct={() => navigate(`/catalog?migrationId=${subscriptionId || 'mock'}`)}
                         translateCategory={translateCategory}
                         getCategoryTagType={getCategoryTagType}
-                        title="Nuovi Prodotti"
+                        title={t("features.migration.products.new")}
                       />
                     </>
                   )}
@@ -508,14 +510,14 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
         {activeTab === 1 && (
           <Box sx={{ mt: 2 }}>
             <Typography variant="h6" component="h2" fontWeight="bold" sx={{ mb: 3 }}>
-              Informazioni cliente
+              {t("features.migration.customer.info")}
             </Typography>
             
             <Box sx={{ p: 3, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={4}>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Nome cliente
+                    {t("features.migration.customer.name")}
                   </Typography>
                   <Typography variant="body1" fontWeight="medium">
                     {migrationData.customer?.name || ''}
@@ -524,7 +526,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
                 
                 <Grid item xs={12} sm={4}>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Settore
+                    {t("features.migration.customer.sector")}
                   </Typography>
                   <Typography variant="body1" fontWeight="medium">
                     {migrationData.customer?.sector || ''}
@@ -533,7 +535,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
                 
                 <Grid item xs={12} sm={4}>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Email
+                    {t("features.migration.customer.email")}
                   </Typography>
                   <Typography variant="body1" fontWeight="medium">
                     {migrationData.customer?.email || ''}
@@ -548,13 +550,12 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
         {activeTab === 2 && (
           <Box sx={{ mt: 2 }}>
             <Typography variant="h6" component="h2" fontWeight="bold" sx={{ mb: 3 }}>
-              Documenti associati
+              {t("features.migration.documents.title")}
             </Typography>
             
             <Box sx={{ p: 3, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
               <Typography variant="body1" color="text.secondary">
-                Questa sezione conterrà i documenti associati alla migrazione, 
-                come le specifiche tecniche, le condizioni contrattuali e altri allegati pertinenti.
+                {t("features.migration.documents.description")}
               </Typography>
               
               <Box sx={{ 
@@ -566,7 +567,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
                 textAlign: 'center'
               }}>
                 <Typography variant="body2" color="text.secondary">
-                  Nessun documento associato al momento.
+                  {t("features.migration.documents.empty")}
                 </Typography>
                 <Button 
                   variant="outlined" 
@@ -574,7 +575,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
                   sx={{ mt: 1 }}
                   startIcon={<VaporIcon icon={faPlus} />}
                 >
-                  Aggiungi Documento
+                  {t("features.migration.actions.addDocument")}
                 </Button>
               </Box>
             </Box>

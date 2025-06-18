@@ -86,7 +86,58 @@
                     "noResults": "Nessun cliente corrisponde ai criteri di ricerca."
                 },
                 "quote": {
-                    "created": "Preventivo creato per {{name}}",
+                    "created": "Preventivo creato per {{name}}"
+                }
+            },
+            "migration": {
+                "title": "Migrazione per {{customerName}}",
+                "tabs": {
+                    "migration": "Migrazione",
+                    "customer": "Cliente",
+                    "documents": "Documenti"
+                },
+                "loading": "Caricamento dati migrazione in corso...",
+                "errors": {
+                    "loading": "Errore nel caricamento dei dati:",
+                    "noData": "Nessun dato disponibile",
+                    "save": "Errore durante il salvataggio della migrazione",
+                    "fetch": "Errore nel recupero dei dati di migrazione",
+                    "unknown": "Errore sconosciuto"
+                },
+                "actions": {
+                    "addItem": "Aggiungi articolo",
+                    "saving": "Salvataggio...",
+                    "complete": "Completa Migrazione",
+                    "change": "Cambia",
+                    "addDocument": "Aggiungi Documento"
+                },
+                "summary": {
+                    "title": "Riepilogo Migrazione",
+                    "currentValue": "Valore di listino attuale:",
+                    "newValue": "Nuovo valore di listino:",
+                    "difference": "Differenza (con sconti):",
+                    "perYear": "/ anno",
+                    "withDiscounts": "con sconti"
+                },
+                "products": {
+                    "current": "Prodotti Attuali",
+                    "new": "Nuovi Prodotti",
+                    "migrationPath": "Percorso di migrazione:",
+                    "estimatedCost": "Costo stimato:"
+                },
+                "customer": {
+                    "info": "Informazioni cliente",
+                    "name": "Nome cliente",
+                    "sector": "Settore",
+                    "email": "Email"
+                },
+                "documents": {
+                    "title": "Documenti associati",
+                    "description": "Questa sezione conterrà i documenti associati alla migrazione, come le specifiche tecniche, le condizioni contrattuali e altri allegati pertinenti.",
+                    "empty": "Nessun documento associato al momento."
+                },
+                "notifications": {
+                    "success": "Migrazione completata con successo"
                 }
             }
         }
