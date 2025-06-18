@@ -292,6 +292,14 @@
                     "sales": "Sales",
                     "touchpoint": "Touchpoint"
                 }
+            },
+            "configuredProductCard": {
+                "noDescription": "Nessuna descrizione disponibile",
+                "plan": "Piano: {{name}}",
+                "otherComponents": "...e altri componenti",
+                "listPrice": "Prezzo di listino:",
+                "customerPrice": "Prezzo cliente:",
+                "remove": "Rimuovi"
             }
         }
     }

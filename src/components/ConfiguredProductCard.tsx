@@ -8,8 +8,7 @@ import {
   Button
 } from "@vapor/v3-components";
 import { TagType, Product } from "../types";
-
-
+import { useTranslation } from "@1f/react-sdk";
 
 interface ConfiguredProductCardProps {
   product: Product;
@@ -31,6 +30,7 @@ function ConfiguredProductCard({
   getCategoryTagType,
   formatPrice = (price: number): string => new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(price)
 }: ConfiguredProductCardProps) {
+  const { t } = useTranslation();
   // Calcola lo sconto se c'è un prezzo cliente personalizzato
   const customerPrice = product.customerPrice ?? 0;
   const productPrice = product.price ?? 0;
@@ -87,7 +87,7 @@ function ConfiguredProductCard({
             lineHeight: 1.4,
             minHeight: '40px'
           }}>
-            {product.description || 'Nessuna descrizione disponibile'}
+            {product.description || t("components.configuredProductCard.noDescription")}
           </Typography>
         </Box>
         
@@ -101,7 +101,7 @@ function ConfiguredProductCard({
             mb: 1.5
           }}>
             <Typography variant="body2" color="text.primary" fontWeight="bold" sx={{ fontSize: '0.8rem' }}>
-              Piano: {product.ratePlan.name}
+              {t("components.configuredProductCard.plan", { name: product.ratePlan.name })}
             </Typography>
             {product.charges && product.charges.length > 0 && (
               <Box sx={{ mt: 0.5 }}>
@@ -112,7 +112,7 @@ function ConfiguredProductCard({
                 ))}
                 {product.charges.length > 2 && (
                   <Typography variant="body2" color="text.secondary" fontStyle="italic" sx={{ fontSize: '0.75rem' }}>
-                    ...e altri componenti
+                    {t("components.configuredProductCard.otherComponents")}
                   </Typography>
                 )}
               </Box>
@@ -124,7 +124,7 @@ function ConfiguredProductCard({
         <Box sx={{ mb: 1.5 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
             <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
-              Prezzo di listino:
+              {t("components.configuredProductCard.listPrice")}
             </Typography>
             <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>
               {product.price ? formatPrice(product.price * (product.quantity || 1)) : 'N/A'}
@@ -134,7 +134,7 @@ function ConfiguredProductCard({
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <Typography variant="body2" fontWeight="bold" sx={{ fontSize: '0.85rem' }}>
-                Prezzo cliente:
+                {t("components.configuredProductCard.customerPrice")}
               </Typography>
               {parseFloat(discount) > 0 && (
                 <Chip 
@@ -161,7 +161,7 @@ function ConfiguredProductCard({
               onClick={() => onRemove(product)}
               sx={{ fontSize: '0.9rem', py: 0.5, px: 1.5 }}
             >
-              Rimuovi
+              {t("components.configuredProductCard.remove")}
             </Button>
           )}
         </Box>
