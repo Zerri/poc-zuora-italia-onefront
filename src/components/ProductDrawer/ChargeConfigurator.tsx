@@ -7,6 +7,7 @@ import {
   TextField
 } from "@vapor/v3-components";
 import { ExtendedCharge } from '../../types';
+import { useTranslation } from '@1f/react-sdk';
 
 interface ChargeConfiguratorProps {
   charges: ExtendedCharge[];
@@ -25,19 +26,20 @@ export const ChargeConfigurator: React.FC<ChargeConfiguratorProps> = ({
   onChargeValueChange, 
   calculateChargeTotal 
 }) => {
+  const { t } = useTranslation();
   const getChargeTypeLabel = (type: string): string => {
     switch (type) {
-      case 'Recurring': return 'Ricorrente';
-      case 'OneTime': return 'Una Tantum';
-      case 'Usage': return 'A Consumo';
-      default: return 'Altro';
+      case 'Recurring': return t('components.productDrawer.chargeConfigurator.chargeTypes.recurring');
+      case 'OneTime': return t('components.productDrawer.chargeConfigurator.chargeTypes.oneTime');
+      case 'Usage': return t('components.productDrawer.chargeConfigurator.chargeTypes.usage');
+      default: return t('components.productDrawer.chargeConfigurator.chargeTypes.other');
     }
   };
 
   if (!charges || charges.length === 0) {
     return (
       <Box sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>
-        Nessuna configurazione disponibile per questo piano.
+        {t('components.productDrawer.chargeConfigurator.noConfig')}
       </Box>
     );
   }
@@ -54,7 +56,7 @@ export const ChargeConfigurator: React.FC<ChargeConfiguratorProps> = ({
   return (
     <Box>
       <Typography variant="subtitle1" sx={{ mb: 3 }}>
-        Configurazione
+        {t('components.productDrawer.chargeConfigurator.title')}
       </Typography>
       
       {charges.map((charge, index) => {
@@ -88,7 +90,7 @@ export const ChargeConfigurator: React.FC<ChargeConfiguratorProps> = ({
             {model === 'FlatFee' && (
               <Box sx={{ mt: 2 }}>
                 <Typography variant="body2" fontWeight="medium">
-                  Prezzo fisso: {formatCurrency(charge.pricing?.[0]?.price ?? 0)}
+                  {t('components.productDrawer.chargeConfigurator.flatFee.fixedPrice')} {formatCurrency(charge.pricing?.[0]?.price ?? 0)}
                 </Typography>
               </Box>
             )}
@@ -98,7 +100,7 @@ export const ChargeConfigurator: React.FC<ChargeConfiguratorProps> = ({
                 <FormControl fullWidth sx={{ mb: 2 }}>
                   <TextField
                     type="number"
-                    label="Quantità"
+                    label={t('components.productDrawer.chargeConfigurator.perUnit.quantity')}
                     value={currentValue}
                     onChange={(e) => onChargeValueChange(charge.id, e.target.value)}
                     InputProps={{ 
@@ -113,9 +115,9 @@ export const ChargeConfigurator: React.FC<ChargeConfiguratorProps> = ({
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography variant="body2">
                     {model === 'PerUnit' ? (
-                      <>Prezzo unitario: {formatCurrency(charge.pricing?.[0]?.price ?? 0)}</>
+                      <>{t('components.productDrawer.chargeConfigurator.perUnit.unitPrice')} {formatCurrency(charge.pricing?.[0]?.price ?? 0)}</>
                     ) : (
-                      <>Prezzo basato sulla fascia di volume</>
+                      <>{t('components.productDrawer.chargeConfigurator.volume.price')}</>
                     )}
                   </Typography>
                 </Box>
@@ -127,7 +129,7 @@ export const ChargeConfigurator: React.FC<ChargeConfiguratorProps> = ({
                   charge.pricing[0].tiers.length > 0 && (
                     <Box sx={{ mt: 1, fontSize: '0.8rem', color: 'text.secondary' }}>
                       <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
-                        Fasce di prezzo:
+                        {t('components.productDrawer.chargeConfigurator.volume.priceTiers')}
                       </Typography>
                       {charge.pricing[0].tiers.map((tier, idx) => (
                         <Typography key={idx} variant="caption" display="block">
@@ -142,7 +144,12 @@ export const ChargeConfigurator: React.FC<ChargeConfiguratorProps> = ({
             {model === 'Usage' && (
               <Box sx={{ mt: 2 }}>
                 <Typography variant="body2">
-                  Prezzo a consumo: {formatCurrency(charge.pricing?.[0]?.price ?? 0)} per {charge.uom || 'unità'}
+                  {/* 
+                    Questa stringa è da sistemare:
+                    Alle stringhe di traduzione è possibile passare dei parametri ma devono essere number.
+                    La funzione formatCurrency però trasforma il numero in stringa e questo causa problemi di tipizzazione.
+                  */}
+                  {t('components.productDrawer.chargeConfigurator.usage.price')} {formatCurrency(charge.pricing?.[0]?.price ?? 0)} per {charge.uom || t('components.productDrawer.chargeConfigurator.unit')}
                 </Typography>
               </Box>
             )}

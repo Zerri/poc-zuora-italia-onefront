@@ -386,6 +386,33 @@
                     "addFromCatalog": "Aggiungi dal catalogo",
                     "add": "Aggiungi"
                 }
+            },
+            "productDrawer": {
+                "chargeConfigurator": {
+                    "title": "Configurazione",
+                    "noConfig": "Nessuna configurazione disponibile per questo piano.",
+                    "chargeTypes": {
+                        "recurring": "Ricorrente",
+                        "oneTime": "Una Tantum",
+                        "usage": "A Consumo",
+                        "other": "Altro"
+                    },
+                    "flatFee": {
+                        "fixedPrice": "Prezzo fisso:"
+                    },
+                    "perUnit": {
+                        "quantity": "Quantità",
+                        "unitPrice": "Prezzo unitario:"
+                    },
+                    "volume": {
+                        "price": "Prezzo basato sulla fascia di volume",
+                        "priceTiers": "Fasce di prezzo:"
+                    },
+                    "usage": {
+                        "price": "Prezzo a consumo:"
+                    },
+                    "unit": "unità"
+                }
             }
         }
     }
