@@ -9,6 +9,7 @@ import {
 } from "@vapor/v3-components";
 import { ExtendedRatePlan } from '../../types';
 import { faCheck } from "@fortawesome/pro-regular-svg-icons/faCheck";
+import { useTranslation } from '@1f/react-sdk';
 
 interface RatePlanCardProps {
   ratePlan: ExtendedRatePlan;
@@ -27,6 +28,7 @@ interface BillingInfo {
  * @description Card per visualizzare un singolo rate plan
  */
 export const RatePlanCard: React.FC<RatePlanCardProps> = ({ ratePlan, isSelected, onClick }) => {
+  const { t } = useTranslation();
   // Determina il periodo di fatturazione dalle charges
   const getBillingInfo = (): BillingInfo => {
     if (!ratePlan.productRatePlanCharges || ratePlan.productRatePlanCharges.length === 0) {
@@ -50,18 +52,18 @@ export const RatePlanCard: React.FC<RatePlanCardProps> = ({ ratePlan, isSelected
   const translateBillingTerm = (term: string, type: 'period' | 'timing'): string => {
     if (type === 'period') {
       const periodMap: Record<string, string> = {
-        'Annual': 'Annuale',
-        'Monthly': 'Mensile',
-        'Quarterly': 'Trimestrale',
-        'Semiannual': 'Semestrale'
+        'Annual': t('components.productDrawer.ratePlanCard.billingPeriods.annual'),
+        'Monthly': t('components.productDrawer.ratePlanCard.billingPeriods.monthly'),
+        'Quarterly': t('components.productDrawer.ratePlanCard.billingPeriods.quarterly'),
+        'Semiannual': t('components.productDrawer.ratePlanCard.billingPeriods.semiannual')
       };
       return periodMap[term] || term;
     }
     
     if (type === 'timing') {
       const timingMap: Record<string, string> = {
-        'IN_ADVANCE': 'Anticipata',
-        'IN_ARREARS': 'Posticipata'
+        'IN_ADVANCE': t('components.productDrawer.ratePlanCard.billingTimings.inAdvance'),
+        'IN_ARREARS': t('components.productDrawer.ratePlanCard.billingTimings.inArrears')
       };
       return timingMap[term] || term;
     }
@@ -126,7 +128,7 @@ export const RatePlanCard: React.FC<RatePlanCardProps> = ({ ratePlan, isSelected
               </Typography>
               {ratePlan.status === 'Expired' && (
                 <Chip 
-                  label="Scaduto"
+                  label={t('components.productDrawer.ratePlanCard.expired')}
                   size="small"
                   color="error"
                   variant="outlined"
@@ -135,7 +137,7 @@ export const RatePlanCard: React.FC<RatePlanCardProps> = ({ ratePlan, isSelected
               )}
             </Box>
             <Typography variant="body2" color="text.secondary">
-              {ratePlan.description || 'Soluzione completa con accesso online'}
+              {ratePlan.description || t('components.productDrawer.ratePlanCard.defaultDescription')}
             </Typography>
             
             {/* Informazioni aggiuntive dal rate plan */}
@@ -185,7 +187,7 @@ export const RatePlanCard: React.FC<RatePlanCardProps> = ({ ratePlan, isSelected
               {/* Indicatori di tipo di charge */}
               {hasRecurringCharges && (
                 <Chip 
-                  label="Ricorrente"
+                  label={t('components.productDrawer.chargeTypes.recurring')}
                   size="small"
                   color="success"
                   variant="outlined"
@@ -195,7 +197,7 @@ export const RatePlanCard: React.FC<RatePlanCardProps> = ({ ratePlan, isSelected
               
               {hasOneTimeCharges && (
                 <Chip 
-                  label="Una Tantum"
+                  label={t('components.productDrawer.chargeTypes.oneTime')}
                   size="small"
                   color="warning"
                   variant="outlined"

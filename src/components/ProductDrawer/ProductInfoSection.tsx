@@ -5,6 +5,7 @@ import {
   Box
 } from "@vapor/v3-components";
 import { Product } from '../../types';
+import { useTranslation } from '@1f/react-sdk';
 
 interface ProductInfoSectionProps {
   product: Product;
@@ -16,12 +17,14 @@ interface ProductInfoSectionProps {
  * @description Sezione per visualizzare le informazioni del prodotto con nuovo ordine
  */
 export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({ product, translateCategory }) => {
+  const { t } = useTranslation();
+  
   // Determina il tipo di prodotto
   const getProductType = (product: Product): string => {
     if (product.type) return product.type;
-    if (product.categoria === 'enterprise') return 'Enterprise';
-    if (product.categoria === 'professional') return 'Professionale';
-    return 'Commerciale';
+    if (product.categoria === 'enterprise') return t("components.productDrawer.productInfoSection.productTypes.enterprise");
+    if (product.categoria === 'professional') return t("components.productDrawer.productInfoSection.productTypes.professional");
+    return t("components.productDrawer.productInfoSection.productTypes.commercial");
   };
 
   return (
@@ -34,7 +37,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({ product,
             color="text.secondary" 
             sx={{ textTransform: 'uppercase', fontWeight: 'medium', display: 'block', mb: 0.25 }}
           >
-            Nome
+            {t("components.productDrawer.productInfoSection.name")}
           </Typography>
           <Typography variant="body2" fontWeight="medium">
             {product.name}
@@ -48,10 +51,10 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({ product,
             color="text.secondary" 
             sx={{ textTransform: 'uppercase', fontWeight: 'medium', display: 'block', mb: 0.25 }}
           >
-            Descrizione
+            {t("components.productDrawer.productInfoSection.description")}
           </Typography>
           <Typography variant="body2" fontWeight="medium">
-            {product.description || 'Nessuna descrizione disponibile'}
+            {product.description || t("components.productDrawer.productInfoSection.noDescription")}
           </Typography>
         </Grid>
 
@@ -62,7 +65,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({ product,
             color="text.secondary" 
             sx={{ textTransform: 'uppercase', fontWeight: 'medium', display: 'block', mb: 0.25 }}
           >
-            SKU
+            {t("components.productDrawer.productInfoSection.sku")}
           </Typography>
           <Typography variant="body2" fontWeight="medium">
             {product.sku || product.id || 'SKU-00000003'}
@@ -75,7 +78,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({ product,
             color="text.secondary" 
             sx={{ textTransform: 'uppercase', fontWeight: 'medium', display: 'block', mb: 0.25 }}
           >
-            Categoria
+            {t("components.productDrawer.productInfoSection.category")}
           </Typography>
           <Typography variant="body2" fontWeight="medium">
             {translateCategory(product.categoria) || 'Base Products'}
@@ -88,7 +91,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({ product,
             color="text.secondary" 
             sx={{ textTransform: 'uppercase', fontWeight: 'medium', display: 'block', mb: 0.25 }}
           >
-            Tipo
+            {t("components.productDrawer.productInfoSection.type")}
           </Typography>
           <Typography variant="body2" fontWeight="medium">
             {getProductType(product)}
@@ -102,7 +105,7 @@ export const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({ product,
             color="text.secondary" 
             sx={{ textTransform: 'uppercase', fontWeight: 'medium', display: 'block', mb: 0.25 }}
           >
-            Validità
+            {t("components.productDrawer.productInfoSection.validity")}
           </Typography>
           <Typography variant="body2" fontWeight="medium">
             2024-02-01 - 2030-02-01

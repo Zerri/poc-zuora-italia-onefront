@@ -503,6 +503,38 @@
                         "termEndDay": "Giorno di fine contratto",
                         "chargeTriggerDay": "Giorno di attivazione"
                     }
+                },
+                "productInfoSection": {
+                    "name": "Nome",
+                    "description": "Descrizione",
+                    "noDescription": "Nessuna descrizione disponibile",
+                    "sku": "SKU",
+                    "category": "Categoria",
+                    "type": "Tipo",
+                    "validity": "Validità",
+                    "productTypes": {
+                        "enterprise": "Enterprise",
+                        "professional": "Professional",
+                        "commercial": "Commercial"
+                    }
+                },
+                "ratePlanCard": {
+                    "expired": "Scaduto",
+                    "defaultDescription": "Soluzione completa con accesso online",
+                    "chargeTypes": {
+                        "recurring": "Ricorrente",
+                        "oneTime": "Una Tantum"
+                    },
+                    "billingPeriods": {
+                        "annual": "Annuale",
+                        "monthly": "Mensile",
+                        "quarterly": "Trimestrale",
+                        "semiannual": "Semestrale"
+                    },
+                    "billingTimings": {
+                        "inAdvance": "Anticipata",
+                        "inArrears": "Posticipata"
+                    }
                 }
             }
         }
