@@ -388,6 +388,21 @@
                 }
             },
             "productDrawer": {
+                "productDrawer": {
+                    "generalInfo": "Informazioni Generali",
+                    "infrastructure": "Infrastruttura",
+                    "showExpiredPlans": "Mostra piani scaduti",
+                    "plan": "Piano",
+                    "pricingModel": "Modello di prezzo",
+                    "charges": "Charge",
+                    "priceSummary": "Riepilogo prezzi",
+                    "total": "Totale: €{{amount}}",
+                    "actions": {
+                        "close": "Chiudi",
+                        "addToQuote": "Aggiungi al preventivo",
+                        "addToOffer": "Aggiungi all'offerta"
+                    }
+                },
                 "chargeConfigurator": {
                     "title": "Configurazione",
                     "noConfig": "Nessuna configurazione disponibile per questo piano.",

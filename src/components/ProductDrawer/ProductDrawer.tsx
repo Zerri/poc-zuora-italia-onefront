@@ -14,6 +14,7 @@ import {
 } from "@vapor/v3-components";
 import { faClose } from "@fortawesome/pro-regular-svg-icons/faClose";
 import { Product, ExtendedRatePlan, ExtendedCharge } from '../../types';
+import { useTranslation } from '@1f/react-sdk';
 
 // Componenti importati
 import ProductInfoSection from './ProductInfoSection';
@@ -63,6 +64,7 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
   onAddToOffer, 
   isAddingToQuote = false 
 }) => {
+  const { t } = useTranslation();
   // State
   const [selectedProductRatePlan, setSelectedProductRatePlan] = useState<string | number>('');
   const [chargeValues, setChargeValues] = useState<ChargeValuesMap>({});
@@ -290,7 +292,7 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
 
       <Box sx={{ p: 4, flex: 1, overflowY: 'auto', mb: 13 }}>
         <Typography variant="subtitle1" sx={{ mb: 2 }}>
-          Informazioni Generali
+          {t("components.productDrawer.productDrawer.generalInfo")}
         </Typography>
         <ProductInfoSection product={product} translateCategory={translateCategory} />
         
@@ -299,7 +301,7 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
         {/* Sezione di selezione tecnologia e rate plan */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            Infrastruttura
+            {t("components.productDrawer.productDrawer.infrastructure")}
           </Typography>
           
           <TechnologySelector 
@@ -317,12 +319,12 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
                   name="showExpiredPlans"
                 />
               }
-              label="Mostra piani scaduti"
+              label={t("components.productDrawer.productDrawer.showExpiredPlans")}
             />
           </Box>
           
           <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            Piano
+            {t("components.productDrawer.productDrawer.plan")}
           </Typography>
           
           <RatePlanList
@@ -337,14 +339,14 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
 
         {/* Sezione informazioni sul modello di prezzo */}
         <Typography variant="subtitle1" sx={{ mb: 2 }}>
-          Modello di prezzo
+          {t("components.productDrawer.productDrawer.pricingModel")}
         </Typography>
         {selectedRatePlan && (
           <PricingModelInfo selectedRatePlan={selectedRatePlan} />
         )}
 
         <Typography variant="subtitle1" sx={{ mb: 2 }}>
-          Charge
+          {t("components.productDrawer.productDrawer.charges")}
         </Typography>
         {/* Sezione configurazione charges */}
         {selectedRatePlan && (
@@ -358,7 +360,7 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
 
         {/* Sezione riepilogo prezzi */}
         <Typography variant="subtitle1" sx={{ mb: 2 }}>
-          Riepilogo prezzi
+          {t("components.productDrawer.productDrawer.priceSummary")}
         </Typography>
         {selectedRatePlan && (
           <PriceSummary
@@ -377,12 +379,12 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
       <VaporToolbar
         contentLeft={[
           <Typography key="total" variant="subtitle1">
-            Totale: €{calculateTotal().toFixed(2)}
+            {t("components.productDrawer.productDrawer.total", { amount: calculateTotal().toFixed(2) })}
           </Typography>
         ]}
         contentRight={[
           <Button key="close" variant="outlined" color="secondary" onClick={onClose}>
-            Chiudi
+            {t("components.productDrawer.productDrawer.actions.close")}
           </Button>,
           <Button 
             key="add" 
@@ -391,7 +393,7 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
             startIcon={<span>+</span>} 
             onClick={handleAddToOffer}
           >
-            {isAddingToQuote ? 'Aggiungi al preventivo' : 'Aggiungi all\'offerta'}
+            {isAddingToQuote ? t("components.productDrawer.productDrawer.actions.addToQuote") : t("components.productDrawer.productDrawer.actions.addToOffer")}
           </Button>
         ]}
         size="medium"
