@@ -1,6 +1,7 @@
 import { Box } from "@vapor/v3-components";
 import RatePlanCard from './RatePlanCard';
 import { ExtendedRatePlan } from '../../types';
+import { useTranslation } from '@1f/react-sdk';
 
 // Interfaccia per i gruppi di rate plan per tecnologia
 interface RatePlanGroups {
@@ -28,6 +29,7 @@ export const RatePlanList: React.FC<RatePlanListProps> = ({
   showExpiredPlans, 
   onRatePlanSelect 
 }) => {
+  const { t } = useTranslation();
   return (
     <Box sx={{ mb: 3 }}>
       {technologies.map((tech) => {
@@ -59,7 +61,7 @@ export const RatePlanList: React.FC<RatePlanListProps> = ({
                 borderRadius: 1,
                 textAlign: 'center'
               }}>
-                Nessun piano disponibile con i filtri selezionati.
+                {t('components.productDrawer.ratePlanList.noPlansAvailable')}
               </Box>
             )}
           </Box>

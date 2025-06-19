@@ -535,6 +535,9 @@
                         "inAdvance": "Anticipata",
                         "inArrears": "Posticipata"
                     }
+                },
+                "ratePlanList": {
+                    "noPlansAvailable": "Nessun piano disponibile con i filtri selezionati."
                 }
             }
         }
