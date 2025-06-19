@@ -538,6 +538,14 @@
                 },
                 "ratePlanList": {
                     "noPlansAvailable": "Nessun piano disponibile con i filtri selezionati."
+                },
+                "technologySelector": {
+                    "technologies": {
+                        "iaas": "IAAS",
+                        "onPremise": "On Premise",
+                        "saas": "SAAS",
+                        "other": "Altro"
+                    }
                 }
             }
         }

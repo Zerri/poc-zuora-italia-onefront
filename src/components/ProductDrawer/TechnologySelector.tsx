@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Button } from "@vapor/v3-components";
+import { useTranslation } from '@1f/react-sdk';
 
 interface TechnologySelectorProps {
   technologies: string[];
@@ -16,14 +17,14 @@ export const TechnologySelector: React.FC<TechnologySelectorProps> = ({
   selectedTech, 
   onSelectTechnology 
 }) => {
-  console.log({ technologies, selectedTech });
+  const { t } = useTranslation();
   
   const getTechnologyDisplayName = (tech: string): string => {
     const displayNames: Record<string, string> = {
-      'IAAS': 'IAAS',
-      'On Premise': 'On Premise',
-      'SAAS': 'SAAS',
-      'Other': 'Altro'
+      'IAAS': t('components.productDrawer.technologySelector.technologies.iaas'),
+      'On Premise': t('components.productDrawer.technologySelector.technologies.onPremise'),
+      'SAAS': t('components.productDrawer.technologySelector.technologies.saas'),
+      'Other': t('components.productDrawer.technologySelector.technologies.other'),
     };
     return displayNames[tech] || tech;
   };
