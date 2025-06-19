@@ -11,6 +11,7 @@ import {
 import { faCircle } from "@fortawesome/pro-solid-svg-icons/faCircle";
 import { VaporIcon } from "@vapor/v3-components";
 import { ExtendedRatePlan } from '../../types';
+import { useTranslation } from '@1f/react-sdk';
 
 interface PricingModelInfoProps {
   selectedRatePlan: ExtendedRatePlan | null;
@@ -48,6 +49,7 @@ interface PricingModelInfo {
  * @description Componente che mostra informazioni sul modello di pricing del prodotto
  */
 export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRatePlan }) => {
+  const { t } = useTranslation();
   if (!selectedRatePlan) return null;
   
   // Determina le caratteristiche del modello di pricing
@@ -150,35 +152,35 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
   const translateBillingTerm = (term: string, type: 'period' | 'timing' | 'alignment' | 'day'): string => {
     if (type === 'period') {
       const periodMap: Record<string, string> = {
-        'Annual': 'Annuale',
-        'Monthly': 'Mensile',
-        'Quarterly': 'Trimestrale',
-        'Semiannual': 'Semestrale'
+      'Annual': t('components.productDrawer.pricingModelInfo.billingPeriods.annual'),
+      'Monthly': t('components.productDrawer.pricingModelInfo.billingPeriods.monthly'),
+      'Quarterly': t('components.productDrawer.pricingModelInfo.billingPeriods.quarterly'),
+      'Semiannual': t('components.productDrawer.pricingModelInfo.billingPeriods.semiannual')
       };
       return periodMap[term] || term;
     }
     
     if (type === 'timing') {
       const timingMap: Record<string, string> = {
-        'IN_ADVANCE': 'Anticipata',
-        'IN_ARREARS': 'Posticipata'
+        'IN_ADVANCE': t('components.productDrawer.pricingModelInfo.billingTimings.inAdvance'),
+        'IN_ARREARS': t('components.productDrawer.pricingModelInfo.billingTimings.inArrears'),
       };
       return timingMap[term] || term;
     }
     
     if (type === 'alignment') {
       const alignmentMap: Record<string, string> = {
-        'AlignToTermStart': 'Allineato all\'inizio del contratto',
-        'AlignToTermEnd': 'Allineato alla fine del contratto'
+        'AlignToTermStart': t('components.productDrawer.pricingModelInfo.billingAlignments.alignToTermStart'),
+        'AlignToTermEnd': t('components.productDrawer.pricingModelInfo.billingAlignments.alignToTermEnd'),
       };
       return alignmentMap[term] || term;
     }
     
     if (type === 'day') {
       const dayMap: Record<string, string> = {
-        'TermStartDay': 'Giorno di inizio contratto',
-        'TermEndDay': 'Giorno di fine contratto',
-        'ChargeTriggerDay': 'Giorno di attivazione'
+        'TermStartDay': t('components.productDrawer.pricingModelInfo.billingDays.termStartDay'),
+        'TermEndDay': t('components.productDrawer.pricingModelInfo.billingDays.termEndDay'),
+        'ChargeTriggerDay': t('components.productDrawer.pricingModelInfo.billingDays.chargeTriggerDay'),
       };
       return dayMap[term] || term;
     }
@@ -198,7 +200,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
       }}
     >
       <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-        Dettagli modello di prezzo
+        {t('components.productDrawer.pricingModelInfo.title')}
       </Typography>
       
       <List dense disablePadding>
@@ -211,7 +213,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
             <ListItemText
               primary={
                 <Typography variant="body2">
-                  <strong>Fino a 30 PDL:</strong> Prezzo a scaglioni (ogni quantità ha un prezzo fisso)
+                  <strong>{t('components.productDrawer.pricingModelInfo.pdlModel.upTo30')}</strong> {t('components.productDrawer.pricingModelInfo.pdlModel.tieredPrice')}
                 </Typography>
               }
             />
@@ -227,8 +229,13 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
             <ListItemText
               primary={
                 <Typography variant="body2">
-                  <strong>Modello fatture/anno:</strong> Prezzo a {pricingInfo.volumeModel === 'scaglioni' ? 'scaglioni' : 'soglie'} 
-                  {pricingInfo.tierStructure.length > 0 && ` (da ${pricingInfo.tierStructure[0].startingUnit} a ${pricingInfo.tierStructure[pricingInfo.tierStructure.length-1].endingUnit} fatture)`}
+                  <strong>{t("components.productDrawer.pricingModelInfo.invoiceModel.title")}</strong> {t(pricingInfo.volumeModel === 'scaglioni' 
+                    ? "components.productDrawer.pricingModelInfo.invoiceModel.tieredPrice" 
+                    : "components.productDrawer.pricingModelInfo.invoiceModel.thresholdPrice")}
+                  {pricingInfo.tierStructure.length > 0 && t("components.productDrawer.pricingModelInfo.invoiceModel.range", {
+                    min: pricingInfo.tierStructure[0].startingUnit,
+                    max: pricingInfo.tierStructure[pricingInfo.tierStructure.length-1].endingUnit
+                  })}
                 </Typography>
               }
             />
@@ -244,7 +251,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
             <ListItemText
               primary={
                 <Typography variant="body2">
-                  <strong>Oltre 30 PDL:</strong> Prezzo unitario (prezzo fisso base + costo per PDL aggiuntiva)
+                  <strong>{t("components.productDrawer.pricingModelInfo.pdlUnitPrice.over30")}</strong> {t("components.productDrawer.pricingModelInfo.pdlUnitPrice.description")}
                 </Typography>
               }
             />
@@ -260,7 +267,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
             <ListItemText
               primary={
                 <Typography variant="body2">
-                  <strong>Tipo piano:</strong> Licenza + Canone (pagamento una tantum + canone ricorrente)
+                  <strong>{t("components.productDrawer.pricingModelInfo.planTypes.title")}</strong> {t("components.productDrawer.pricingModelInfo.planTypes.licenseAndFee")}
                 </Typography>
               }
             />
@@ -276,7 +283,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
             <ListItemText
               primary={
                 <Typography variant="body2">
-                  <strong>Tipo piano:</strong> Full Subscription (solo canone ricorrente)
+                  <strong>{t("components.productDrawer.pricingModelInfo.planTypes.title")}</strong> {t("components.productDrawer.pricingModelInfo.planTypes.subscription")}
                 </Typography>
               }
             />
@@ -292,7 +299,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
             <ListItemText
               primary={
                 <Typography variant="body2">
-                  <strong>Tipo piano:</strong> Volumi BTB (pagamento una tantum basato sui volumi)
+                  <strong>{t("components.productDrawer.pricingModelInfo.planTypes.title")}</strong> {t("components.productDrawer.pricingModelInfo.planTypes.volumiBTB")}
                 </Typography>
               }
             />
@@ -307,7 +314,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
           <ListItemText
             primary={
               <Typography variant="body2">
-                <strong>Unità di misura:</strong> {pricingInfo.isPdl ? 'PDL (Postazioni Di Lavoro)' : 'Fatture/anno'}
+                <strong>{t("components.productDrawer.pricingModelInfo.unitOfMeasure.title")}</strong> {pricingInfo.isPdl ? t("components.productDrawer.pricingModelInfo.unitOfMeasure.pdl") : t("components.productDrawer.pricingModelInfo.unitOfMeasure.invoices") }
               </Typography>
             }
           />
@@ -318,7 +325,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
           <>
             <Divider sx={{ my: 2 }} />
             <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1, color: 'primary.main' }}>
-              Informazioni di Fatturazione
+              {t("components.productDrawer.pricingModelInfo.billingInfo.title")}
             </Typography>
             
             {/* Periodo di fatturazione */}
@@ -329,7 +336,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
               <ListItemText
                 primary={
                   <Typography variant="body2">
-                    <strong>Periodicità di fatturazione:</strong> {translateBillingTerm(pricingInfo.billingPeriod, 'period')}
+                    <strong>{t("components.productDrawer.pricingModelInfo.billingInfo.period")}</strong> {translateBillingTerm(pricingInfo.billingPeriod, 'period')}
                   </Typography>
                 }
               />
@@ -344,7 +351,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
                 <ListItemText
                   primary={
                     <Typography variant="body2">
-                      <strong>Fatturazione:</strong> {translateBillingTerm(pricingInfo.billingTiming, 'timing')}
+                      <strong>{t("components.productDrawer.pricingModelInfo.billingInfo.timing")}</strong> {translateBillingTerm(pricingInfo.billingTiming, 'timing')}
                     </Typography>
                   }
                 />
@@ -360,7 +367,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
                 <ListItemText
                   primary={
                     <Typography variant="body2">
-                      <strong>Allineamento:</strong> {translateBillingTerm(pricingInfo.billingPeriodAlignment, 'alignment')}
+                      <strong>{t("components.productDrawer.pricingModelInfo.billingInfo.alignment")}</strong> {translateBillingTerm(pricingInfo.billingPeriodAlignment, 'alignment')}
                     </Typography>
                   }
                 />
@@ -376,7 +383,7 @@ export const PricingModelInfo: React.FC<PricingModelInfoProps> = ({ selectedRate
                 <ListItemText
                   primary={
                     <Typography variant="body2">
-                      <strong>Data fatturazione:</strong> {translateBillingTerm(pricingInfo.billingDay, 'day')}
+                      <strong>{t("components.productDrawer.pricingModelInfo.billingInfo.date")}</strong> {translateBillingTerm(pricingInfo.billingDay, 'day')}
                     </Typography>
                   }
                 />

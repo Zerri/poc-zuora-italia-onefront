@@ -443,11 +443,9 @@
                     },
                     "invoiceModel": {
                         "title": "Modello fatture/anno:",
-                        "tieredPrice": "Prezzo a {{model}} (da {{min}} a {{max}} fatture)"
-                    },
-                    "pricingModels": {
-                        "tiers": "scaglioni",
-                        "thresholds": "soglie"
+                        "tieredPrice": "Prezzo a scaglioni",
+                        "thresholdPrice": "Prezzo a soglie",
+                        "range": " (da {{min}} a {{max}} fatture)"
                     },
                     "pdlUnitPrice": {
                         "over30": "Oltre 30 PDL:",
