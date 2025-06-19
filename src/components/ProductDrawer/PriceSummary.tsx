@@ -8,6 +8,7 @@ import {
   InputAdornment
 } from "@vapor/v3-components";
 import { ExtendedRatePlan, ExtendedCharge } from '../../types';
+import { useTranslation } from '@1f/react-sdk';
 
 interface PriceSummaryProps {
   selectedRatePlan: ExtendedRatePlan;
@@ -26,6 +27,7 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
   onCustomerPriceChange, // Prop per gestire il cambio di prezzo cliente
   isDiscountProduct = false
 }) => {
+  const { t } = useTranslation();
   // State locale per il prezzo cliente
   const [customerPrice, setCustomerPrice] = useState<number | string>('');
   
@@ -71,7 +73,7 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
         }}
       >
         <Typography variant="body1" color="text.secondary">
-          Seleziona un piano per visualizzare i dettagli di prezzo.
+          {t('components.productDrawer.priceSummary.selectPlan')}
         </Typography>
       </Paper>
     );
@@ -194,10 +196,10 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
   // Traduzione del periodo di billing
   const translateBillingPeriod = (period: string): string => {
     const periodMap: Record<string, string> = {
-      'Annual': 'Annuale',
-      'Monthly': 'Mensile',
-      'Quarterly': 'Trimestrale',
-      'Semiannual': 'Semestrale'
+      'Annual': t('components.productDrawer.priceSummary.billingPeriods.annual'),
+      'Monthly': t('components.productDrawer.priceSummary.billingPeriods.monthly'),
+      'Quarterly': t('components.productDrawer.priceSummary.billingPeriods.quarterly'),
+      'Semiannual': t('components.productDrawer.priceSummary.billingPeriods.semiannual')
     };
     return periodMap[period] || period;
   };
@@ -205,8 +207,8 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
   // Traduzione del timing di billing
   const translateBillingTiming = (timing: string): string => {
     const timingMap: Record<string, string> = {
-      'IN_ADVANCE': 'Anticipata',
-      'IN_ARREARS': 'Posticipata'
+      'IN_ADVANCE': t('components.productDrawer.priceSummary.billingTimings.inAdvance'),
+      'IN_ARREARS': t('components.productDrawer.priceSummary.billingTimings.inArrears'),
     };
     return timingMap[timing] || timing;
   };
@@ -227,7 +229,7 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
     >
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h6" fontWeight="bold">
-          Riepilogo Prezzi
+          {t('components.productDrawer.priceSummary.summary')}
         </Typography>
         
         {/* Mostra il periodo di fatturazione come chip */}
@@ -246,7 +248,7 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
       </Box>
       
       <Typography variant="subtitle1" fontWeight="medium" sx={{ mb: 1 }}>
-        Dettaglio Prezzi
+        {t('components.productDrawer.priceSummary.priceDetails')}
       </Typography>
       
       <Box sx={{ mb: 2 }}>
@@ -257,7 +259,7 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
           py: 1 
         }}>
           <Typography variant="body1">
-            Canone {translateBillingPeriod(billingPeriod).toLowerCase()} {unitCount > 0 && `(${unitCount} ${unitLabel})`}
+            {t('components.productDrawer.priceSummary.fee')} {translateBillingPeriod(billingPeriod).toLowerCase()} {unitCount > 0 && `(${unitCount} ${unitLabel})`}
           </Typography>
           <Typography variant="body1" fontWeight="medium">
             {formatCurrency(annualTotal)}
@@ -273,7 +275,7 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
             borderBottom: '1px solid #e0e0e0'
           }}>
             <Typography variant="body1">
-              Licenza una tantum {unitCount > 0 && `(${unitCount} ${unitLabel})`}
+              {t('components.productDrawer.priceSummary.oneTimeLicense')} {unitCount > 0 && `(${unitCount} ${unitLabel})`}
             </Typography>
             <Typography variant="body1" fontWeight="medium">
               {formatCurrency(licenseTotal)}
@@ -289,7 +291,7 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
           borderBottom: '1px solid #e0e0e0'
         }}>
           <Typography variant="body1" fontWeight="bold">
-            Prezzo di listino
+            {t('components.productDrawer.priceSummary.listPrice')}
           </Typography>
           <Typography variant="body1" fontWeight="bold">
             {formatCurrency(firstYearTotal)}
@@ -305,7 +307,7 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
           borderBottom: '1px solid #e0e0e0'
         }}>
           <Typography variant="body1" fontWeight="bold">
-            Prezzo cliente
+            {t('components.productDrawer.priceSummary.customerPrice')}
             {parseFloat(discountPercentage) > 0 && (
               <Chip 
                 label={`-${discountPercentage}%`}
@@ -337,7 +339,7 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
             color: 'text.secondary'
           }}>
             <Typography variant="body2">
-              Canone {translateBillingPeriod(billingPeriod).toLowerCase()} dal secondo anno
+              {t('components.productDrawer.priceSummary.feeFromSecondYear')} - {translateBillingPeriod(billingPeriod)}
             </Typography>
             <Typography variant="body2">
               {formatCurrency(annualTotal)}
@@ -355,10 +357,10 @@ export const PriceSummary: React.FC<PriceSummaryProps> = ({
         gap: 0.5
       }}>
         <Typography variant="body1" fontWeight="medium">
-          Costo per {unitLabel === 'PDL' ? 'PDL' : 'fattura'} (media)
+          {t('components.productDrawer.priceSummary.costPerUnit')} {unitLabel === 'PDL' ? 'PDL' : 'fattura'}
         </Typography>
         <Typography variant="body2">
-          {formatCurrency(costPerUnit)} / {billingPeriod === 'Annual' ? 'anno' : billingPeriod.toLowerCase()}
+          {formatCurrency(costPerUnit)} / {billingPeriod === 'Annual' ? t('components.productDrawer.priceSummary.year') : billingPeriod.toLowerCase()}
           {hasLicense && onetimePerUnit > 0 && ` + ${formatCurrency(onetimePerUnit)} una tantum`}
         </Typography>
       </Box>

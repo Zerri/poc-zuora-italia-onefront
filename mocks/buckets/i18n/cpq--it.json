@@ -412,6 +412,84 @@
                         "price": "Prezzo a consumo:"
                     },
                     "unit": "unità"
+                },
+                "priceSummary": {
+                    "selectPlan": "Seleziona un piano per visualizzare i dettagli di prezzo.",
+                    "summary": "Riepilogo Prezzi",
+                    "priceDetails": "Dettaglio Prezzi",
+                    "billingPeriods": {
+                        "annual": "Annuale",
+                        "monthly": "Mensile",
+                        "quarterly": "Trimestrale",
+                        "semiannual": "Semestrale"
+                    },
+                    "billingTimings": {
+                        "inAdvance": "Anticipata",
+                        "inArrears": "Posticipata"
+                    },
+                    "fee": "Canone",
+                    "oneTimeLicense": "Licenza una tantum",
+                    "listPrice": "Prezzo di listino",
+                    "customerPrice": "Prezzo cliente",
+                    "feeFromSecondYear": "Canone dal secondo anno",
+                    "costPerUnit": "Costo medio per",
+                    "year": "anno"
+                },
+                "pricingModelInfo": {
+                    "title": "Dettagli modello di prezzo",
+                    "pdlModel": {
+                        "upTo30": "Fino a 30 PDL:",
+                        "tieredPrice": "Prezzo a scaglioni (ogni quantità ha un prezzo fisso)"
+                    },
+                    "invoiceModel": {
+                        "title": "Modello fatture/anno:",
+                        "tieredPrice": "Prezzo a {{model}} (da {{min}} a {{max}} fatture)"
+                    },
+                    "pricingModels": {
+                        "tiers": "scaglioni",
+                        "thresholds": "soglie"
+                    },
+                    "pdlUnitPrice": {
+                        "over30": "Oltre 30 PDL:",
+                        "description": "Prezzo unitario (prezzo fisso base + costo per PDL aggiuntiva)"
+                    },
+                    "planTypes": {
+                        "title": "Tipo piano:",
+                        "licenseAndFee": "Licenza + Canone (pagamento una tantum + canone ricorrente)",
+                        "subscription": "Full Subscription (solo canone ricorrente)",
+                        "volumiBTB": "Volumi BTB (pagamento una tantum basato sui volumi)"
+                    },
+                    "unitOfMeasure": {
+                        "title": "Unità di misura:",
+                        "pdl": "PDL (Postazioni Di Lavoro)",
+                        "invoices": "Fatture/anno"
+                    },
+                    "billingInfo": {
+                        "title": "Informazioni di Fatturazione",
+                        "period": "Periodicità di fatturazione:",
+                        "timing": "Fatturazione:",
+                        "alignment": "Allineamento:",
+                        "date": "Data fatturazione:"
+                    },
+                    "billingPeriods": {
+                        "annual": "Annuale",
+                        "monthly": "Mensile",
+                        "quarterly": "Trimestrale",
+                        "semiannual": "Semestrale"
+                    },
+                    "billingTimings": {
+                        "inAdvance": "Anticipata",
+                        "inArrears": "Posticipata"
+                    },
+                    "billingAlignments": {
+                        "alignToTermStart": "Allineato all'inizio del contratto",
+                        "alignToTermEnd": "Allineato alla fine del contratto"
+                    },
+                    "billingDays": {
+                        "termStartDay": "Giorno di inizio contratto",
+                        "termEndDay": "Giorno di fine contratto",
+                        "chargeTriggerDay": "Giorno di attivazione"
+                    }
                 }
             }
         }
