@@ -187,7 +187,7 @@ export const RatePlanCard: React.FC<RatePlanCardProps> = ({ ratePlan, isSelected
               {/* Indicatori di tipo di charge */}
               {hasRecurringCharges && (
                 <Chip 
-                  label={t('components.productDrawer.chargeTypes.recurring')}
+                  label={t('components.productDrawer.ratePlanCard.chargeTypes.recurring')}
                   size="small"
                   color="success"
                   variant="outlined"
@@ -197,7 +197,7 @@ export const RatePlanCard: React.FC<RatePlanCardProps> = ({ ratePlan, isSelected
               
               {hasOneTimeCharges && (
                 <Chip 
-                  label={t('components.productDrawer.chargeTypes.oneTime')}
+                  label={t('components.productDrawer.ratePlanCard.chargeTypes.oneTime')}
                   size="small"
                   color="warning"
                   variant="outlined"
