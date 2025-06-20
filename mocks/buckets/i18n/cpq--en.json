@@ -1,7 +1,492 @@
 {
     "version": "0.0.0",
     "value": {
-        "welcome_user": "Welcome, {{name}}",
-        "logged_in": "Logged in as: {{name}}"
+        "logged_in": "Logged in as: {{name}}",
+        "common": {
+            "welcome_user": "Welcome, {{name}}"
+        },
+        "nav": {
+            "dashboard": "Dashboard",
+            "customers": "Customers",
+            "quotes": "Quotes",
+            "catalog": "Catalog",
+            "reports": "Reports",
+            "reports_items": {
+                "invoicing": "Invoicing",
+                "invoices": "Invoices",
+                "reminders": "Reminders",
+                "subscriptions": "Subscriptions",
+                "customers": "Customers",
+                "customer_groups": "Customer Groups",
+                "customer_setup": "Customer Setup",
+                "packages": "Packages",
+                "shipments": "Shipments"
+            },
+            "settings": "Settings",
+            "settings_items": {
+                "vendors": "Vendors",
+                "purchase_orders": "Purchase Orders",
+                "purchase_receives": "Purchase Receipts",
+                "bills": "Bills"
+            }   
+        },
+        "features": {
+            "catalog": {
+                "title": "Product Catalog",
+                "backToQuote": "Back to Quote",
+                "backToHome": "Back to Home",
+                "searchTitle": "Search and select a product",
+                "quoteSubtitle": "Choose a product from TeamSystem catalog to add to the quote",
+                "offerSubtitle": "Choose a product from TeamSystem catalog to add to the offer",
+                "navigation.backToQuotesList": "Back to quotes list",
+                "searchPlaceholder": "Search by name or description...",
+                "categories.all": "All",
+                "categories.enterprise": "Enterprise",
+                "categories.professional": "Professional",
+                "categories.hr": "HR",
+                "categories.cross": "Cross",
+                "view.cards": "Card view",
+                "view.table": "Table view",
+                "grid.name": "Name",
+                "grid.description": "Description",
+                "grid.ratePlans": "Rate Plans",
+                "grid.actions": "Actions",
+                "grid.noDescription": "No description available.",
+                "grid.noPlans": "No plans available",
+                "grid.addButton": "Add",
+                "grid.othersPlans": "and {{count}} more...",
+                "loading.quote": "Loading quote information...",
+                "info.quoteAdd": "You are adding products to the quote",
+                "info.role": "Role",
+                "info.availableProducts": "Available products",
+                "info.visibleProducts": "Visible products",
+                "error.quote": "Error loading quote",
+                "error.products": "Error loading products",
+                "alert.noProducts": "No products match the search criteria or your role permissions.",
+                "success.addProduct": "Product successfully added to quote"
+            },
+            "customers": {
+                "title": "Customers",
+                "searchTitle": "Search and select a customer",
+                "subtitle": "Start a new offer by selecting a Customer or Prospect",
+                "searchPlaceholder": "Search by name, industry or email...",
+                "filters": {
+                    "all": "All",
+                    "customer": "Customer",
+                    "prospect": "Prospect"
+                },
+                "recent": "Recent",
+                "errors": {
+                    "loading": "Error loading customers",
+                    "createQuote": "Error creating quote",
+                    "quoteFailed": "Unable to create quote. Please try again later."
+                },
+                "alerts": {
+                    "noCustomers": "No customers found in database.",
+                    "noResults": "No customers match the search criteria."
+                },
+                "quote": {
+                    "created": "Quote created for {{name}}"
+                }
+            },
+            "migration": {
+                "title": "Migration for {{customerName}}",
+                "tabs": {
+                    "migration": "Migration",
+                    "customer": "Customer",
+                    "documents": "Documents"
+                },
+                "loading": "Loading migration data...",
+                "errors": {
+                    "loading": "Error loading data:",
+                    "noData": "No data available",
+                    "save": "Error saving migration",
+                    "fetch": "Error retrieving migration data",
+                    "unknown": "Unknown error"
+                },
+                "actions": {
+                    "addItem": "Add item",
+                    "saving": "Saving...",
+                    "complete": "Complete Migration",
+                    "change": "Change",
+                    "addDocument": "Add Document"
+                },
+                "summary": {
+                    "title": "Migration Summary",
+                    "currentValue": "Current list price:",
+                    "newValue": "New list price:",
+                    "difference": "Difference (with discounts):",
+                    "perYear": "/ year",
+                    "withDiscounts": "with discounts"
+                },
+                "products": {
+                    "current": "Current Products",
+                    "new": "New Products",
+                    "migrationPath": "Migration path:",
+                    "estimatedCost": "Estimated cost:"
+                },
+                "customer": {
+                    "info": "Customer information",
+                    "name": "Customer name",
+                    "sector": "Sector",
+                    "email": "Email"
+                },
+                "documents": {
+                    "title": "Associated documents",
+                    "description": "This section will contain documents associated with the migration, such as technical specifications, contractual terms and other relevant attachments.",
+                    "empty": "No associated documents at the moment."
+                },
+                "notifications": {
+                    "success": "Migration completed successfully"
+                }
+            },
+            "quote": {
+                "title": {
+                    "new": "New Quote",
+                    "edit": "Quote {{number}}"
+                },
+                "customer": "Customer: {{name}}",
+                "tabs": {
+                    "quote": "Quote",
+                    "customer": "Customer",
+                    "documents": "Documents"
+                },
+                "generalInfo": "General information",
+                "loading": "Loading quote...",
+                "errors": {
+                    "loading": "Error loading quote:"
+                },
+                "fields": {
+                    "status": "Status",
+                    "creationDate": "Creation date",
+                    "type": "Quote type",
+                    "validityDate": "Quote validity date",
+                    "warrantyStartDate": "Software support start date", 
+                    "cancellationMonths": "Months before cancellation",
+                    "billingFrequency": "Billing frequency",
+                    "renewable": "Renewable",
+                    "istat": "Istat",
+                    "priceBlocked": "Price blocked",
+                    "notes": "Additional notes"
+                },
+                "placeholders": {
+                    "selectStatus": "Select status",
+                    "selectType": "Select type",
+                    "selectCancellation": "Select",
+                    "selectBilling": "Select",
+                    "notes": "Enter any additional notes..."
+                },
+                "status": {
+                    "draft": "Draft",
+                    "sent": "Sent",
+                    "accepted": "Accepted",
+                    "rejected": "Rejected"
+                },
+                "type": {
+                    "new": "New sale",
+                    "migration": "Migration",
+                    "upgrade": "Upgrade"
+                },
+                "cancellation": {
+                    "1": "1 month",
+                    "3": "3 months",
+                    "6": "6 months",
+                    "12": "12 months"
+                },
+                "billing": {
+                    "monthly": "Monthly",
+                    "quarterly": "Quarterly",
+                    "biannual": "Biannual",
+                    "annual": "Annual"
+                },
+                "actions": {
+                    "addItem": "Add item",
+                    "saving": "Saving...",
+                    "save": "Save quote",
+                    "sendToCustomer": "Send to customer",
+                    "selectCustomer": "Select customer"
+                },
+                "customerInfo": {
+                    "info": "Customer information",
+                    "name": "Customer name",
+                    "sector": "Sector",
+                    "email": "Email",
+                    "selectPrompt": "Select an existing customer to associate with this quote"
+                },
+                "documentsInfo": {
+                    "title": "Associated documents",
+                    "description": "This section will contain documents attached to the quote, such as contractual terms and technical documentation."
+                },
+                "notifications": {
+                    "updated": "Quote updated successfully",
+                    "created": "Quote created successfully",
+                    "error": "Error: {{message}}"
+                }
+            }
+        }, 
+        "components": {
+            "roleSelector": {
+                "roles": {
+                    "admin": "Admin",
+                    "sales": "Sales",
+                    "touchpoint": "Touchpoint"
+                }
+            },
+            "configuredProductCard": {
+                "noDescription": "No description available",
+                "plan": "Plan: {{name}}",
+                "otherComponents": "...and other components",
+                "listPrice": "List price:",
+                "customerPrice": "Customer price:",
+                "remove": "Remove"
+            },
+            "configuredProductList": {
+                "emptyState": "No items selected. Add items from the catalog to create the quote.",
+                "addItem": "Add item",
+                "selectedItems": "Selected items",
+                "listTotal": "List total:",
+                "customerTotal": "Customer total:"
+            },
+            "customerCard": {
+                "lastContact": "Last contact",
+                "value": "Value",
+                "actions": {
+                    "creating": "Creating...",
+                    "newOffer": "New offer",
+                    "migration": "Migration"
+                }
+            },
+            "databaseStatus": {
+                "checking": "Checking DB...",
+                "error": "DB Error",
+                "errorTooltip": "DB connection error: {{message}}"
+            },
+            "productCard": {
+                "noDescription": "No description available.",
+                "availableRatePlans": "Available rate plans:",
+                "otherPlans": "+{{count}} other plans...",
+                "noPlans": "No plans available",
+                "actions": {
+                    "addToQuote": "Add to quote",
+                    "add": "Add"
+                }
+            },
+            "quoteCard": {
+                "quoteNumber": "Quote #{{number}}",
+                "createdOn": "Created on",
+                "value": "Value",
+                "perYear": "/year",
+                "edit": "Edit"
+            },
+            "migrationPathSelector": {
+                "title": "Choose a migration path",
+                "description": "The system has identified two migration paths compatible with the customer's subscription. Select the most suitable one based on operational needs and customer objectives.",
+                "mainBenefits": "Main benefits:",
+                "estimatedCost": "Estimated cost:",
+                "perYear": "/year",
+                "comparedToCurrent": "compared to current",
+                "proposedProducts": "proposed products",
+                "select": "Select"
+            },
+            "migrationProductCard": {
+                "noDescription": "No description available",
+                "plan": "Plan: {{name}}",
+                "infrastructure": "Infrastructure: {{name}}",
+                "otherComponents": "...and other components",
+                "replacesProduct": "Replaces a previous product",
+                "migratable": "Migratable",
+                "nonMigratable": "Non-migratable",
+                "migratableTooltip": "This product can be migrated",
+                "listPrice": "List price:",
+                "perYear": "/year",
+                "discountedPrice": "Discounted price:",
+                "withReplacement": "With replacement",
+                "replacementTooltip": "This product will be replaced with a newer version",
+                "substitutive": "Replacement",
+                "substitutiveTooltip": "This product replaces a previous product",
+                "removeProduct": "Remove product"
+            },
+            "migrationProductList": {
+                "defaultTitle": "Selected items",
+                "nonMigratableReason": "This product cannot be migrated",
+                "sourceHeader": {
+                    "title": "Lynfa Azienda Procedure",
+                    "subscription": "Subscription: Current Products ({{count}})"
+                },
+                "chips": {
+                    "nonMigratable": "Non-Migratable ({{count}})",
+                    "migratable": "Migratable ({{count}})"
+                },
+                "emptyStates": {
+                    "noCurrentProducts": "No products in current subscription",
+                    "noProposedProducts": "No proposed products. Add products from catalog."
+                },
+                "actions": {
+                    "addFromCatalog": "Add from catalog",
+                    "add": "Add"
+                }
+            },
+            "productDrawer": {
+                "productDrawer": {
+                    "generalInfo": "General Information",
+                    "infrastructure": "Infrastructure",
+                    "showExpiredPlans": "Show expired plans",
+                    "plan": "Plan",
+                    "pricingModel": "Pricing model",
+                    "charges": "Charges",
+                    "priceSummary": "Price summary",
+                    "total": "Total: €{{amount}}",
+                    "actions": {
+                        "close": "Close",
+                        "addToQuote": "Add to quote",
+                        "addToOffer": "Add to offer"
+                    }
+                },
+                "chargeConfigurator": {
+                    "title": "Configuration",
+                    "noConfig": "No configuration available for this plan.",
+                    "chargeTypes": {
+                        "recurring": "Recurring",
+                        "oneTime": "One-Time",
+                        "usage": "Usage-Based",
+                        "other": "Other"
+                    },
+                    "flatFee": {
+                        "fixedPrice": "Fixed price:"
+                    },
+                    "perUnit": {
+                        "quantity": "Quantity",
+                        "unitPrice": "Unit price:"
+                    },
+                    "volume": {
+                        "price": "Volume tier-based price",
+                        "priceTiers": "Price tiers:"
+                    },
+                    "usage": {
+                        "price": "Usage-based price:"
+                    },
+                    "unit": "unit"
+                },
+                "priceSummary": {
+                    "selectPlan": "Select a plan to view price details.",
+                    "summary": "Price Summary",
+                    "priceDetails": "Price Details",
+                    "billingPeriods": {
+                        "annual": "Annual",
+                        "monthly": "Monthly",
+                        "quarterly": "Quarterly",
+                        "semiannual": "Biannual"
+                    },
+                    "billingTimings": {
+                        "inAdvance": "In advance",
+                        "inArrears": "In arrears"
+                    },
+                    "fee": "Fee",
+                    "oneTimeLicense": "One-time license",
+                    "listPrice": "List price",
+                    "customerPrice": "Customer price",
+                    "feeFromSecondYear": "Fee from second year",
+                    "costPerUnit": "Average cost per",
+                    "year": "year"
+                },
+                "pricingModelInfo": {
+                    "title": "Pricing model details",
+                    "pdlModel": {
+                        "upTo30": "Up to 30 PDL:",
+                        "tieredPrice": "Tiered pricing (each quantity has a fixed price)"
+                    },
+                    "invoiceModel": {
+                        "title": "Invoice model/year:",
+                        "tieredPrice": "Tiered pricing",
+                        "thresholdPrice": "Threshold pricing",
+                        "range": " (from {{min}} to {{max}} invoices)"
+                    },
+                    "pdlUnitPrice": {
+                        "over30": "Over 30 PDL:",
+                        "description": "Unit pricing (fixed base price + cost per additional PDL)"
+                    },
+                    "planTypes": {
+                        "title": "Plan type:",
+                        "licenseAndFee": "License + Fee (one-time payment + recurring fee)",
+                        "subscription": "Full Subscription (recurring fee only)",
+                        "volumiBTB": "BTB Volumes (one-time payment based on volumes)"
+                    },
+                    "unitOfMeasure": {
+                        "title": "Unit of measure:",
+                        "pdl": "PDL (Workstations)",
+                        "invoices": "Invoices/year"
+                    },
+                    "billingInfo": {
+                        "title": "Billing Information",
+                        "period": "Billing frequency:",
+                        "timing": "Billing:",
+                        "alignment": "Alignment:",
+                        "date": "Billing date:"
+                    },
+                    "billingPeriods": {
+                        "annual": "Annual",
+                        "monthly": "Monthly",
+                        "quarterly": "Quarterly",
+                        "semiannual": "Semi-annual"
+                    },
+                    "billingTimings": {
+                        "inAdvance": "In advance",
+                        "inArrears": "In arrears"
+                    },
+                    "billingAlignments": {
+                        "alignToTermStart": "Aligned to contract start",
+                        "alignToTermEnd": "Aligned to contract end"
+                    },
+                    "billingDays": {
+                        "termStartDay": "Contract start day",
+                        "termEndDay": "Contract end day",
+                        "chargeTriggerDay": "Activation day"
+                    }
+                },
+                "productInfoSection": {
+                    "name": "Name",
+                    "description": "Description",
+                    "noDescription": "No description available",
+                    "sku": "SKU",
+                    "category": "Category",
+                    "type": "Type",
+                    "validity": "Validity",
+                    "productTypes": {
+                        "enterprise": "Enterprise",
+                        "professional": "Professional",
+                        "commercial": "Commercial"
+                    }
+                },
+                "ratePlanCard": {
+                    "expired": "Expired",
+                    "defaultDescription": "Complete solution with online access",
+                    "chargeTypes": {
+                        "recurring": "Recurring",
+                        "oneTime": "One-Time"
+                    },
+                    "billingPeriods": {
+                        "annual": "Annual",
+                        "monthly": "Monthly",
+                        "quarterly": "Quarterly",
+                        "semiannual": "Biannual"
+                    },
+                    "billingTimings": {
+                        "inAdvance": "In advance",
+                        "inArrears": "In arrears"
+                    }
+                },
+                "ratePlanList": {
+                    "noPlansAvailable": "No plans available with selected filters."
+                },
+                "technologySelector": {
+                    "technologies": {
+                        "iaas": "IAAS",
+                        "onPremise": "On Premise",
+                        "saas": "SAAS",
+                        "other": "Other"
+                    }
+                }
+            }
+        }
     }
 }
