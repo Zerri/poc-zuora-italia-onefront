@@ -432,14 +432,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = () => {
                   onClick={handleReturnToQuote}
                   startIcon={<VaporIcon icon={faArrowLeft} />}
                 >
-                  {t("backToQuote")}
+                  {t("features.catalog.backToQuote")}
                 </Button>
               ) : (
                 <Link to="/">
                   <Button 
                     variant="contained"
                   >
-                    {t("backToHome")}
+                    {t("features.catalog.backToHome")}
                   </Button>
                 </Link>
               )
