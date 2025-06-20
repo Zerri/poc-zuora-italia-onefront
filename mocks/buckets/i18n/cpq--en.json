@@ -222,6 +222,67 @@
                     "created": "Quote created successfully",
                     "error": "Error: {{message}}"
                 }
+            },
+            "quotes": {
+                "title": "Quotes",
+                "heading": "Manage your quotes",
+                "subtitle": "View, edit and create new offers for your customers",
+                "searchPlaceholder": "Search by customer, quote number...",
+                "recentQuotes": "Recent Quotes",
+                "errors": {
+                    "loading": "Error loading quotes:"
+                },
+                "alerts": {
+                    "noResults": "No quotes match the search criteria."
+                },
+                "tooltips": {
+                    "cardView": "Card view",
+                    "tableView": "Table view"
+                },
+                "filters": {
+                    "all": "All"
+                },
+                "status": {
+                    "all": "All",
+                    "draft": "Draft",
+                    "sent": "Sent",
+                    "accepted": "Accepted", 
+                    "rejected": "Rejected",
+                    "migration": "Migration"
+                },
+                "type": {
+                    "new": "New offer",
+                    "migration": "Migration",
+                    "upgrade": "Upgrade"
+                },
+                "grid": {
+                    "number": "Number",
+                    "customer": "Customer",
+                    "status": "Status",
+                    "type": "Type",
+                    "creationDate": "Creation date",
+                    "value": "Value",
+                    "actions": "Actions"
+                },
+                "actions": {
+                    "new": "New quote",
+                    "edit": "Edit",
+                    "close": "Close",
+                    "editQuote": "Edit quote"
+                },
+                "drawer": {
+                    "quoteNumber": "Quote #{{number}}",
+                    "sector": "Sector: {{sector}}",
+                    "quoteDetails": "Quote details",
+                    "createdOn": "Created on",
+                    "totalValue": "Total value",
+                    "perYear": "/year",
+                    "includedProducts": "Included products",
+                    "noProducts": "No products included in this quote.",
+                    "quantity": "Quantity: {{quantity}}",
+                    "notes": "Notes",
+                    "noNotes": "No notes available."
+                }
             }
         }, 
         "components": {
