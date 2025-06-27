@@ -1,4 +1,4 @@
-import { useEmbedDrawer, useApplicationToken } from "@1f/react-sdk";
+import { useApplicationToken } from "@1f/react-sdk";
 import { Box, Button, Drawer, Title, IconButton, VaporIcon } from "@vapor/v3-components"
 import { faClose } from "@fortawesome/pro-regular-svg-icons/faClose";
 import { faSparkles } from "@fortawesome/pro-regular-svg-icons/faSparkles";
@@ -20,8 +20,8 @@ export const AIDrawer = () => {
   const applicationToken = useApplicationToken();
 
   useEffect(() => {
-    if (window.copilotInit) {
-      window.copilotInit({
+    if ((window as any).copilotInit) {
+      (window as any).copilotInit({
         iframeId: 'il-copilot',
         appName: "demo",
         embedded: true,
