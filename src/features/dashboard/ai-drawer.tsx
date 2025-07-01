@@ -68,7 +68,7 @@ export const AIDrawer = () => {
         />
         <iframe
           id="il-copilot"
-          src="https://ai-assistant-dev.teamsystem.cloud/?embed=true&title=false&workspaceID=cbea971a-fa1a-41d1-8a6b-529659cd698c&agents=it_solutions%2Fsimple_answer_assistant&tenantID=&selector=false&useCustomLogin=true"
+          src="https://ai-assistant-dev.teamsystem.cloud/?embed=true&workspaceID=cbea971a-fa1a-41d1-8a6b-529659cd698c&agents=it_solutions%2Fsimple_answer_assistant&tenantID=&selector=false&useCustomLogin=true"
           width="800"
           height="1000"
           title="My copilot iframe"
