@@ -79,7 +79,7 @@ export const MigrationPage: React.FC<MigrationProps> = () => {
   const { isLoading, error, data: migrationData } = useQuery<MigrationData>({
     queryKey: ['migration', subscriptionId],
     queryFn: async () => {
-      const response = await fetch(`migration/${subscriptionId}`);
+      const response = await fetch(`${import.meta.env.VITE_APP_BE}/migrations/${subscriptionId}`);
       if (!response.ok) {
         throw new Error(t("features.migration.errors.fetch"));
       }

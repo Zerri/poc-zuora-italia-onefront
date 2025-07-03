@@ -29,6 +29,7 @@ interface Customer {
   ultimoContatto: string;
   valoreAnnuo?: string;
   migrabile?: boolean;
+  subscriptionId?: string;
 }
 
 // Interfaccia per i dati del preventivo
@@ -137,7 +138,7 @@ export const CustomersPage: React.FC = () => {
   
   // Funzione per avviare una migrazione
   const handleMigration = (customer: Customer): void => {
-    navigate(`/migration/${customer._id}`);
+    navigate(`/migration/${customer.subscriptionId}`);
   };
   
   // Funzione per filtrare i clienti
