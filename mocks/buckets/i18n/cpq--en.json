@@ -283,6 +283,25 @@
                     "notes": "Notes",
                     "noNotes": "No notes available."
                 }
+            },
+            "crm": {
+                "title": "CRM Integration",
+                "loading": {
+                    "customer": "Loading customer data...",
+                    "creatingQuote": "Creating quote...",
+                    "customerFound": "Customer {{name}} found",
+                    "pleaseWait": "Please wait, you will be redirected automatically"
+                },
+                "errors": {
+                    "missingCustomerId": "Customer ID missing in URL",
+                    "customerNotFound": "Customer not found",
+                    "createQuote": "Error creating quote",
+                    "contactSupport": "Contact technical support if the problem persists",
+                    "tryAgain": "Try refreshing the page or contact support"
+                },
+                "quote": {
+                    "createdFromCRM": "Quote created from CRM for {{name}}"
+                }
             }
         }, 
         "components": {

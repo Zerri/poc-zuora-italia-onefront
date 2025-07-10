@@ -5,6 +5,7 @@ import { shellNav } from "./features/shellNav";
 import { dashboard } from "./features/dashboard";
 import { examples } from "./features/examples";
 import { customers } from "./features/customers";
+import { crm_quote } from "./features/crm-quote";
 import { quote } from "./features/quote";
 import { quotes } from "./features/quotes";
 import { catalog } from "./features/catalog";
@@ -50,6 +51,6 @@ OneFront.run({
       },
     },
   },
-  features: [layout_provider, foobar, shellNav, dashboard, examples, customers, quote, quotes, catalog, report, settings, migration],
+  features: [layout_provider, foobar, shellNav, dashboard, examples, customers, crm_quote, quote, quotes, catalog, report, settings, migration],
   services: [],
 }).catch(console.error);

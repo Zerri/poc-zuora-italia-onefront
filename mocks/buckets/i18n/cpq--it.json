@@ -283,6 +283,25 @@
                     "notes": "Note",
                     "noNotes": "Nessuna nota disponibile."
                 }
+            },
+            "crm": {
+                "title": "Integrazione CRM",
+                "loading": {
+                    "customer": "Caricamento dati cliente...",
+                    "creatingQuote": "Creazione preventivo...",
+                    "customerFound": "Cliente {{name}} trovato",
+                    "pleaseWait": "Attendi, verrai reindirizzato automaticamente"
+                },
+                "errors": {
+                    "missingCustomerId": "ID cliente mancante nella URL",
+                    "customerNotFound": "Cliente non trovato",
+                    "createQuote": "Errore durante la creazione del preventivo",
+                    "contactSupport": "Contatta il supporto tecnico se il problema persiste",
+                    "tryAgain": "Prova a ricaricare la pagina o contatta il supporto"
+                },
+                "quote": {
+                    "createdFromCRM": "Preventivo creato da CRM per {{name}}"
+                }
             }
         }, 
         "components": {
