@@ -1,7 +1,7 @@
 import { fetch } from "@1f/react-sdk"
 import React, { useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import {
   VaporPage,
   CircularProgress,
@@ -53,8 +53,9 @@ export const CRMIntegrationPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const params = useParams();
   
-  const customerId = searchParams.get('customerId');
+  const customerId = searchParams.get('customerId') || params.customerId;
 
   // Query per recuperare i dati del cliente specifico
   const { 

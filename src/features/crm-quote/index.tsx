@@ -9,4 +9,12 @@ export const crm_quote = () => [
       element: <CRMIntegrationPage />,
     },
   },
+  {
+    target: '$ONE_LAYOUT_ROUTE',
+    handler: {
+      exact: true,
+      path: '/crm-quote/:customerId',
+      element: <CRMIntegrationPage />,
+    },
+  },
 ];
