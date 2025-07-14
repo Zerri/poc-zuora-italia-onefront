@@ -2,6 +2,8 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RoleProvider } from '../../contexts/RoleContext';
+import { AuthRedirectGate } from '../authRedirect/auth-redirect-gate';
+
 
 // Crea QueryClient globale
 const queryClient = new QueryClient({
@@ -26,11 +28,17 @@ const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   );
 };
 
-export const layout_provider = () => [
+export const react_root_wrapper = () => [
   {
     target: '$REACT_ROOT_WRAPPER',
     handler: {
       component: AppProviders,
+    },
+  },
+  {
+    target: "$REACT_ROOT_WRAPPER",
+    handler: {
+    component: AuthRedirectGate,
     },
   },
   // Puoi aggiungere altri target se necessario:
