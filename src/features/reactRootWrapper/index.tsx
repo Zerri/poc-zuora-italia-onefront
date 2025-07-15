@@ -1,30 +1,20 @@
-import React from 'react';
-import { QueryProvider } from './QueryClientProvider';
-import { RoleProvider } from '../../contexts/RoleContext';
-import { AuthRedirectGate } from '../authRedirect/auth-redirect-gate';
-
-
-// Provider separato per Role Context
-const AppRoleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <RoleProvider>
-      {children}
-    </RoleProvider>
-  );
-};
+import { AppQueryProvider } from './AppQueryProvider';
+import { AppAuthRedirectGate } from './AppAuthRedirectGate';
+import { AppRoleProvider } from './AppRoleProvider';
 
 // Export della configurazione con provider separati
+// L'ordinamento di questi provider è importante per garantire che le dipendenze siano rispettate
 export const react_root_wrapper = () => [
-  {
-    target: "$REACT_ROOT_WRAPPER",
-    handler: {
-      component: AuthRedirectGate,
-    },
-  },
   {
     target: '$REACT_ROOT_WRAPPER',
     handler: {
-      component: QueryProvider,
+      component: AppQueryProvider,
+    },
+  },
+  {
+    target: "$REACT_ROOT_WRAPPER",
+    handler: {
+      component: AppAuthRedirectGate,
     },
   },
   {

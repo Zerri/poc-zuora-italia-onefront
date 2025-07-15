@@ -3,11 +3,11 @@ import { useAuth } from "@1f/react-sdk";
 
 const REDIRECT_KEY = "postLoginRedirect";
 
-export const AuthRedirectGate = ({ children }: { children?: ReactNode }) => {
+export const AppAuthRedirectGate = ({ children }: { children?: ReactNode }) => {
  const { loading, error, tokenData } = useAuth();
 
  // DEBUG: Detailed log
- console.log("🔍 AuthRedirectGate render:", {
+ console.log("🔍 AppAuthRedirectGate render:", {
   loading,
   error,
   tokenData: !!tokenData,
