@@ -1,45 +1,38 @@
 import React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryProvider } from './QueryClientProvider';
 import { RoleProvider } from '../../contexts/RoleContext';
 import { AuthRedirectGate } from '../authRedirect/auth-redirect-gate';
 
 
-// Crea QueryClient globale
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 2,
-      staleTime: 5 * 60 * 1000, // 5 minuti
-      gcTime: 10 * 60 * 1000,   // 10 minuti
-    },
-  },
-});
-
-// Componente che wrappa tutti i provider necessari
-const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// Provider separato per Role Context
+const AppRoleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    
-      <QueryClientProvider client={queryClient}>
-        <RoleProvider>
-          {children}
-        </RoleProvider>
-      </QueryClientProvider>
+    <RoleProvider>
+      {children}
+    </RoleProvider>
   );
 };
 
+// Export della configurazione con provider separati
 export const react_root_wrapper = () => [
-  {
-    target: '$REACT_ROOT_WRAPPER',
-    handler: {
-      component: AppProviders,
-    },
-  },
   {
     target: "$REACT_ROOT_WRAPPER",
     handler: {
-    component: AuthRedirectGate,
+      component: AuthRedirectGate,
     },
   },
+  {
+    target: '$REACT_ROOT_WRAPPER',
+    handler: {
+      component: QueryProvider,
+    },
+  },
+  {
+    target: '$REACT_ROOT_WRAPPER',
+    handler: {
+      component: AppRoleProvider,
+    },
+  }
   // Puoi aggiungere altri target se necessario:
   // {
   //   target: '$ONE_LAYOUT_HEADER',
