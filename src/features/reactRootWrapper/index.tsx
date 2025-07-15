@@ -1,4 +1,3 @@
-// features/layout-provider/index.ts
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RoleProvider } from '../../contexts/RoleContext';
