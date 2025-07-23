@@ -10,8 +10,8 @@
     "update:deps": "npx npm-check-updates --dep dev,prod,optional,peer --root --format group -i"
   },
   "dependencies": {
-    "@1f/react-sdk": "^2.2.1",
-    "@1f/react-starter-sdk": "^2.2.1",
+    "@1f/react-sdk": "^2.2.4",
+    "@1f/react-starter-sdk": "^2.2.4",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^3.9.1",
