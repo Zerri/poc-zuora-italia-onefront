@@ -24,6 +24,7 @@ import { faToggleOff } from "@fortawesome/pro-regular-svg-icons/faToggleOff";
 import { GridColDef } from "@mui/x-data-grid-pro";
 import { useTranslation } from '@1f/react-sdk';
 import { User, UserFilters, UserActionEvent, UserStatus, UserRole, TagType } from '../../../types';
+import { faEllipsisV } from "@fortawesome/pro-regular-svg-icons/faEllipsisV";
 
 // Localization per DataGrid
 const getDataGridLocaleText = (t: any) => ({
@@ -275,6 +276,19 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
       headerAlign: 'center',
       renderCell: (params) => (
         <Box sx={{ display: 'flex', gap: 0.5, py: 1 }}>
+
+          {/* Options Button */}
+          <Tooltip title={t("features.userManagement.grid.optionsUser")}>
+            <IconButton
+              size="small"
+              variant="outlined"
+              onClick={() => onUserAction({ action: 'options', user: params.row })}
+              disabled={isLoading}
+            >
+              <VaporIcon icon={faEllipsisV} size="s" />
+            </IconButton>
+          </Tooltip>
+
           {/* Edit Button */}
           <Tooltip title={t("features.userManagement.grid.editUser")}>
             <IconButton
@@ -284,26 +298,6 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
               disabled={isLoading}
             >
               <VaporIcon icon={faEdit} size="s" />
-            </IconButton>
-          </Tooltip>
-
-          {/* Toggle Status Button */}
-          <Tooltip title={
-            params.row.status === 'Active' 
-              ? t("features.userManagement.grid.deactivateUser")
-              : t("features.userManagement.grid.activateUser")
-          }>
-            <IconButton
-              size="small"
-              variant="outlined"
-              onClick={() => onUserAction({ action: 'changeStatus', user: params.row })}
-              disabled={isLoading || params.row.status === 'Pending'}
-              color={params.row.status === 'Active' ? 'warning' : 'success'}
-            >
-              <VaporIcon 
-                icon={params.row.status === 'Active' ? faToggleOn : faToggleOff} 
-                size="s" 
-              />
             </IconButton>
           </Tooltip>
 

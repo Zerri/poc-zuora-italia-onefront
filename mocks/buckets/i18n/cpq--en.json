@@ -66,6 +66,7 @@
                     "lastAccess": "Last Access",
                     "actions": "Actions",
                     "neverAccessed": "Never",
+                    "optionsUser": "Options User",
                     "editUser": "Edit User",
                     "deleteUser": "Delete User",
                     "activateUser": "Activate User",

@@ -184,7 +184,7 @@ export interface UserMutationData {
 }
 
 // User Actions Types
-export type UserAction = 'edit' | 'delete' | 'changeStatus';
+export type UserAction = 'edit' | 'delete' | 'changeStatus' | 'options';
 
 export interface UserActionEvent {
   action: UserAction;
