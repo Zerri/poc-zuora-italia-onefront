@@ -213,26 +213,36 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
       <VaporPage
         title={t("features.userManagement.title")}
         description={t("features.userManagement.description")}
-        contentToolbar={
-          <VaporToolbar
-            variant="surface"
-            size="large"
-            contentRight={[
-              // Add User Button
-              <Button
-                key="add-user"
-                variant="contained"
-                color="primary"
-                startIcon={<VaporIcon icon={faUserPlus} />}
-                onClick={() => handleOpenDrawer()}
-                disabled={isCreating}
-              >
-                {t("features.userManagement.addUser")}
-              </Button>
-            ]}
-          />
-        }
       >
+        {/* Header Section con titolo, descrizione e bottone */}
+        <Box 
+          sx={{  
+            p: 3, 
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box>
+              <Typography variant="h5" sx={{ mb: 1, fontWeight: 'medium' }}>
+                {t("features.userManagement.section.title")}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t("features.userManagement.section.description")}
+              </Typography>
+            </Box>
+            
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<VaporIcon icon={faUserPlus} />}
+              onClick={() => handleOpenDrawer()}
+              disabled={isCreating}
+              size='small'
+            >
+              {t("features.userManagement.addUser")}
+            </Button>
+          </Box>
+        </Box>
+
         <VaporPage.Section>
           {isLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>

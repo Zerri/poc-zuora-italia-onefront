@@ -347,16 +347,6 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
         {...gridOptions}
         getRowId={(row) => row.id}
       />
-
-      {/* Contatore risultati */}
-      <Box sx={{ mt: 2 }}>
-        <Typography variant="body2" color="text.secondary">
-          {t("features.userManagement.grid.showing", { 
-            count: users.length,
-            total: users.length 
-          })}
-        </Typography>
-      </Box>
     </Box>
   );
 };

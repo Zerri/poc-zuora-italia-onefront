@@ -38,6 +38,11 @@
                 "addUser": "Add New User",
                 "searchPlaceholder": "Search by name, email or user ID...",
                 "confirmDelete": "Are you sure you want to delete user {{name}}?",
+
+                "section": {
+                    "title": "Users",
+                    "description": "Manage existing users (registry, active services and contact directory) or create new ones."
+                },
                 
                 "errors": {
                     "noPermission": "You don't have permission to access this section.",
