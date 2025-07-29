@@ -5,7 +5,6 @@ import {
   VaporPage,
   Typography,
   Button,
-  VaporToolbar,
   CircularProgress,
   Alert,
   Box,
