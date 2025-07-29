@@ -41,7 +41,7 @@
 
                 "section": {
                     "title": "Users",
-                    "description": "Manage existing users (registry, active services and contact directory) or create new ones."
+                    "description": "Manage existing users (registry, role, state) or create new ones."
                 },
                 
                 "errors": {
@@ -447,6 +447,45 @@
                 "checking": "Checking DB...",
                 "error": "DB Error",
                 "errorTooltip": "DB connection error: {{message}}"
+            },
+              "dataGrid": {
+                "toolbar": {
+                "density": "Density",
+                "densityLabel": "Density",
+                "densityCompact": "Compact",
+                "densityStandard": "Standard", 
+                "densityComfortable": "Comfortable"
+                },
+                "columns": {
+                "textFieldLabel": "Find column",
+                "textFieldPlaceholder": "Column title",
+                "dragIconLabel": "Reorder column",
+                "showAllButton": "Show all",
+                "hideAllButton": "Hide all"
+                },
+                "filter": {
+                "addFilter": "Add filter",
+                "deleteIconLabel": "Delete",
+                "operators": "Operators",
+                "operatorAnd": "And",
+                "operatorOr": "Or",
+                "columns": "Columns",
+                "inputLabel": "Value",
+                "inputPlaceholder": "Filter value"
+                },
+                "footer": {
+                "rowCounterText": "{{count}} rows",
+                "rowCounterTextSingular": "{{count}} row",
+                "totalRows": "Total Rows:"
+                },
+                "pagination": {
+                "rowsPerPage": "Rows per page:",
+                "displayedRows": "{{from}}–{{to}} of {{count}}"
+                },
+                "noRows": "No rows",
+                "noResults": "No results found",
+                "error": "An error occurred",
+                "loading": "Loading..."
             },
             "productCard": {
                 "noDescription": "No description available.",

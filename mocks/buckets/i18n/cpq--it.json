@@ -41,7 +41,7 @@
 
                 "section": {
                     "title": "Utenti", 
-                    "description": "Gestisci gli utenti esistenti (anagrafica, servizi attivi e rubrica dei contatti) o creane di nuovi."
+                    "description": "Gestisci gli utenti esistenti (anagrafica, ruolo e stato) o creane di nuovi."
                 },
                 
                 "errors": {
@@ -447,6 +447,45 @@
                 "checking": "Verifica DB...",
                 "error": "Errore DB",
                 "errorTooltip": "Errore connessione DB: {{message}}"
+            },
+            "dataGrid": {
+                "toolbar": {
+                "density": "Densità",
+                "densityLabel": "Densità",
+                "densityCompact": "Compatta",
+                "densityStandard": "Standard",
+                "densityComfortable": "Comoda"
+                },
+                "columns": {
+                "textFieldLabel": "Trova colonna",
+                "textFieldPlaceholder": "Titolo colonna",
+                "dragIconLabel": "Riordina colonna",
+                "showAllButton": "Mostra tutto",
+                "hideAllButton": "Nascondi tutto"
+                },
+                "filter": {
+                "addFilter": "Aggiungi filtro",
+                "deleteIconLabel": "Elimina",
+                "operators": "Operatori",
+                "operatorAnd": "E",
+                "operatorOr": "O",
+                "columns": "Colonne", 
+                "inputLabel": "Valore",
+                "inputPlaceholder": "Valore filtro"
+                },
+                "footer": {
+                "rowCounterText": "{{count}} righe",
+                "rowCounterTextSingular": "{{count}} riga",
+                "totalRows": "Righe totali:"
+                },
+                "pagination": {
+                "rowsPerPage": "Righe per pagina:",
+                "displayedRows": "{{from}}–{{to}} di {{count}}"
+                },
+                "noRows": "Nessuna riga",
+                "noResults": "Nessun risultato trovato",
+                "error": "Si è verificato un errore",
+                "loading": "Caricamento..."
             },
             "productCard": {
                 "noDescription": "Nessuna descrizione disponibile.",

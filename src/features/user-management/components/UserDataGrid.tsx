@@ -25,6 +25,57 @@ import { GridColDef } from "@mui/x-data-grid-pro";
 import { useTranslation } from '@1f/react-sdk';
 import { User, UserFilters, UserActionEvent, UserStatus, UserRole, TagType } from '../../../types';
 
+// Localization per DataGrid
+const getDataGridLocaleText = (t: any) => ({
+  // Toolbar
+  toolbarDensity: t("components.dataGrid.toolbar.density"),
+  toolbarDensityLabel: t("components.dataGrid.toolbar.densityLabel"),
+  toolbarDensityCompact: t("components.dataGrid.toolbar.densityCompact"),
+  toolbarDensityStandard: t("components.dataGrid.toolbar.densityStandard"),
+  toolbarDensityComfortable: t("components.dataGrid.toolbar.densityComfortable"),
+  
+  // Columns
+  columnsPanelTextFieldLabel: t("components.dataGrid.columns.textFieldLabel"),
+  columnsPanelTextFieldPlaceholder: t("components.dataGrid.columns.textFieldPlaceholder"),
+  columnsPanelDragIconLabel: t("components.dataGrid.columns.dragIconLabel"),
+  columnsPanelShowAllButton: t("components.dataGrid.columns.showAllButton"),
+  columnsPanelHideAllButton: t("components.dataGrid.columns.hideAllButton"),
+  
+  // Filter
+  filterPanelAddFilter: t("components.dataGrid.filter.addFilter"),
+  filterPanelDeleteIconLabel: t("components.dataGrid.filter.deleteIconLabel"),
+  filterPanelOperators: t("components.dataGrid.filter.operators"),
+  filterPanelOperatorAnd: t("components.dataGrid.filter.operatorAnd"),
+  filterPanelOperatorOr: t("components.dataGrid.filter.operatorOr"),
+  filterPanelColumns: t("components.dataGrid.filter.columns"),
+  filterPanelInputLabel: t("components.dataGrid.filter.inputLabel"),
+  filterPanelInputPlaceholder: t("components.dataGrid.filter.inputPlaceholder"),
+  
+  // Footer
+  footerRowCounterText: (count: number) =>
+    count !== 1
+      ? t("components.dataGrid.footer.rowCounterText", { count })
+      : t("components.dataGrid.footer.rowCounterTextSingular", { count }),
+  footerTotalRows: t("components.dataGrid.footer.totalRows"),
+  
+  // Pagination
+  MuiTablePagination: {
+    labelRowsPerPage: t("components.dataGrid.pagination.rowsPerPage"),
+    labelDisplayedRows: ({ from, to, count }: { from: number; to: number; count: number }) =>
+      t("components.dataGrid.pagination.displayedRows", { from, to, count }),
+  },
+  
+  // No rows
+  noRowsLabel: t("components.dataGrid.noRows"),
+  noResultsOverlayLabel: t("components.dataGrid.noResults"),
+  
+  // Error
+  errorOverlayDefaultLabel: t("components.dataGrid.error"),
+  
+  // Loading
+  loadingOverlayLabel: t("components.dataGrid.loading"),
+});
+
 interface UserDataGridProps {
   users: User[];
   filters: UserFilters;
@@ -72,6 +123,24 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
     const resetFilters = { searchTerm: '', status: 'All', role: 'All' };
     setTempFilters(resetFilters);
     onApplyFilters(resetFilters);
+  };
+
+  // Opzioni DataGrid con localizzazione
+  const gridOptions = {
+    pageSize: 10,
+    rowsPerPageOptions: [5, 10, 25, 50],
+    autoHeight: true,
+    hideFooterSelectedRowCount: true,
+    disableColumnMenu: true,
+    disableSelectionOnClick: true,
+    loading: isLoading,
+    localeText: getDataGridLocaleText(t),
+    sx: {
+      '& .MuiDataGrid-cell': {
+        maxHeight: 'none !important',
+        whiteSpace: 'normal'
+      }
+    }
   };
 
   // Verifica se ci sono filtri attivi
@@ -214,7 +283,7 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
               onClick={() => onUserAction({ action: 'edit', user: params.row })}
               disabled={isLoading}
             >
-              <VaporIcon icon={faEdit} size="sm" />
+              <VaporIcon icon={faEdit} size="s" />
             </IconButton>
           </Tooltip>
 
@@ -233,7 +302,7 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
             >
               <VaporIcon 
                 icon={params.row.status === 'Active' ? faToggleOn : faToggleOff} 
-                size="sm" 
+                size="s" 
               />
             </IconButton>
           </Tooltip>
@@ -247,30 +316,13 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
               disabled={isLoading}
               color="error"
             >
-              <VaporIcon icon={faTrash} size="sm" />
+              <VaporIcon icon={faTrash} size="s" />
             </IconButton>
           </Tooltip>
         </Box>
       )
     }
   ];
-
-  // Opzioni DataGrid
-  const gridOptions = {
-    pageSize: 10,
-    rowsPerPageOptions: [5, 10, 25, 50],
-    autoHeight: true,
-    hideFooterSelectedRowCount: true,
-    disableColumnMenu: true,
-    disableSelectionOnClick: true,
-    loading: isLoading,
-    sx: {
-      '& .MuiDataGrid-cell': {
-        maxHeight: 'none !important',
-        whiteSpace: 'normal'
-      }
-    }
-  };
 
   return (
     <Box>
