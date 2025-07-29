@@ -13,6 +13,7 @@ import { report } from "./features/report";
 import { settings } from "./features/settings";
 import { migration } from "./features/migration";
 import { react_root_wrapper } from "./features/reactRootWrapper";
+import { userManagement } from "./features/user-management";
 
 const proxyBaseUrl = import.meta.env.VITE_APP_PROXY_BASE_URL || "/api";
 
@@ -51,6 +52,6 @@ OneFront.run({
       },
     },
   },
-  features: [react_root_wrapper, foobar, shellNav, dashboard, examples, customers, crm_quote, quote, quotes, catalog, report, settings, migration],
+  features: [react_root_wrapper, foobar, shellNav, dashboard, examples, customers, crm_quote, quote, quotes, catalog, report, settings, migration, userManagement],
   services: [],
 }).catch(console.error);

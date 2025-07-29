@@ -146,3 +146,47 @@ export interface MigrationPath {
   benefits?: string[];
   products?: Product[];
 }
+
+// User Management Types
+export type UserRole = 'Administrator' | 'User' | 'Moderator';
+export type UserStatus = 'Active' | 'Inactive' | 'Pending';
+
+export interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  role: UserRole;
+  status: UserStatus;
+  registrationDate: string;
+  lastAccess?: string;
+  avatar?: string;
+}
+
+export interface UserFormData {
+  fullName: string;
+  email: string;
+  role: UserRole;
+  status: UserStatus;
+}
+
+export interface UserFilters {
+  status: string; // 'All' | UserStatus
+  role: string;   // 'All' | UserRole  
+  searchTerm: string;
+}
+
+export interface UserMutationData {
+  id?: string;
+  fullName: string;
+  email: string;
+  role: UserRole;
+  status: UserStatus;
+}
+
+// User Actions Types
+export type UserAction = 'edit' | 'delete' | 'changeStatus';
+
+export interface UserActionEvent {
+  action: UserAction;
+  user: User;
+}

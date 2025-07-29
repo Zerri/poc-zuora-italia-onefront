@@ -8,6 +8,7 @@ import { faGauge } from "@fortawesome/pro-regular-svg-icons/faGauge";
 import { faUserTie } from "@fortawesome/pro-regular-svg-icons/faUserTie";
 import { faFileInvoice } from "@fortawesome/pro-regular-svg-icons/faFileInvoice";
 import { faBook } from "@fortawesome/pro-regular-svg-icons/faBook";
+import { faUsers } from "@fortawesome/pro-regular-svg-icons/faUsers";
 import { useTranslation } from '@1f/react-sdk';
 
 export const NavContent = () => {
@@ -122,6 +123,13 @@ export const NavContent = () => {
       // children: catalogItems
       onClickFunction: () => {
         navigate("/catalog");
+      },
+    },
+    {
+      label: t("nav.userManagement"),
+      icon: <VaporIcon icon={faUsers} />,
+      onClickFunction: () => {
+        navigate("/user-management");
       },
     },
     {

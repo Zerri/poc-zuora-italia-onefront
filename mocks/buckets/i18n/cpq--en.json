@@ -10,6 +10,7 @@
             "customers": "Customers",
             "quotes": "Quotes",
             "catalog": "Catalog",
+            "userManagement": "User Management",
             "reports": "Reports",
             "reports_items": {
                 "invoicing": "Invoicing",
@@ -31,6 +32,107 @@
             }   
         },
         "features": {
+            "userManagement": {
+                "title": "User Management",
+                "description": "View, edit and manage system users.",
+                "addUser": "Add New User",
+                "searchPlaceholder": "Search by name, email or user ID...",
+                "confirmDelete": "Are you sure you want to delete user {{name}}?",
+                
+                "errors": {
+                    "noPermission": "You don't have permission to access this section.",
+                    "loadFailed": "Error loading users",
+                    "actionFailed": "Error executing action",
+                    "saveFailed": "Error saving user"
+                },
+                
+                "success": {
+                    "userCreated": "User created successfully",
+                    "userUpdated": "User updated successfully",
+                    "userDeleted": "User deleted successfully",
+                    "statusChanged": "User status changed successfully"
+                },
+                
+                "grid": {
+                    "user": "User",
+                    "role": "Role",
+                    "status": "Status",
+                    "registrationDate": "Registration Date",
+                    "lastAccess": "Last Access",
+                    "actions": "Actions",
+                    "neverAccessed": "Never",
+                    "editUser": "Edit User",
+                    "deleteUser": "Delete User",
+                    "activateUser": "Activate User",
+                    "deactivateUser": "Deactivate User",
+                    "showing": "Showing {{count}} of {{total}} users"
+                },
+                
+                "filters": {
+                    "all": "All",
+                    "status": "Status",
+                    "role": "Role",
+                    "apply": "Apply Filters",
+                    "reset": "Reset",
+                    "search": "Search",
+                    "customer": "Customer"
+                },
+                
+                "status": {
+                    "active": "Active",
+                    "inactive": "Inactive",
+                    "pending": "Pending"
+                },
+                
+                "roles": {
+                    "administrator": "Administrator",
+                    "user": "User",
+                    "moderator": "Moderator"
+                },
+                
+                "drawer": {
+                    "addUser": "Add New User",
+                    "editUser": "Edit User",
+                    "addDescription": "Fill in the details to create a new user account.",
+                    "editDescription": "Edit user information.",
+                    "confirmClose": "Are you sure you want to close? Unsaved changes will be lost.",
+                    
+                    "userInformation": "User Information",
+                    "fullName": "Full Name",
+                    "fullNamePlaceholder": "e.g. John Doe",
+                    "email": "Email Address",
+                    "emailPlaceholder": "e.g. john.doe@example.com",
+                    
+                    "roleAndPermissions": "Role and Permissions",
+                    "role": "Role",
+                    "roleDescriptions": {
+                        "user": "Can access the system and use basic features",
+                        "moderator": "Has advanced privileges to moderate content and users",
+                        "administrator": "Full access to all system features"
+                    },
+                    
+                    "accountStatus": "Account Status",
+                    "statusDescriptions": {
+                        "active": "User can log in and access the system",
+                        "inactive": "User is disabled and cannot log in",
+                        "pending": "User account is awaiting activation"
+                    },
+                    
+                    "statusChangeWarning": "Status change will take effect immediately on user access.",
+                    
+                    "validation": {
+                        "fullNameRequired": "Full name is required",
+                        "fullNameTooShort": "Name must be at least 2 characters",
+                        "emailRequired": "Email address is required",
+                        "emailInvalid": "Please enter a valid email address"
+                    },
+                    
+                    "cancel": "Cancel",
+                    "createUser": "Create User",
+                    "updateUser": "Update User",
+                    "saving": "Saving..."
+                }
+            },
             "catalog": {
                 "title": "Product Catalog",
                 "backToQuote": "Back to Quote",
