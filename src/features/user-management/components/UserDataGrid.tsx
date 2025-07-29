@@ -188,24 +188,24 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
       flex: 2,
       renderCell: (params) => (
         <Box sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
-          <Avatar
+          {/* <Avatar
             sx={{ width: 32, height: 32, mr: 2 }}
             src={params.row.avatar}
           >
             {params.row.fullName.charAt(0).toUpperCase()}
-          </Avatar>
+          </Avatar> */}
           <Box>
             <Typography 
               variant="body2" 
               fontWeight="medium"
-              sx={{ lineHeight: 1.2 }}
+              sx={{ lineHeight: 1.2, textAlign: 'left' }}
             >
               {params.row.fullName}
             </Typography>
             <Typography 
-              variant="caption" 
+              variant="body2"
               color="text.secondary"
-              sx={{ lineHeight: 1.2 }}
+              sx={{ lineHeight: 1.2, textAlign: 'left'  }}
             >
               {params.row.email}
             </Typography>
