@@ -5,26 +5,23 @@ import {
   Box,
   Typography,
   Button,
-  ButtonGroup,
   Chip,
   IconButton,
   Tooltip,
   VaporIcon,
-  Avatar,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   TextField
 } from "@vapor/v3-components";
+import { SelectChangeEvent } from '@mui/material/Select';
 import { faEdit } from "@fortawesome/pro-regular-svg-icons/faEdit";
 import { faTrash } from "@fortawesome/pro-regular-svg-icons/faTrash";
-import { faToggleOn } from "@fortawesome/pro-regular-svg-icons/faToggleOn";
-import { faToggleOff } from "@fortawesome/pro-regular-svg-icons/faToggleOff";
+import { faEllipsisV } from "@fortawesome/pro-regular-svg-icons/faEllipsisV";
 import { GridColDef } from "@mui/x-data-grid-pro";
 import { useTranslation } from '@1f/react-sdk';
 import { User, UserFilters, UserActionEvent, UserStatus, UserRole, TagType } from '../../../types';
-import { faEllipsisV } from "@fortawesome/pro-regular-svg-icons/faEllipsisV";
 
 // Localization per DataGrid
 const getDataGridLocaleText = (t: any) => ({
@@ -77,12 +74,19 @@ const getDataGridLocaleText = (t: any) => ({
   loadingOverlayLabel: t("components.dataGrid.loading"),
 });
 
+// Interfaces
 interface UserDataGridProps {
   users: User[];
   filters: UserFilters;
   onUserAction: (event: UserActionEvent) => void;
   onApplyFilters: (filters: { status: string; role: string; searchTerm: string }) => void;
   isLoading?: boolean;
+}
+
+interface TempFilters {
+  searchTerm: string;
+  status: string;
+  role: string;
 }
 
 /**
@@ -99,7 +103,7 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
   const { t } = useTranslation();
 
   // State locale per i filtri temporanei (inclusa la ricerca)
-  const [tempFilters, setTempFilters] = useState({
+  const [tempFilters, setTempFilters] = useState<TempFilters>({
     searchTerm: filters.searchTerm,
     status: filters.status,
     role: filters.role
@@ -114,6 +118,19 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
     });
   }, [filters]);
 
+  // Event handlers per i filtri
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTempFilters(prev => ({ ...prev, searchTerm: event.target.value }));
+  };
+
+  const handleStatusChange = (event: SelectChangeEvent<unknown>) => {
+    setTempFilters(prev => ({ ...prev, status: event.target.value as string }));
+  };
+
+  const handleRoleChange = (event: SelectChangeEvent<unknown>) => {
+    setTempFilters(prev => ({ ...prev, role: event.target.value as string }));
+  };
+
   // Gestione applicazione filtri
   const handleApplyFilters = () => {
     onApplyFilters(tempFilters);
@@ -121,7 +138,7 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
 
   // Gestione reset filtri
   const handleResetFilters = () => {
-    const resetFilters = { searchTerm: '', status: 'All', role: 'All' };
+    const resetFilters: TempFilters = { searchTerm: '', status: 'All', role: 'All' };
     setTempFilters(resetFilters);
     onApplyFilters(resetFilters);
   };
@@ -150,7 +167,7 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
                         tempFilters.status !== filters.status || 
                         tempFilters.role !== filters.role;
 
-  // Funzione per ottenere il colore del tag in base allo status
+  // Utility functions
   const getStatusTagType = (status: UserStatus): TagType => {
     switch(status) {
       case 'Active': return 'success';
@@ -160,7 +177,6 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
     }
   };
 
-  // Funzione per ottenere il colore del tag in base al ruolo
   const getRoleTagType = (role: UserRole): TagType => {
     switch(role) {
       case 'Administrator': return 'tone1'; // blu
@@ -170,7 +186,6 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
     }
   };
 
-  // Funzione per formattare la data
   const formatDate = (dateString: string): string => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -189,12 +204,6 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
       flex: 2,
       renderCell: (params) => (
         <Box sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
-          {/* <Avatar
-            sx={{ width: 32, height: 32, mr: 2 }}
-            src={params.row.avatar}
-          >
-            {params.row.fullName.charAt(0).toUpperCase()}
-          </Avatar> */}
           <Box>
             <Typography 
               variant="body2" 
@@ -206,7 +215,7 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
             <Typography 
               variant="body2"
               color="text.secondary"
-              sx={{ lineHeight: 1.2, textAlign: 'left'  }}
+              sx={{ lineHeight: 1.2, textAlign: 'left' }}
             >
               {params.row.email}
             </Typography>
@@ -276,7 +285,6 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
       headerAlign: 'center',
       renderCell: (params) => (
         <Box sx={{ display: 'flex', gap: 0.5, py: 1 }}>
-
           {/* Options Button */}
           <Tooltip title={t("features.userManagement.grid.optionsUser")}>
             <IconButton
@@ -328,7 +336,7 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
           label={t("features.userManagement.filters.search")}
           placeholder={t("features.userManagement.searchPlaceholder")}
           value={tempFilters.searchTerm}
-          onChange={(e) => setTempFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
+          onChange={handleSearchChange}
           sx={{ minWidth: 250, maxWidth: 300 }}
         />
 
@@ -338,7 +346,7 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
           <Select
             value={tempFilters.status}
             label={t("features.userManagement.filters.status")}
-            onChange={(e) => setTempFilters(prev => ({ ...prev, status: e.target.value }))}
+            onChange={handleStatusChange}
           >
             <MenuItem value="All">{t("features.userManagement.filters.all")}</MenuItem>
             <MenuItem value="Active">{t("features.userManagement.status.active")}</MenuItem>
@@ -353,7 +361,7 @@ export const UserDataGrid: React.FC<UserDataGridProps> = ({
           <Select
             value={tempFilters.role}
             label={t("features.userManagement.filters.role")}
-            onChange={(e) => setTempFilters(prev => ({ ...prev, role: e.target.value }))}
+            onChange={handleRoleChange}
           >
             <MenuItem value="All">{t("features.userManagement.filters.all")}</MenuItem>
             <MenuItem value="Administrator">{t("features.userManagement.roles.administrator")}</MenuItem>

@@ -212,7 +212,6 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
     <VaporThemeProvider>
       <VaporPage
         title={t("features.userManagement.title")}
-        description={t("features.userManagement.description")}
       >
         {/* Header Section con titolo, descrizione e bottone */}
         <Box 
@@ -275,9 +274,14 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        message={snackbar.message}
-        severity={snackbar.severity}
-      />
+      >
+        <Alert
+          severity={snackbar.severity}
+          onClose={handleCloseSnackbar}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </VaporThemeProvider>
   );
 };
