@@ -26,7 +26,7 @@ import {
 import { UserDataGrid } from './components/UserDataGrid';
 import { UserDrawer } from './components/UserDrawer';
 // Import hooks
-import { useUsers } from './hooks/useUsers';
+import { useUsersCRUD } from '../../hooks/useUsersCRUD';
 
 interface UserManagementPageProps {}
 
@@ -59,16 +59,16 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
 
   // Hook per gestire gli utenti
   const {
-    users,
+    items: users,
     isLoading,
     error,
-    createUser,
-    updateUser,
-    deleteUser,
+    createItem: createUser,
+    updateItem: updateUser,
+    deleteItem: deleteUser,
     isCreating,
     isUpdating,
     isDeleting
-  } = useUsers(filters);
+  } = useUsersCRUD(filters);
 
   // Verifica permessi - solo admin può accedere
   if (role !== 'admin') {

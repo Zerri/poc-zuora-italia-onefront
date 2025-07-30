@@ -1,3 +1,6 @@
+export * from './types/generic';
+export * from './types/user';
+
 export type Role = 'admin' | 'sales' | 'touchpoint';
 
 export type TagType = 
