@@ -1,5 +1,8 @@
+import type { User } from './types/user';
+
 export * from './types/generic';
 export * from './types/user';
+export * from './types/grid';
 
 export type Role = 'admin' | 'sales' | 'touchpoint';
 
@@ -153,17 +156,6 @@ export interface MigrationPath {
 // User Management Types
 export type UserRole = 'Administrator' | 'User' | 'Moderator';
 export type UserStatus = 'Active' | 'Inactive' | 'Pending';
-
-export interface User {
-  id: string;
-  fullName: string;
-  email: string;
-  role: UserRole;
-  status: UserStatus;
-  registrationDate: string;
-  lastAccess?: string;
-  avatar?: string;
-}
 
 export interface UserFormData {
   fullName: string;

@@ -3,30 +3,24 @@ import React, { useState } from 'react';
 import {
   VaporThemeProvider,
   VaporPage,
-  Typography,
-  Button,
+  // Typography,
+  // Button,
   CircularProgress,
   Alert,
   Box,
-  VaporIcon,
+  // VaporIcon,
   Snackbar,
 } from "@vapor/v3-components";
-import { faUserPlus } from "@fortawesome/pro-regular-svg-icons/faUserPlus";
+// import { faUserPlus } from "@fortawesome/pro-regular-svg-icons/faUserPlus";
 import { useTranslation } from '@1f/react-sdk';
 import { useRole } from '../../contexts/RoleContext';
-// Import types
-import { 
-  User, 
-  UserFilters, 
-  UserActionEvent,
-  SnackbarState,
-  UserFormData
-} from '../../types';
-// Import components
-import { UserDataGrid } from './components/UserDataGrid';
+// Import types corretti
+import { SnackbarState } from '../../types';
+import type { User, UserFilters, UserMutationData } from '../../types/user';
+import { GenericDataGrid } from '../../components/GenericDataGrid';
 import { UserDrawer } from './components/UserDrawer';
-// Import hooks
 import { useUsersCRUD } from '../../hooks/useUsersCRUD';
+import { getUserGridConfig } from '../../config/userGridConfig';
 
 interface UserManagementPageProps {}
 
@@ -66,8 +60,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
     updateItem: updateUser,
     deleteItem: deleteUser,
     isCreating,
-    isUpdating,
-    isDeleting
+    isUpdating
   } = useUsersCRUD(filters);
 
   // Verifica permessi - solo admin può accedere
@@ -85,98 +78,39 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
     );
   }
 
-  // Handlers per i filtri - ora gestiscono tutto insieme
-  const handleApplyFilters = (newFilters: { status: string; role: string; searchTerm: string }) => {
-    setFilters(prev => ({ 
-      ...prev, 
-      status: newFilters.status,
-      role: newFilters.role,
-      searchTerm: newFilters.searchTerm
-    }));
-  };
-
-  // Handlers per drawer
-  const handleOpenDrawer = (user?: User) => {
-    if (user) {
-      setSelectedUser(user);
-      setIsEditing(true);
-    } else {
-      setSelectedUser(null);
-      setIsEditing(false);
-    }
-    setDrawerOpen(true);
-  };
-
-  const handleCloseDrawer = () => {
-    setDrawerOpen(false);
-    setSelectedUser(null);
-    setIsEditing(false);
-  };
-
-  // Handler per azioni utente
-  const handleUserAction = async (event: UserActionEvent) => {
-    const { action, user } = event;
-    
-    try {
-      switch (action) {
-        case 'edit':
-          handleOpenDrawer(user);
-          break;
-        case 'delete':
-          if (window.confirm(t("features.userManagement.confirmDelete", { name: user.fullName }))) {
-            await deleteUser.mutateAsync(user.id);
-            setSnackbar({
-              open: true,
-              message: t("features.userManagement.success.userDeleted"),
-              severity: 'success'
-            });
-          }
-          break;
-        case 'changeStatus':
-          const newStatus = user.status === 'Active' ? 'Inactive' : 'Active';
-          await updateUser.mutateAsync({
-            id: user.id,
-            fullName: user.fullName,
-            email: user.email,
-            role: user.role,
-            status: newStatus
-          });
-          setSnackbar({
-            open: true,
-            message: t("features.userManagement.success.statusChanged"),
-            severity: 'success'
-          });
-          break;
-      }
-    } catch (error) {
-      console.error('User action failed:', error);
-      setSnackbar({
-        open: true,
-        message: t("features.userManagement.errors.actionFailed"),
-        severity: 'error'
-      });
-    }
-  };
-
-  // Handler per salvataggio utente
-  const handleSaveUser = async (userData: UserFormData) => {
+  // Handler per salvataggio utente (CORRETTO)
+  const handleSaveUser = async (userData: UserMutationData) => {
     try {
       if (isEditing && selectedUser) {
-        await updateUser.mutateAsync({ ...userData, id: selectedUser.id });
+        // Aggiornamento utente esistente
+        await updateUser.mutateAsync({
+          ...userData,
+          id: selectedUser.id
+        });
         setSnackbar({
           open: true,
           message: t("features.userManagement.success.userUpdated"),
           severity: 'success'
         });
       } else {
-        await createUser.mutateAsync(userData);
+        // Creazione nuovo utente
+        await createUser.mutateAsync({
+          ...userData,
+          registrationDate: new Date().toISOString(),
+          lastAccess: null
+        });
         setSnackbar({
           open: true,
           message: t("features.userManagement.success.userCreated"),
           severity: 'success'
         });
       }
-      handleCloseDrawer();
+      
+      // Chiudi il drawer
+      setDrawerOpen(false);
+      setSelectedUser(null);
+      setIsEditing(false);
+      
     } catch (error) {
       console.error('Save user failed:', error);
       setSnackbar({
@@ -190,6 +124,62 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   // Handler per chiudere snackbar
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
+  };
+
+  // Handler per aprire drawer in modalità aggiungi
+  const handleAdd = () => {
+    setSelectedUser(null);
+    setIsEditing(false);
+    setDrawerOpen(true);
+  };
+
+  // Handler per aprire drawer in modalità modifica
+  const handleEdit = (user: User) => {
+    setSelectedUser(user);
+    setIsEditing(true);
+    setDrawerOpen(true);
+  };
+
+  // Handler per eliminare utente
+  const handleDelete = async (user: User) => {
+    if (window.confirm(t('features.userManagement.confirmDelete', { name: user.name }))) {
+      try {
+        await deleteUser.mutateAsync(user.id.toString());
+        setSnackbar({
+          open: true,
+          message: t('features.userManagement.success.userDeleted'),
+          severity: 'success'
+        });
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          message: t('features.userManagement.errors.actionFailed'),
+          severity: 'error'
+        });
+      }
+    }
+  };
+
+  // Handler per cambiare stato utente
+  const handleToggleStatus = async (user: User) => {
+    const newStatus: 'active' | 'inactive' = user.status === 'active' ? 'inactive' : 'active';
+    try {
+      await updateUser.mutateAsync({
+        ...user,
+        status: newStatus
+      });
+      setSnackbar({
+        open: true,
+        message: t('features.userManagement.success.statusChanged'),
+        severity: 'success'
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: t('features.userManagement.errors.actionFailed'),
+        severity: 'error'
+      });
+    }
   };
 
   // Gestione errori di caricamento
@@ -209,15 +199,9 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
 
   return (
     <VaporThemeProvider>
-      <VaporPage
-        title={t("features.userManagement.title")}
-      >
-        {/* Header Section con titolo, descrizione e bottone */}
-        <Box 
-          sx={{  
-            p: 3, 
-          }}
-        >
+      <VaporPage title={t("features.userManagement.title")}>
+        {/* Header Section con titolo, descrizione e bottone
+        <Box sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box>
               <Typography variant="h5" sx={{ mb: 1, fontWeight: 'medium' }}>
@@ -232,14 +216,14 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
               variant="contained"
               color="primary"
               startIcon={<VaporIcon icon={faUserPlus} />}
-              onClick={() => handleOpenDrawer()}
+              onClick={handleAdd}
               disabled={isCreating}
               size='small'
             >
               {t("features.userManagement.addUser")}
             </Button>
           </Box>
-        </Box>
+        </Box> */}
 
         <VaporPage.Section>
           {isLoading ? (
@@ -247,12 +231,14 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
               <CircularProgress />
             </Box>
           ) : (
-            <UserDataGrid
-              users={users || []}
-              filters={filters}
-              onUserAction={handleUserAction}
-              onApplyFilters={handleApplyFilters}
-              isLoading={isUpdating || isDeleting}
+            <GenericDataGrid
+              items={users}
+              config={getUserGridConfig(handleEdit, handleDelete, handleToggleStatus)}
+              currentFilters={filters}
+              onFiltersChange={setFilters}
+              onAdd={handleAdd}
+              isLoading={isLoading}
+              error={error}
             />
           )}
         </VaporPage.Section>
@@ -261,11 +247,15 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
       {/* User Drawer */}
       <UserDrawer
         open={drawerOpen}
-        onClose={handleCloseDrawer}
+        onClose={() => {
+          setDrawerOpen(false);
+          setSelectedUser(null);
+          setIsEditing(false);
+        }}
         user={selectedUser}
         isEditing={isEditing}
         onSave={handleSaveUser}
-        isLoading={isCreating || isUpdating}
+        isSaving={isCreating || isUpdating}
       />
 
       {/* Snackbar per messaggi */}

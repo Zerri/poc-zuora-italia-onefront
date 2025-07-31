@@ -2,124 +2,157 @@
 import React, { useState, useEffect } from 'react';
 import {
   Drawer,
-  Title,
-  IconButton,
-  VaporIcon,
   Box,
   Typography,
   TextField,
+  Button,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  Button,
-  VaporToolbar,
+  Alert,
   Divider,
-  Alert
+  IconButton,
+  VaporIcon
 } from "@vapor/v3-components";
 import { faClose } from "@fortawesome/pro-regular-svg-icons/faClose";
 import { useTranslation } from '@1f/react-sdk';
-import { User, UserFormData, UserRole, UserStatus } from '../../../types';
+import type { User, UserMutationData } from '../../../types/user';
 
 interface UserDrawerProps {
   open: boolean;
   onClose: () => void;
+  onSave: (userData: UserMutationData) => void;
   user: User | null;
   isEditing: boolean;
-  onSave: (userData: UserFormData) => void;
-  isLoading?: boolean;
+  isSaving?: boolean;
 }
 
 /**
- * @component UserDrawer
- * @description Drawer for adding/editing users
+ * Drawer per creare/modificare utenti
  */
 export const UserDrawer: React.FC<UserDrawerProps> = ({
   open,
   onClose,
+  onSave,
   user,
   isEditing,
-  onSave,
-  isLoading = false
+  isSaving = false
 }) => {
   const { t } = useTranslation();
 
-  // Form state
-  const [formData, setFormData] = useState<UserFormData>({
-    fullName: '',
+  // State del form
+  const [formData, setFormData] = useState<UserMutationData>({
+    name: '',
     email: '',
-    role: 'User',
-    status: 'Active'
+    role: 'user',
+    status: 'active'
   });
 
-  // Validation errors
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  // State per errori di validazione
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Initialize form when user changes
+  // State per indicare se ci sono modifiche non salvate
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Inizializza il form quando cambia l'utente o la modalità
   useEffect(() => {
-    if (isEditing && user) {
+    if (user && isEditing) {
       setFormData({
-        fullName: user.fullName,
+        id: user.id,
+        name: user.name,
         email: user.email,
         role: user.role,
-        status: user.status
+        status: user.status,
+        registrationDate: user.registrationDate,
+        lastAccess: user.lastAccess
       });
+      setHasUnsavedChanges(false);
     } else {
-      // Reset form for new user
       setFormData({
-        fullName: '',
+        name: '',
         email: '',
-        role: 'User',
-        status: 'Active'
+        role: 'user',
+        status: 'active'
       });
+      setHasUnsavedChanges(false);
     }
-    // Clear errors when user changes
     setErrors({});
-  }, [user, isEditing]);
+  }, [user, isEditing, open]);
 
-  // Handle input changes
-  const handleInputChange = (field: keyof UserFormData, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-
-    // Clear error for this field
-    if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: ''
-      }));
+  // Controlla se ci sono modifiche non salvate
+  useEffect(() => {
+    if (isEditing && user) {
+      const hasChanges = 
+        formData.name !== user.name ||
+        formData.email !== user.email ||
+        formData.role !== user.role ||
+        formData.status !== user.status;
+      setHasUnsavedChanges(hasChanges);
+    } else {
+      const hasChanges = 
+        formData.name !== '' ||
+        formData.email !== '' ||
+        formData.role !== 'user' ||
+        formData.status !== 'active';
+      setHasUnsavedChanges(hasChanges);
     }
-  };
+  }, [formData, user, isEditing]);
 
-  // Validation function
+  // Validazione del form
   const validateForm = (): boolean => {
-    const newErrors: {[key: string]: string} = {};
+    const newErrors: Record<string, string> = {};
 
-    // Full Name validation
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = t("features.userManagement.drawer.validation.fullNameRequired");
-    } else if (formData.fullName.trim().length < 2) {
-      newErrors.fullName = t("features.userManagement.drawer.validation.fullNameTooShort");
+    // Validazione nome
+    if (!formData.name.trim()) {
+      newErrors.name = t('features.userManagement.drawer.validation.nameRequired');
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = t('features.userManagement.drawer.validation.nameMinLength');
     }
 
-    // Email validation
+    // Validazione email
     if (!formData.email.trim()) {
-      newErrors.email = t("features.userManagement.drawer.validation.emailRequired");
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = t("features.userManagement.drawer.validation.emailInvalid");
+      newErrors.email = t('features.userManagement.drawer.validation.emailRequired');
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = t('features.userManagement.drawer.validation.emailInvalid');
+      }
+    }
+
+    // Validazione ruolo
+    if (!formData.role) {
+      newErrors.role = t('features.userManagement.drawer.validation.roleRequired');
+    }
+
+    // Validazione stato
+    if (!formData.status) {
+      newErrors.status = t('features.userManagement.drawer.validation.statusRequired');
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
-  const handleSubmit = () => {
+  // Handler per i cambiamenti dei campi
+  const handleFieldChange = (field: keyof UserMutationData, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+
+    // Rimuovi l'errore per questo campo se esiste
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
+  // Handler per il salvataggio
+  const handleSave = () => {
     if (!validateForm()) {
       return;
     }
@@ -127,25 +160,10 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
     onSave(formData);
   };
 
-  // Handle close with confirmation if form is dirty
+  // Handler per la chiusura
   const handleClose = () => {
-    // Check if form has been modified
-    const isFormDirty = isEditing 
-      ? (user && (
-          formData.fullName !== user.fullName ||
-          formData.email !== user.email ||
-          formData.role !== user.role ||
-          formData.status !== user.status
-        ))
-      : (
-          formData.fullName.trim() !== '' ||
-          formData.email.trim() !== '' ||
-          formData.role !== 'User' ||
-          formData.status !== 'Active'
-        );
-
-    if (isFormDirty && !isLoading) {
-      if (window.confirm(t("features.userManagement.drawer.confirmClose"))) {
+    if (hasUnsavedChanges) {
+      if (window.confirm(t('features.userManagement.drawer.confirmClose'))) {
         onClose();
       }
     } else {
@@ -153,219 +171,184 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
     }
   };
 
+  // Titolo e descrizione del drawer
+  const title = isEditing 
+    ? t('features.userManagement.drawer.editUser') 
+    : t('features.userManagement.drawer.addUser');
+  const description = isEditing 
+    ? t('features.userManagement.drawer.editDescription') 
+    : t('features.userManagement.drawer.addDescription');
+
   return (
     <Drawer
       anchor="right"
       open={open}
       onClose={handleClose}
-      width="400px"
-      hideBackdrop={false}
-      sx={{ "& .MuiDrawer-paperAnchorRight": { marginTop: "48px" } }}
+      PaperProps={{
+        sx: { width: 400 }
+      }}
     >
-      <Title
-        title={isEditing 
-          ? t("features.userManagement.drawer.editUser") 
-          : t("features.userManagement.drawer.addUser")
-        }
-        description={isEditing 
-          ? t("features.userManagement.drawer.editDescription")
-          : t("features.userManagement.drawer.addDescription")
-        }
-        divider
-        rightItems={[
-          <IconButton 
-            key="close" 
-            size="small" 
-            variant="outlined" 
-            onClick={handleClose}
-            disabled={isLoading}
-          >
-            <VaporIcon icon={faClose} size="xl" />
+      <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {/* Header */}
+        <Box sx={{ 
+          p: 3, 
+          borderBottom: '1px solid', 
+          borderColor: 'divider',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <Box>
+            <Typography variant="h6" component="h2">
+              {title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              {description}
+            </Typography>
+          </Box>
+          <IconButton onClick={handleClose} size="small">
+            <VaporIcon icon={faClose} />
           </IconButton>
-        ]}
-      />
+        </Box>
 
-      <Box sx={{ p: 3, flex: 1, overflowY: 'auto' }}>
-        {/* User Information Section */}
-        <Typography variant="subtitle1" sx={{ mb: 2 }}>
-          {t("features.userManagement.drawer.userInformation")}
-        </Typography>
+        {/* Content */}
+        <Box sx={{ flex: 1, p: 3, overflow: 'auto' }}>
+          {/* Alert per modifiche non salvate */}
+          {isEditing && user && hasUnsavedChanges && (
+            <Alert severity="info" sx={{ mb: 3 }}>
+              {t('features.userManagement.drawer.unsavedChanges')}
+            </Alert>
+          )}
 
-        {/* Full Name Field */}
-        <TextField
-          fullWidth
-          label={t("features.userManagement.drawer.fullName")}
-          placeholder={t("features.userManagement.drawer.fullNamePlaceholder")}
-          value={formData.fullName}
-          onChange={(e) => handleInputChange('fullName', e.target.value)}
-          error={!!errors.fullName}
-          helperText={errors.fullName}
-          disabled={isLoading}
-          sx={{ mb: 2 }}
-        />
+          {/* Form Fields */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            {/* Nome */}
+            <TextField
+              label={t('features.userManagement.drawer.fields.name')}
+              value={formData.name}
+              onChange={(e) => handleFieldChange('name', e.target.value)}
+              error={!!errors.name}
+              helperText={errors.name}
+              required
+              fullWidth
+            />
 
-        {/* Email Field */}
-        <TextField
-          fullWidth
-          type="email"
-          label={t("features.userManagement.drawer.email")}
-          placeholder={t("features.userManagement.drawer.emailPlaceholder")}
-          value={formData.email}
-          onChange={(e) => handleInputChange('email', e.target.value)}
-          error={!!errors.email}
-          helperText={errors.email}
-          disabled={isLoading}
-          sx={{ mb: 3 }}
-        />
+            {/* Email */}
+            <TextField
+              label={t('features.userManagement.drawer.fields.email')}
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleFieldChange('email', e.target.value)}
+              error={!!errors.email}
+              helperText={errors.email}
+              required
+              fullWidth
+            />
 
-        <Divider sx={{ my: 3 }} />
-
-        {/* Role Section */}
-        <Typography variant="subtitle1" sx={{ mb: 2 }}>
-          {t("features.userManagement.drawer.roleAndPermissions")}
-        </Typography>
-
-        {/* Role Selection */}
-        <FormControl fullWidth sx={{ mb: 3 }}>
-          <InputLabel>{t("features.userManagement.drawer.role")}</InputLabel>
-          <Select
-            value={formData.role}
-            label={t("features.userManagement.drawer.role")}
-            onChange={(e) => handleInputChange('role', e.target.value as UserRole)}
-            disabled={isLoading}
-          >
-            <MenuItem value="User">
-              <Box>
-                <Typography variant="body2" fontWeight="medium">
-                  {t("features.userManagement.roles.user")}
+            {/* Ruolo */}
+            <FormControl fullWidth required error={!!errors.role}>
+              <InputLabel>{t('features.userManagement.drawer.fields.role')}</InputLabel>
+              <Select
+                value={formData.role}
+                label={t('features.userManagement.drawer.fields.role')}
+                onChange={(e) => handleFieldChange('role', e.target.value)}
+              >
+                <MenuItem value="user">
+                  {t('features.userManagement.roles.user')}
+                </MenuItem>
+                <MenuItem value="moderator">
+                  {t('features.userManagement.roles.moderator')}
+                </MenuItem>
+                <MenuItem value="admin">
+                  {t('features.userManagement.roles.administrator')}
+                </MenuItem>
+              </Select>
+              {errors.role && (
+                <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
+                  {errors.role}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {t("features.userManagement.drawer.roleDescriptions.user")}
-                </Typography>
-              </Box>
-            </MenuItem>
-            <MenuItem value="Moderator">
-              <Box>
-                <Typography variant="body2" fontWeight="medium">
-                  {t("features.userManagement.roles.moderator")}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {t("features.userManagement.drawer.roleDescriptions.moderator")}
-                </Typography>
-              </Box>
-            </MenuItem>
-            <MenuItem value="Administrator">
-              <Box>
-                <Typography variant="body2" fontWeight="medium">
-                  {t("features.userManagement.roles.administrator")}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {t("features.userManagement.drawer.roleDescriptions.administrator")}
-                </Typography>
-              </Box>
-            </MenuItem>
-          </Select>
-        </FormControl>
+              )}
+            </FormControl>
 
-        <Divider sx={{ my: 3 }} />
+            {/* Stato */}
+            <FormControl fullWidth required error={!!errors.status}>
+              <InputLabel>{t('features.userManagement.drawer.fields.status')}</InputLabel>
+              <Select
+                value={formData.status}
+                label={t('features.userManagement.drawer.fields.status')}
+                onChange={(e) => handleFieldChange('status', e.target.value)}
+              >
+                <MenuItem value="active">
+                  {t('features.userManagement.status.active')}
+                </MenuItem>
+                <MenuItem value="inactive">
+                  {t('features.userManagement.status.inactive')}
+                </MenuItem>
+                <MenuItem value="pending">
+                  {t('features.userManagement.status.pending')}
+                </MenuItem>
+              </Select>
+              {errors.status && (
+                <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
+                  {errors.status}
+                </Typography>
+              )}
+            </FormControl>
 
-        {/* Status Section */}
-        <Typography variant="subtitle1" sx={{ mb: 2 }}>
-          {t("features.userManagement.drawer.accountStatus")}
-        </Typography>
-
-        <FormControl component="fieldset" disabled={isLoading}>
-          <RadioGroup
-            value={formData.status}
-            onChange={(e) => handleInputChange('status', e.target.value as UserStatus)}
-            sx={{ gap: 1 }}
-          >
-            <FormControlLabel
-              value="Active"
-              control={<Radio />}
-              label={
-                <Box>
-                  <Typography variant="body2" fontWeight="medium">
-                    {t("features.userManagement.status.active")}
+            {/* Info aggiuntive per utenti esistenti */}
+            {isEditing && user && (
+              <>
+                <Divider sx={{ my: 2 }} />
+                
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>{t('features.userManagement.drawer.info.registrationDate')}:</strong> {' '}
+                    {new Date(user.registrationDate).toLocaleDateString('it-IT')}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {t("features.userManagement.drawer.statusDescriptions.active")}
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>{t('features.userManagement.drawer.info.lastAccess')}:</strong> {' '}
+                    {user.lastAccess 
+                      ? new Date(user.lastAccess).toLocaleString('it-IT')
+                      : t('features.userManagement.grid.neverAccessed')
+                    }
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>{t('features.userManagement.drawer.info.userId')}:</strong> {user.id}
                   </Typography>
                 </Box>
-              }
-            />
-            <FormControlLabel
-              value="Inactive"
-              control={<Radio />}
-              label={
-                <Box>
-                  <Typography variant="body2" fontWeight="medium">
-                    {t("features.userManagement.status.inactive")}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {t("features.userManagement.drawer.statusDescriptions.inactive")}
-                  </Typography>
-                </Box>
-              }
-            />
-            <FormControlLabel
-              value="Pending"
-              control={<Radio />}
-              label={
-                <Box>
-                  <Typography variant="body2" fontWeight="medium">
-                    {t("features.userManagement.status.pending")}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {t("features.userManagement.drawer.statusDescriptions.pending")}
-                  </Typography>
-                </Box>
-              }
-            />
-          </RadioGroup>
-        </FormControl>
+              </>
+            )}
+          </Box>
+        </Box>
 
-        {/* Warning for status change */}
-        {isEditing && user && formData.status !== user.status && (
-          <Alert severity="info" sx={{ mt: 2 }}>
-            {t("features.userManagement.drawer.statusChangeWarning")}
-          </Alert>
-        )}
-      </Box>
-
-      <Divider />
-
-      {/* Footer Actions */}
-      <VaporToolbar
-        contentRight={[
-          <Button 
-            key="cancel" 
-            variant="outlined" 
-            color="secondary" 
-            onClick={handleClose}
-            disabled={isLoading}
-          >
-            {t("features.userManagement.drawer.cancel")}
-          </Button>,
+        {/* Footer */}
+        <Box sx={{ 
+          p: 3, 
+          borderTop: '1px solid', 
+          borderColor: 'divider',
+          display: 'flex',
+          gap: 2,
+          justifyContent: 'flex-end'
+        }}>
           <Button
-            key="save"
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            disabled={isLoading}
+            variant="outlined"
+            onClick={handleClose}
+            disabled={isSaving}
           >
-            {isLoading 
-              ? t("features.userManagement.drawer.saving")
-              : (isEditing 
-                  ? t("features.userManagement.drawer.updateUser")
-                  : t("features.userManagement.drawer.createUser")
-                )
+            {t('common.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            disabled={isSaving || Object.keys(errors).length > 0}
+          >
+            {isSaving 
+              ? t('common.saving') 
+              : (isEditing ? t('common.update') : t('common.create'))
             }
           </Button>
-        ]}
-        size="medium"
-        variant="regular"
-      />
+        </Box>
+      </Box>
     </Drawer>
   );
 };
