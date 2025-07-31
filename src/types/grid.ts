@@ -47,11 +47,10 @@ export interface DataGridConfig<T = any> {
   filters: FilterConfig[];
   actions: ActionConfig<T>[];
   title: string;
-  description?: string;
+  description: string;
   addButtonLabel?: string;
   emptyMessage?: string;
   pageSize?: number;
   // Nuove opzioni per l'header
   showHeader?: boolean;          // Se mostrare l'header del DataGrid
-  headerLayout?: 'simple' | 'detailed';  // Tipo di layout header
 }

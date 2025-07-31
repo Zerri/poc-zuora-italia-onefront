@@ -153,5 +153,4 @@ export const getUserGridConfig = (
   pageSize: 10,
   // Configurazione header
   showHeader: true,           // Mostra l'header
-  headerLayout: 'simple'    // Usa il layout dettagliato
 });

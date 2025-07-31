@@ -3,18 +3,13 @@ import React, { useState } from 'react';
 import {
   VaporThemeProvider,
   VaporPage,
-  // Typography,
-  // Button,
   CircularProgress,
   Alert,
   Box,
-  // VaporIcon,
   Snackbar,
 } from "@vapor/v3-components";
-// import { faUserPlus } from "@fortawesome/pro-regular-svg-icons/faUserPlus";
 import { useTranslation } from '@1f/react-sdk';
 import { useRole } from '../../contexts/RoleContext';
-// Import types corretti
 import { SnackbarState } from '../../types';
 import type { User, UserFilters, UserMutationData } from '../../types/user';
 import { GenericDataGrid } from '../../components/GenericDataGrid';
@@ -200,31 +195,6 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   return (
     <VaporThemeProvider>
       <VaporPage title={t("features.userManagement.title")}>
-        {/* Header Section con titolo, descrizione e bottone
-        <Box sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box>
-              <Typography variant="h5" sx={{ mb: 1, fontWeight: 'medium' }}>
-                {t("features.userManagement.section.title")}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t("features.userManagement.section.description")}
-              </Typography>
-            </Box>
-            
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<VaporIcon icon={faUserPlus} />}
-              onClick={handleAdd}
-              disabled={isCreating}
-              size='small'
-            >
-              {t("features.userManagement.addUser")}
-            </Button>
-          </Box>
-        </Box> */}
-
         <VaporPage.Section>
           {isLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>

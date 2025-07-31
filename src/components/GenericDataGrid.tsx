@@ -63,68 +63,6 @@ const getDataGridLocaleText = (t: any) => ({
   loadingOverlayLabel: t("components.dataGrid.loading"),
 });
 
-// Interfaccia per i componenti header
-interface HeaderProps {
-  config: DataGridConfig<any>;
-  onAdd?: () => void;
-  t: any;
-}
-
-// Componente per l'header semplice
-const SimpleHeader: React.FC<HeaderProps> = ({ config, onAdd, t }) => (
-  <Box sx={{ 
-    mb: 3, 
-    display: 'flex', 
-    justifyContent: 'space-between', 
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 2
-  }}>
-    <Typography variant="h5" component="h1">
-      {config.title}
-    </Typography>
-    {onAdd && (
-      <Button
-        variant="contained"
-        startIcon={<VaporIcon icon={faPlus} />}
-        onClick={onAdd}
-      >
-        {config.addButtonLabel || t('common.add')}
-      </Button>
-    )}
-  </Box>
-);
-
-// Componente per l'header dettagliato
-const DetailedHeader: React.FC<HeaderProps> = ({ config, onAdd, t }) => (
-  <Box sx={{ p: 3, mb: 3 }}>
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <Box>
-        <Typography variant="h5" sx={{ mb: 1, fontWeight: 'medium' }}>
-          {config.title}
-        </Typography>
-        {config.description && (
-          <Typography variant="body2" color="text.secondary">
-            {config.description}
-          </Typography>
-        )}
-      </Box>
-      
-      {onAdd && (
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<VaporIcon icon={faPlus} />}
-          onClick={onAdd}
-          size="small"
-        >
-          {config.addButtonLabel || t('common.add')}
-        </Button>
-      )}
-    </Box>
-  </Box>
-);
-
 interface GenericDataGridProps<T extends BaseEntity, F extends BaseFilters> {
   items: T[];
   config: DataGridConfig<T>;
@@ -176,7 +114,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
                 [key]: e.target.value
               } as F))}
               size="small"
-              sx={{ minWidth: 200 }}
+              sx={{ width: 'auto', minWidth: 300 }}
             />
           );
         
@@ -294,13 +232,36 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
 
   return (
     <Box>
-      {/* Header configurabile */}
-      {config.showHeader && config.headerLayout === 'detailed' && (
-        <DetailedHeader config={config} onAdd={onAdd} t={t} />
-      )}
-      
-      {config.showHeader && config.headerLayout === 'simple' && (
-        <SimpleHeader config={config} onAdd={onAdd} t={t} />
+      {/* Header semplice opzionale */}
+      {config.showHeader && (
+        <Box sx={{ 
+          mb: 3, 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 2
+        }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography variant="h5" component="h1">
+              {config.title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {config.description}
+            </Typography>
+          </Box>
+          {onAdd && (
+            <Button
+              disabled={isLoading}
+              variant="contained"
+              startIcon={<VaporIcon icon={faPlus} />}
+              onClick={onAdd}
+              size='small'
+            >
+              {config.addButtonLabel || t('common.add')}
+            </Button>
+          )}
+        </Box>
       )}
 
       {/* Sezione filtri */}
@@ -315,14 +276,11 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
         <Box sx={{ 
           display: 'flex', 
           gap: 2, 
-          alignItems: 'center', 
+          alignItems: 'flex-end', 
           flexWrap: 'wrap',
           mb: 2
         }}>
-          {renderFilters()}
-        </Box>
-        
-        <Box sx={{ display: 'flex', gap: 1 }}>
+          {renderFilters()} <Box sx={{ display: 'flex', gap: 1, borderLeft: '1px solid', borderColor: 'divider', pl: 2 }}>
           <Button
             variant="contained"
             size="small"
@@ -338,6 +296,9 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
             {t('common.reset')}
           </Button>
         </Box>
+        </Box>
+        
+       
       </Box>
 
       {/* DataGrid */}
