@@ -15,16 +15,26 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     width: 250,
     renderCell: (_, row) => (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
-          {row.name?.[0]?.toUpperCase() || 'U'}
-        </Avatar>
-        <Box>
-          <Typography variant="body2" fontWeight="medium">
-            {row.name}
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            {row.email}
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
+          <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+            {row.fullName?.[0]?.toUpperCase() || 'U'}
+          </Avatar>
+          <Box sx={{ ml: 1, display: 'flex', flexDirection: 'column' }}>
+            <Typography 
+              variant="body2" 
+              fontWeight="medium"
+              sx={{ lineHeight: 1.2, textAlign: 'left' }}
+            >
+              {row.fullName}
+            </Typography>
+            <Typography 
+              variant="body2"
+              color="text.secondary"
+              sx={{ lineHeight: 1.2, textAlign: 'left' }}
+            >
+              {row.email}
+            </Typography>
+          </Box>
         </Box>
       </Box>
     )
