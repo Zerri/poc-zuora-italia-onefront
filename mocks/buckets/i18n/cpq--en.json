@@ -3,7 +3,11 @@
     "value": {
         "logged_in": "Logged in as: {{name}}",
         "common": {
-            "welcome_user": "Welcome, {{name}}"
+            "welcome_user": "Welcome, {{name}}",
+            "dataGrid": {
+                "addButtonLabel": "Add New",
+                "actions": "Actions"
+            }
         },
         "nav": {
             "dashboard": "Dashboard",
@@ -34,14 +38,13 @@
         "features": {
             "userManagement": {
                 "title": "User Management",
-                "description": "View, edit and manage system users.",
-                "addUser": "Add New User",
-                "searchPlaceholder": "Search by name, email or user ID...",
-                "confirmDelete": "Are you sure you want to delete user {{name}}?",
-
-                "section": {
+                "dataGrid": {
                     "title": "Users",
-                    "description": "Manage existing users (registry, role, state) or create new ones."
+                    "description": "View, edit and manage system users.",
+                    "addButtonLabel": "Add New User",
+                    "emptyMessage": "Nessun utente trovato. Aggiungi il primo utente per iniziare.",
+                    "searchPlaceholder": "Search by name, email or user ID...",
+                    "confirmDelete": "Are you sure you want to delete user {{name}}?"
                 },
                 
                 "errors": {

@@ -165,7 +165,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
   // Rendering delle azioni per ogni riga
   const renderActions = (item: T) => {
     return (
-      <Box sx={{ display: 'flex', gap: 0.5 }}>
+      <Box sx={{ display: 'flex', gap: 0.5, py: 1 }}>
         {config.actions
           .filter(action => !action.visible || action.visible(item))
           .map(action => (
@@ -190,14 +190,15 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     ...config.columns.map(col => ({
       field: col.field as string,
       headerName: col.headerName,
-      width: col.width || 150,
+      // width: col.width || 150,
+      flex: col.flex || 1,
       sortable: col.sortable !== false,
       renderCell: col.renderCell ? (params: any) => col.renderCell!(params.value, params.row) : undefined
     })),
     // Colonna azioni sempre presente se ci sono azioni
     ...(config.actions.length > 0 ? [{
       field: 'actions',
-      headerName: t('common.actions'),
+      headerName: t('common.dataGrid.actions'),
       width: config.actions.length * 40 + 20,
       sortable: false,
       renderCell: (params: any) => renderActions(params.row)
@@ -244,10 +245,10 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
         }}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography variant="h5" component="h1">
-              {config.title}
+              {t(config.title)}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {config.description}
+              {t(config.description)}
             </Typography>
           </Box>
           {onAdd && (
@@ -258,7 +259,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
               onClick={onAdd}
               size='small'
             >
-              {config.addButtonLabel || t('common.add')}
+              {t(config.addButtonLabel || 'common.dataGrid.addButtonLabel')}
             </Button>
           )}
         </Box>

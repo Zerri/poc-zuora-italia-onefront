@@ -1,6 +1,6 @@
 // src/config/userGridConfig.tsx
 import { Box, Typography, Chip, Avatar } from "@vapor/v3-components";
-import { faEdit, faTrash, faToggleOn } from "@fortawesome/pro-regular-svg-icons";
+import { faEdit, faTrash, faEllipsisV } from "@fortawesome/pro-regular-svg-icons";
 import dayjs from 'dayjs';
 import type { User } from '../types/user';
 import type { DataGridConfig, ColumnConfig, FilterConfig, ActionConfig } from '../types/grid';
@@ -12,7 +12,7 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
   {
     field: 'name',
     headerName: 'Utente',
-    width: 250,
+    flex: 1.5,
     renderCell: (_, row) => (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
@@ -116,24 +116,23 @@ export const USER_FILTERS: FilterConfig[] = [
  * Funzione per generare le azioni per Users
  */
 export const getUserActions = (
+  onOptions: (user: User) => void,
   onEdit: (user: User) => void,
   onDelete: (user: User) => void,
-  onToggleStatus: (user: User) => void
 ): ActionConfig<User>[] => [
+  {
+    key: 'options',
+    label: 'Opzioni Utente',
+    icon: faEllipsisV,
+    color: 'primary',
+    onClick: onOptions
+  },
   {
     key: 'edit',
     label: 'Modifica Utente',
     icon: faEdit,
     color: 'primary',
     onClick: onEdit
-  },
-  {
-    key: 'toggleStatus',
-    label: 'Cambia Stato',
-    icon: faToggleOn,
-    color: 'secondary',
-    onClick: onToggleStatus,
-    visible: (user) => user.status !== 'pending'
   },
   {
     key: 'delete',
@@ -156,9 +155,9 @@ export const getUserGridConfig = (
   columns: USER_COLUMNS,
   filters: USER_FILTERS,
   actions: getUserActions(onEdit, onDelete, onToggleStatus),
-  title: 'Utenti',
-  description: 'Gestisci gli utenti esistenti (anagrafica, ruolo e stato) o creane di nuovi.',
-  addButtonLabel: 'Aggiungi Nuovo Utente',
+  title: 'features.userManagement.dataGrid.title',
+  description: 'features.userManagement.dataGrid.description',
+  addButtonLabel: 'features.userManagement.dataGrid.addButtonLabel',
   emptyMessage: 'Nessun utente trovato. Aggiungi il primo utente per iniziare.',
   pageSize: 10,
   // Configurazione header

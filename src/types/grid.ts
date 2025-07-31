@@ -5,12 +5,13 @@ import { ReactNode } from 'react';
  * Configurazione di una colonna del DataGrid
  */
 export interface ColumnConfig<T = any> {
-  field: keyof T;                                    // Campo dell'entità
-  headerName: string;                                // Titolo colonna
-  width?: number;                                    // Larghezza colonna
-  sortable?: boolean;                                // Ordinabile (default: true)
-  filterable?: boolean;                              // Filtrabile (default: true)
-  renderCell?: (value: any, row: T) => ReactNode;    // Rendering custom della cella
+  flex?: number;                                       // Flex colonna
+  field: keyof T;                                     // Campo dell'entità
+  headerName: string;                                 // Titolo colonna
+  width?: number;                                     // Larghezza colonna
+  sortable?: boolean;                                 // Ordinabile (default: true)
+  filterable?: boolean;                               // Filtrabile (default: true)
+  renderCell?: (value: any, row: T) => ReactNode;     // Rendering custom della cella
   type?: 'string' | 'number' | 'date' | 'boolean' | 'actions';
 }
 

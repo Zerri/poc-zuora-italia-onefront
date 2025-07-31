@@ -3,7 +3,11 @@
     "value": {
         "logged_in": "Collegato come: {{name}}",
         "common": {
-            "welcome_user": "Benvenuto, {{name}}"
+            "welcome_user": "Benvenuto, {{name}}",
+            "dataGrid": {
+                "addButtonLabel": "Aggiungi Nuovo",
+                "actions": "Azioni"
+            }
         },
         "nav": {
             "dashboard": "Dashboard",
@@ -34,14 +38,13 @@
         "features": {
             "userManagement": {
                 "title": "Gestione Utenti",
-                "description": "Visualizza, modifica e gestisci gli utenti del sistema.",
-                "addUser": "Aggiungi Nuovo Utente",
-                "searchPlaceholder": "Cerca per nome, email o ID utente...",
-                "confirmDelete": "Sei sicuro di voler eliminare l'utente {{name}}?",
-
-                "section": {
-                    "title": "Utenti", 
-                    "description": "Gestisci gli utenti esistenti (anagrafica, ruolo e stato) o creane di nuovi."
+                "dataGrid": {
+                    "title": "Utenti",
+                    "description": "Visualizza, modifica e gestisci gli utenti del sistema.",
+                    "addButtonLabel": "Aggiungi Nuovo Utente",
+                    "emptyMessage": "Nessun utente trovato. Aggiungi il primo utente per iniziare.",
+                    "searchPlaceholder": "Cerca per nome, email o ID utente...",
+                    "confirmDelete": "Sei sicuro di voler eliminare l'utente {{name}}?"
                 },
                 
                 "errors": {
