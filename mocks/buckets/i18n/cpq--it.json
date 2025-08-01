@@ -15,6 +15,7 @@
             "quotes": "Preventivi",
             "catalog": "Catalogo",
             "userManagement": "Gestione Utenti",
+            "adminQuotes": "Gestione Preventivi",
             "reports": "Report",
             "reports_items": {
                 "invoicing": "Fatturazione",
@@ -141,6 +142,25 @@
                     "updateUser": "Aggiorna Utente",
                     "saving": "Salvataggio..."
                 }
+            },
+            "adminQuotes": {
+                "title": "Administrative Quote Management",
+                "dataGrid": {
+                    "title": "Quotes",
+                    "description": "View and manage all system quotes with complete administrative control.",
+                    "addButtonLabel": "New Quote",
+                    "emptyMessage": "No quotes found. Quotes created by sales agents will appear here."
+                },
+                "success": {
+                    "statusChanged": "Quote status updated successfully",
+                    "agentAssigned": "Sales agent assigned successfully"
+                },
+                "errors": {
+                    "loadFailed": "Failed to load quotes",
+                    "actionFailed": "Action failed. Please try again."
+                },
+                "confirmAssignAgent": "Assign quote {{number}} to {{agent}}?",
+                "confirmChangeStatus": "Change quote {{number}} status to {{status}}?"
             },
             "catalog": {
                 "title": "Catalogo Prodotti",

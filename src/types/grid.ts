@@ -44,6 +44,7 @@ export interface ActionConfig<T = any> {
  * Configurazione completa del DataGrid
  */
 export interface DataGridConfig<T = any> {
+  getRowId?: (row: T) => string | number;
   columns: ColumnConfig<T>[];
   filters: FilterConfig[];
   actions: ActionConfig<T>[];

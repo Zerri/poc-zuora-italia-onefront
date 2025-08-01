@@ -133,6 +133,13 @@ export const NavContent = () => {
       },
     },
     {
+      label: t("nav.adminQuotes"),
+      icon: <VaporIcon icon={faFileInvoice} />,
+      onClickFunction: () => {
+        navigate("/admin-quotes");
+      },
+    },
+    {
       label: t("nav.reports"),
       icon: <VaporIcon icon={faChartSimple} />,
       badgeProps: {

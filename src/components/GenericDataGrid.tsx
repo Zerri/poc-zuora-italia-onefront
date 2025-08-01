@@ -305,6 +305,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
       {/* DataGrid */}
       <Box sx={{ height: 600, width: '100%' }}>
         <DataGrid
+          getRowId={config.getRowId}
           rows={items}
           columns={columns}
           loading={isLoading}

@@ -15,6 +15,7 @@
             "quotes": "Quotes",
             "catalog": "Catalog",
             "userManagement": "User Management",
+            "adminQuotes": "Quote Management",
             "reports": "Reports",
             "reports_items": {
                 "invoicing": "Invoicing",
@@ -140,6 +141,28 @@
                     "createUser": "Create User",
                     "updateUser": "Update User",
                     "saving": "Saving..."
+                }
+            },
+            "adminQuotes": {
+                "actions": {
+                    "view": "View Quote",
+                    "changeStatus": "Change Status",
+                    "assignAgent": "Assign Agent",
+                    "viewTooltip": "Open quote details",
+                    "changeStatusTooltip": "Change quote status",
+                    "assignAgentTooltip": "Assign to different sales agent"
+                },
+                "status": {
+                    "draft": "Draft",
+                    "sent": "Sent",
+                    "accepted": "Accepted",
+                    "rejected": "Rejected",
+                    "migration": "Migration"
+                },
+                "type": {
+                    "new": "New Sale",
+                    "migration": "Migration",
+                    "upgrade": "Upgrade"
                 }
             },
             "catalog": {
