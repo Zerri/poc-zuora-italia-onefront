@@ -227,14 +227,14 @@ export const getAdminQuoteActions = (
     key: 'changeStatus',
     label: 'Cambia Stato',
     icon: faEdit,
-    color: 'secondary',
+    color: 'primary',
     onClick: onChangeStatus
   },
   {
     key: 'assignAgent',
     label: 'Assegna Agent',
     icon: faUserCheck,
-    color: 'secondary',
+    color: 'primary',
     onClick: onAssignAgent
   }
 ];
