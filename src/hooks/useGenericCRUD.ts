@@ -17,7 +17,7 @@ export interface CRUDConfig {
 
 // ✅ CAMBIATO: id ora è opzionale per supportare creazione
 export interface CRUDItem {
-  id?: string | number;  // ← Ora opzionale
+  _id?: string | number;
   [key: string]: any;
 }
 

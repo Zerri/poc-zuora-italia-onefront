@@ -5,7 +5,7 @@ import type { BaseEntity, BaseFilters } from './generic';
  * Interfaccia User che estende BaseEntity
  */
 export interface User extends BaseEntity {
-  // id è già incluso da BaseEntity
+  // _id è già incluso da BaseEntity
   name: string;
   email: string;
   role: 'admin' | 'user' | 'moderator';

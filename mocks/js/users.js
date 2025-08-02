@@ -4,7 +4,7 @@ module.exports = async (req, res) => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     return res.json([
       {
-        "id": "USR-001",
+        "_id": "USR-001",
         "fullName": "Mario Rossi",
         "email": "mario.rossi@email.com",
         "role": "Administrator",
@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
         "avatar": null
       },
       {
-        "id": "USR-002",
+        "_id": "USR-002",
         "fullName": "Laura Verdi",
         "email": "laura.verdi@email.com",
         "role": "User",
@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
         "avatar": null
       },
       {
-        "id": "USR-003",
+        "_id": "USR-003",
         "fullName": "Giovanni Bianchi",
         "email": "giovanni.bianchi@email.com",
         "role": "Moderator",
@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
         "avatar": null
       },
       {
-        "id": "USR-004",
+        "_id": "USR-004",
         "fullName": "Anna Neri",
         "email": "anna.neri@email.com",
         "role": "User",
@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
         "avatar": null
       },
       {
-        "id": "USR-005",
+        "_id": "USR-005",
         "fullName": "Franco Colombo",
         "email": "franco.colombo@email.com",
         "role": "User",
@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
         "avatar": null
       },
       {
-        "id": "USR-006",
+        "_id": "USR-006",
         "fullName": "Silvia Gialli",
         "email": "silvia.gialli@email.com",
         "role": "Moderator",
@@ -64,7 +64,7 @@ module.exports = async (req, res) => {
         "avatar": null
       },
       {
-        "id": "USR-007",
+        "_id": "USR-007",
         "fullName": "Roberto Blu",
         "email": "roberto.blu@email.com",
         "role": "User",  

@@ -102,7 +102,7 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
 
   // Handler per visualizzare preventivo
   const handleView = (quote: AdminQuote) => {
-    navigate(`/quote/${quote.id}`);
+    navigate(`/quote/${quote._id}`);
   };
 
   // Handler per aprire dialog cambio stato
