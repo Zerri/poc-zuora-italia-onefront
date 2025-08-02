@@ -1,5 +1,5 @@
 // src/config/adminQuoteGridConfig.tsx
-import { Box, Typography, Chip } from "@vapor/v3-components";
+import { Box, Typography, Chip, Avatar } from "@vapor/v3-components";
 import { faEye, faEdit, faUserCheck } from "@fortawesome/pro-regular-svg-icons";
 import dayjs from 'dayjs';
 import type { AdminQuote } from '../types/adminQuote';
@@ -64,32 +64,51 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
   {
     field: 'number',
     headerName: 'Numero',
-    width: 130,
-    renderCell: (value) => (
-      <Typography variant="body2" fontWeight="medium" color="primary">
-        {value}
-      </Typography>
-    )
+    flex: 1,
+    renderCell: (value) => value
   },
   {
     field: 'customer',
     headerName: 'Cliente',
-    width: 250,
-    renderCell: (value) => (
-      <Box>
-        <Typography variant="body2" fontWeight="medium">
-          {value.name}
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          {value.sector}
-        </Typography>
+    flex: 1.5,
+    renderCell: (row) => (
+      // <Box>
+      //   <Typography variant="body2" fontWeight="medium">
+      //     {value.name}
+      //   </Typography>
+      //   <Typography variant="caption" color="text.secondary">
+      //     {value.sector}
+      //   </Typography>
+      // </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
+          <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+            {row.name?.[0]?.toUpperCase() || 'U'}
+          </Avatar>
+          <Box sx={{ ml: 1, display: 'flex', flexDirection: 'column' }}>
+            <Typography 
+              variant="body2" 
+              fontWeight="medium"
+              sx={{ lineHeight: 1.2, textAlign: 'left' }}
+            >
+              {row.name}
+            </Typography>
+            <Typography 
+              variant="body2"
+              color="text.secondary"
+              sx={{ lineHeight: 1.2, textAlign: 'left' }}
+            >
+              {row.sector}
+            </Typography>
+          </Box>
+        </Box>
       </Box>
     )
   },
   {
     field: 'salesAgent',
     headerName: 'Sales Agent',
-    width: 150,
+    flex: 1,
     renderCell: (value) => (
       <Typography variant="body2">
         {value}
@@ -99,7 +118,7 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
   {
     field: 'status',
     headerName: 'Stato',
-    width: 120,
+    flex: 1,
     renderCell: (value) => (
       <Chip
         label={translateStatus(value)}
@@ -111,7 +130,7 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
   {
     field: 'type',
     headerName: 'Tipo',
-    width: 120,
+    flex: 1,
     renderCell: (value) => (
       <Chip
         label={translateType(value)}
@@ -123,23 +142,19 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
   {
     field: 'value',
     headerName: 'Valore',
-    width: 120,
-    renderCell: (value) => (
-      <Typography variant="body2" fontWeight="medium">
-        {formatCurrency(value)}
-      </Typography>
-    )
+    flex: 1,
+    renderCell: (value) => formatCurrency(value)
   },
   {
     field: 'createdAt',
     headerName: 'Data Creazione',
-    width: 130,
+    flex: 1,
     renderCell: (value) => dayjs(value).format('DD/MM/YYYY')
   },
   {
     field: 'lastActivity',
     headerName: 'Ultima Attività',
-    width: 140,
+    flex: 1,
     renderCell: (value) => dayjs(value).format('DD/MM/YYYY HH:mm')
   }
 ];

@@ -303,7 +303,12 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
       </Box>
 
       {/* DataGrid */}
-      <Box sx={{ height: 600, width: '100%' }}>
+      <Box sx={{ 
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '700px',
+          // maxHeight: '80vh' // Limit height to 80% of viewport
+          }}>
         <DataGrid
           getRowId={config.getRowId}
           rows={items}
@@ -325,10 +330,15 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
             },
             '& .MuiDataGrid-row:hover': {
               backgroundColor: 'action.hover',
-            }
+            },
           }}
         />
       </Box>
+      {/* <Box sx={{ textAlign: 'center', py: 4 }}>
+        <Typography variant="body1" color="text.secondary">
+          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+        </Typography>
+      </Box> */}
 
       {/* Messaggio quando vuoto */}
       {!isLoading && items.length === 0 && (
