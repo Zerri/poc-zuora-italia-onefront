@@ -29,8 +29,8 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   
   // State per filtri e ricerca
   const [filters, setFilters] = useState<UserFilters>({
-    status: 'All',
-    role: 'All',
+    status: 'all',
+    role: 'all',
     searchTerm: '',
     page: 1,
     limit: 10

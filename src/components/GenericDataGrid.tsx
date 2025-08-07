@@ -217,7 +217,6 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
                   handleOtherFilterChange(key, e.target.value as string)
                 }
               >
-                <MenuItem value="all">{t('common.dataGrid.all')}</MenuItem>
                 {filterConfig.options?.map(option => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}

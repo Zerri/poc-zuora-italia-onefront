@@ -19,8 +19,8 @@ export interface User extends BaseEntity {
  */
 export interface UserFilters extends BaseFilters {
   // searchTerm è già incluso da BaseFilters
-  status: string;  // 'All' | 'active' | 'inactive' | 'pending'
-  role: string;    // 'All' | 'admin' | 'user' | 'moderator'
+  status: string;  // 'all' | 'active' | 'inactive' | 'pending'
+  role: string;    // 'all' | 'admin' | 'user' | 'moderator'
 }
 
 /**

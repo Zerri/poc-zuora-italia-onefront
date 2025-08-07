@@ -165,8 +165,8 @@ export interface UserFormData {
 }
 
 export interface UserFilters {
-  status: string; // 'All' | UserStatus
-  role: string;   // 'All' | UserRole  
+  status: string; // 'all' | UserStatus
+  role: string;   // 'all' | UserRole  
   searchTerm: string;
 }
 

@@ -93,6 +93,7 @@ export const USER_FILTERS: FilterConfig[] = [
     label: 'Stato',
     type: 'select',
     options: [
+      { value: 'all', label: 'all' },
       { value: 'active', label: 'active' },
       { value: 'inactive', label: 'inactive' },
       { value: 'pending', label: 'pending' }
@@ -104,6 +105,7 @@ export const USER_FILTERS: FilterConfig[] = [
     label: 'Ruolo',
     type: 'select',
     options: [
+      { value: 'all', label: 'all' },
       { value: 'admin', label: 'admin' },
       { value: 'user', label: 'user' },
       { value: 'moderator', label: 'moderator' }

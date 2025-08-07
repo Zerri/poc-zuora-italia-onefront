@@ -50,7 +50,7 @@ export function useGenericCRUD<T extends CRUDItem>(
       const params = new URLSearchParams();
 
       Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '' && value !== 'All') {
+        if (value !== undefined && value !== null && value !== '' && value !== 'all') {
           params.append(key, String(value));
         }
       });
