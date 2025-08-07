@@ -1,4 +1,4 @@
-// src/components/GenericDataGrid.tsx
+// src/components/GenericDataGrid.tsx - VERSIONE SEMPLIFICATA
 import { useState, useEffect, useCallback } from 'react';
 import {
   Typography,
@@ -16,26 +16,10 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import type { SelectChangeEvent } from '@mui/material/Select';
 import { VaporIcon } from "@vapor/v3-components";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
+import { faSearch } from "@fortawesome/pro-regular-svg-icons/faSearch";
 import { useTranslation } from '@1f/react-sdk';
 import type { DataGridConfig } from '../types/grid';
 import type { BaseEntity, BaseFilters } from '../types/generic';
-
-// Custom hook per debounce
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
 
 // Helper per localizzazione DataGrid
 const getDataGridLocaleText = (t: any) => ({
@@ -91,7 +75,7 @@ interface GenericDataGridProps<T extends BaseEntity, F extends BaseFilters> {
 }
 
 /**
- * DataGrid generico riutilizzabile per qualsiasi entità
+ * DataGrid generico riutilizzabile per qualsiasi entità - VERSIONE SEMPLIFICATA
  */
 export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
   items,
@@ -104,87 +88,68 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
 }: GenericDataGridProps<T, F>) {
   const { t } = useTranslation();
 
-  // State per i filtri temporanei
+  // State per i filtri temporanei (unico state necessario!)
   const [tempFilters, setTempFilters] = useState<F>(currentFilters);
-  
-  // Separazione dei filtri search dagli altri per debounce
-  const [searchFilters, setSearchFilters] = useState<Partial<F>>({});
-  const [otherFilters, setOtherFilters] = useState<Partial<F>>({});
 
-  // Debounce per i filtri di ricerca (300ms)
-  const debouncedSearchFilters = useDebounce(searchFilters, 300);
+  // Flag per sapere se ci sono filtri search/number da applicare
+  const [hasPendingSearchFilters, setHasPendingSearchFilters] = useState<boolean>(false);
 
   // Sincronizza filtri temporanei quando cambiano quelli esterni
   useEffect(() => {
     setTempFilters(currentFilters);
-    
-    // Separa i filtri search dagli altri
-    const searchFields = config.filters.filter(f => f.type === 'search').map(f => f.field);
-    const newSearchFilters: Partial<F> = {};
-    const newOtherFilters: Partial<F> = {};
-    
-    Object.keys(currentFilters).forEach(key => {
-      if (searchFields.includes(key)) {
-        (newSearchFilters as any)[key] = currentFilters[key as keyof F];
-      } else {
-        (newOtherFilters as any)[key] = currentFilters[key as keyof F];
-      }
-    });
-    
-    setSearchFilters(newSearchFilters);
-    setOtherFilters(newOtherFilters);
-  }, [currentFilters, config.filters]);
+    setHasPendingSearchFilters(false); // Reset del flag quando i filtri vengono applicati
+  }, [currentFilters]);
 
-  // Applicazione automatica dei filtri di ricerca (debounced)
-  useEffect(() => {
-    // Combina filtri search debounced con altri filtri per l'applicazione
-    const combinedFilters = { ...otherFilters, ...debouncedSearchFilters } as F;
+  // Controlla se ci sono differenze nei filtri search/number
+  const checkPendingSearchFilters = useCallback((newTempFilters: F) => {
+    const searchFields = config.filters
+      .filter(f => f.type === 'search' || f.type === 'number')
+      .map(f => f.field);
     
-    // Controlla se i filtri sono effettivamente cambiati per evitare cicli infiniti
-    const filtersChanged = Object.keys(combinedFilters).some(key => 
-      combinedFilters[key as keyof F] !== currentFilters[key as keyof F]
+    const hasDifferences = searchFields.some(field => 
+      newTempFilters[field as keyof F] !== currentFilters[field as keyof F]
     );
     
-    if (filtersChanged) {
-      onFiltersChange(combinedFilters);
-    }
-  }, [debouncedSearchFilters, otherFilters]);
+    setHasPendingSearchFilters(hasDifferences);
+    return hasDifferences;
+  }, [config.filters, currentFilters]);
 
-  // Handler per filtri di ricerca
-  const handleSearchFilterChange = useCallback((field: string, value: string) => {
-    setSearchFilters(prev => ({
-      ...prev,
+  // Handler unificato per tutti i filtri
+  const handleFilterChange = useCallback((field: string, value: string) => {
+    const newTempFilters = {
+      ...tempFilters,
       [field]: value
-    } as Partial<F>));
+    } as F;
     
-    // Aggiorna anche tempFilters per la UI
-    setTempFilters(prev => ({
-      ...prev,
-      [field]: value
-    } as F));
-  }, []);
+    setTempFilters(newTempFilters);
 
-  // Handler per filtri select/number (applicazione immediata)
-  const handleOtherFilterChange = useCallback((field: string, value: string) => {
-    const newOtherFilters = {
-      ...otherFilters,
-      [field]: value
-    } as Partial<F>;
-    
-    setOtherFilters(newOtherFilters);
-    
-    // Aggiorna tempFilters per la UI
-    setTempFilters(prev => ({
-      ...prev,
-      [field]: value
-    } as F));
-    
-    // Applica immediatamente combinando con search filters attuali (solo se diverso)
-    const combinedFilters = { ...newOtherFilters, ...searchFilters } as F;
-    if (combinedFilters[field as keyof F] !== currentFilters[field as keyof F]) {
-      onFiltersChange(combinedFilters);
+    // Per filtri select: applicazione immediata
+    const filterConfig = config.filters.find(f => f.field === field);
+    if (filterConfig?.type === 'select') {
+      onFiltersChange(newTempFilters);
+    } else {
+      // Per search/number: solo aggiorna il flag
+      checkPendingSearchFilters(newTempFilters);
     }
-  }, [otherFilters, searchFilters, currentFilters]);
+  }, [tempFilters, config.filters, onFiltersChange, checkPendingSearchFilters]);
+
+  // Applica filtri search/number
+  const handleApplySearchFilters = () => {
+    onFiltersChange(tempFilters);
+    setHasPendingSearchFilters(false);
+  };
+
+  // Reset filtri (semplificato!)
+  const handleResetFilters = () => {
+    const resetFilters = {} as F;
+    config.filters.forEach(filterConfig => {
+      (resetFilters as any)[filterConfig.field] = filterConfig.defaultValue || '';
+    });
+    
+    setTempFilters(resetFilters);
+    setHasPendingSearchFilters(false);
+    onFiltersChange(resetFilters);
+  };
 
   // Rendering dei filtri
   const renderFilters = () => {
@@ -200,7 +165,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
               label={filterConfig.label}
               placeholder={filterConfig.placeholder}
               value={currentValue}
-              onChange={(e) => handleSearchFilterChange(key, e.target.value)}
+              onChange={(e) => handleFilterChange(key, e.target.value)}
               size="small"
               sx={{ width: 'auto', minWidth: 300 }}
             />
@@ -214,7 +179,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
                 value={currentValue}
                 label={filterConfig.label}
                 onChange={(e: SelectChangeEvent<unknown>) => 
-                  handleOtherFilterChange(key, e.target.value as string)
+                  handleFilterChange(key, e.target.value as string)
                 }
               >
                 {filterConfig.options?.map(option => (
@@ -233,7 +198,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
               label={filterConfig.label}
               type="number"
               value={currentValue}
-              onChange={(e) => handleOtherFilterChange(key, e.target.value)}
+              onChange={(e) => handleFilterChange(key, e.target.value)}
               size="small"
               sx={{ minWidth: 150 }}
             />
@@ -288,20 +253,6 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     }] : [])
   ];
 
-  // Gestione reset filtri
-  const handleResetFilters = () => {
-    const resetFilters = {} as F;
-    config.filters.forEach(filterConfig => {
-      (resetFilters as any)[filterConfig.field] = filterConfig.defaultValue || '';
-    });
-    
-    // Reset di tutti gli stati
-    setTempFilters(resetFilters);
-    setSearchFilters({});
-    setOtherFilters({});
-    onFiltersChange(resetFilters);
-  };
-
   // Rendering errore
   if (error) {
     return (
@@ -347,7 +298,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
         </Box>
       )}
 
-      {/* Sezione filtri */}
+      {/* Sezione filtri con bottoni di controllo */}
       <Box sx={{ 
         mb: 3, 
         p: 2, 
@@ -363,9 +314,25 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
           flexWrap: 'wrap'
         }}>
           {renderFilters()}
+          
+          {/* Bottoni di controllo */}
           <Box sx={{ display: 'flex', gap: 1, borderLeft: '1px solid', borderColor: 'divider', pl: 2 }}>
+            {/* Bottone Applica (appare solo se ci sono filtri search/number pending) */}
+            {hasPendingSearchFilters && (
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<VaporIcon icon={faSearch} />}
+                onClick={handleApplySearchFilters}
+              >
+                {t('common.dataGrid.applyFilters')}
+              </Button>
+            )}
+            
+            {/* Bottone Reset */}
             <Button
-              variant="contained"
+              variant="outlined"
               size="small"
               onClick={handleResetFilters}
             >

@@ -8,7 +8,8 @@
                 "addButtonLabel": "Aggiungi Nuovo",
                 "actions": "Azioni",
                 "all": "Tutti",
-                "resetFilters": "Rimuovi Filtri"
+                "resetFilters": "Rimuovi Filtri",
+                "applyFilters": "Applica Filtri"
             }
         },
         "nav": {
