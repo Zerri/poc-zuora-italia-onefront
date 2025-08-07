@@ -31,7 +31,9 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   const [filters, setFilters] = useState<UserFilters>({
     status: 'All',
     role: 'All',
-    searchTerm: ''
+    searchTerm: '',
+    page: 1,
+    limit: 10
   });
   
   // State per drawer management
@@ -49,6 +51,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   // Hook per gestire gli utenti
   const {
     items: users,
+    pagination,
     isLoading,
     error,
     createItem: createUser,
@@ -57,6 +60,9 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
     isCreating,
     isUpdating
   } = useUsersCRUD(filters);
+
+  console.log('User Management Page - Users:', users);
+  console.log('User Management Page - Pagination:', pagination);
 
   // Verifica permessi - solo admin può accedere
   if (role !== 'admin') {

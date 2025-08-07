@@ -57,7 +57,7 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     width: 120,
     renderCell: (value) => (
       <Chip
-        label={value === 'active' ? 'Attivo' : value === 'inactive' ? 'Inattivo' : 'In Sospeso'}
+        label={value }
         size="small"
         color={value === 'active' ? 'success' : value === 'inactive' ? 'error' : 'warning'}
       />
@@ -73,7 +73,7 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     field: 'lastAccess',
     headerName: 'Ultimo Accesso',
     width: 160,
-    renderCell: (value) => value ? dayjs(value).format('DD/MM/YYYY HH:mm') : 'Mai'
+    renderCell: (value) => value ? dayjs(value).format('DD/MM/YYYY HH:mm') : '-'
   }
 ];
 
@@ -93,22 +93,22 @@ export const USER_FILTERS: FilterConfig[] = [
     label: 'Stato',
     type: 'select',
     options: [
-      { value: 'active', label: 'Attivo' },
-      { value: 'inactive', label: 'Inattivo' },
-      { value: 'pending', label: 'In Sospeso' }
+      { value: 'active', label: 'active' },
+      { value: 'inactive', label: 'inactive' },
+      { value: 'pending', label: 'pending' }
     ],
-    defaultValue: 'All'
+    defaultValue: 'all'
   },
   {
     field: 'role',
     label: 'Ruolo',
     type: 'select',
     options: [
-      { value: 'admin', label: 'Amministratore' },
-      { value: 'user', label: 'Utente' },
-      { value: 'moderator', label: 'Moderatore' }
+      { value: 'admin', label: 'admin' },
+      { value: 'user', label: 'user' },
+      { value: 'moderator', label: 'moderator' }
     ],
-    defaultValue: 'All'
+    defaultValue: 'all'
   }
 ];
 
@@ -152,6 +152,7 @@ export const getUserGridConfig = (
   onDelete: (user: User) => void,
   onToggleStatus: (user: User) => void
 ): DataGridConfig<User> => ({
+  getRowId: (quote) => quote._id,
   columns: USER_COLUMNS,
   filters: USER_FILTERS,
   actions: getUserActions(onEdit, onDelete, onToggleStatus),

@@ -15,15 +15,25 @@ export interface CRUDConfig {
   searchFields: string[];
 }
 
-// ✅ CAMBIATO: id ora è opzionale per supportare creazione
 export interface CRUDItem {
   _id?: string | number;
   [key: string]: any;
 }
 
 export interface CRUDFilters {
-  searchTerm: string;
+  searchTerm?: string;
+  page?: number;
+  limit?: number;
   [key: string]: any;
+}
+
+export interface PaginationInfo {
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
 }
 
 export function useGenericCRUD(
@@ -37,33 +47,41 @@ export function useGenericCRUD(
     queryKey: [entityKey, filters],
     queryFn: async () => {
       const params = new URLSearchParams();
-      
+
       Object.entries(filters).forEach(([key, value]) => {
-        if (value && value !== 'All' && value !== '') {
+        if (value !== undefined && value !== null && value !== '' && value !== 'All') {
           params.append(key, String(value));
         }
       });
 
-      const queryString = params.toString();
-      const url = queryString 
-        ? `${config.endpoints.list}?${queryString}` 
-        : config.endpoints.list;
+      const url = `${config.endpoints.list}?${params.toString()}`;
 
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP error ${response.status}: Failed to fetch ${entityKey}`);
       }
 
-      return response.json();
+      const data = await response.json();
+
+      // Supporta sia la vecchia che la nuova struttura di risposta
+      const items = data.users || data.items || [];
+      const pagination: PaginationInfo = data.pagination || {
+        total: items.length,
+        page: 1,
+        limit: items.length,
+        pages: 1,
+        hasNext: false,
+        hasPrev: false
+      };
+
+      return { items, pagination };
     },
     staleTime: 5 * 60 * 1000,
     retry: 3
   });
 
-  // Mutation per creare - id è opzionale
   const createMutation = useMutation({
     mutationFn: async (itemData: CRUDItem) => {
-      // Per la creazione, aggiungiamo automaticamente registrationDate se non presente
       const dataToSend = {
         ...itemData,
         registrationDate: itemData.registrationDate || new Date().toISOString(),
@@ -88,7 +106,6 @@ export function useGenericCRUD(
     }
   });
 
-  // Mutation per aggiornare - id è richiesto
   const updateMutation = useMutation({
     mutationFn: async (itemData: CRUDItem) => {
       if (!itemData.id) {
@@ -130,7 +147,8 @@ export function useGenericCRUD(
   });
 
   return {
-    items: query.data || [],
+    items: query.data?.items || [],
+    pagination: query.data?.pagination,
     isLoading: query.isLoading,
     error: query.error,
     createItem: createMutation,

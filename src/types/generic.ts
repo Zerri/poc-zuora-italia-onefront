@@ -15,6 +15,8 @@ export interface BaseEntity {
  */
 export interface BaseFilters {
   searchTerm: string;
+  page?: number;
+  limit?: number;
   [key: string]: any;
 }
 
