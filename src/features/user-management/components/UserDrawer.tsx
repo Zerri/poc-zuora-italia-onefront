@@ -259,7 +259,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
                 <MenuItem value="moderator">
                   {t('features.userManagement.roles.moderator')}
                 </MenuItem>
-                <MenuItem value="admin">
+                <MenuItem value="administrator">
                   {t('features.userManagement.roles.administrator')}
                 </MenuItem>
               </Select>

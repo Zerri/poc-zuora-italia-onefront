@@ -6,7 +6,9 @@
             "welcome_user": "Welcome, {{name}}",
             "dataGrid": {
                 "addButtonLabel": "Add New",
-                "actions": "Actions"
+                "actions": "Actions",
+                "all": "All",
+                "resetFilters": "Remove Filters"
             }
         },
         "nav": {

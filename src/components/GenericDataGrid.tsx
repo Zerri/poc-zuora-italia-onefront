@@ -1,5 +1,5 @@
 // src/components/GenericDataGrid.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Typography,
   Button,
@@ -19,6 +19,23 @@ import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
 import { useTranslation } from '@1f/react-sdk';
 import type { DataGridConfig } from '../types/grid';
 import type { BaseEntity, BaseFilters } from '../types/generic';
+
+// Custom hook per debounce
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 // Helper per localizzazione DataGrid
 const getDataGridLocaleText = (t: any) => ({
@@ -89,11 +106,85 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
 
   // State per i filtri temporanei
   const [tempFilters, setTempFilters] = useState<F>(currentFilters);
+  
+  // Separazione dei filtri search dagli altri per debounce
+  const [searchFilters, setSearchFilters] = useState<Partial<F>>({});
+  const [otherFilters, setOtherFilters] = useState<Partial<F>>({});
+
+  // Debounce per i filtri di ricerca (300ms)
+  const debouncedSearchFilters = useDebounce(searchFilters, 300);
 
   // Sincronizza filtri temporanei quando cambiano quelli esterni
   useEffect(() => {
     setTempFilters(currentFilters);
-  }, [currentFilters]);
+    
+    // Separa i filtri search dagli altri
+    const searchFields = config.filters.filter(f => f.type === 'search').map(f => f.field);
+    const newSearchFilters: Partial<F> = {};
+    const newOtherFilters: Partial<F> = {};
+    
+    Object.keys(currentFilters).forEach(key => {
+      if (searchFields.includes(key)) {
+        (newSearchFilters as any)[key] = currentFilters[key as keyof F];
+      } else {
+        (newOtherFilters as any)[key] = currentFilters[key as keyof F];
+      }
+    });
+    
+    setSearchFilters(newSearchFilters);
+    setOtherFilters(newOtherFilters);
+  }, [currentFilters, config.filters]);
+
+  // Applicazione automatica dei filtri di ricerca (debounced)
+  useEffect(() => {
+    // Combina filtri search debounced con altri filtri per l'applicazione
+    const combinedFilters = { ...otherFilters, ...debouncedSearchFilters } as F;
+    
+    // Controlla se i filtri sono effettivamente cambiati per evitare cicli infiniti
+    const filtersChanged = Object.keys(combinedFilters).some(key => 
+      combinedFilters[key as keyof F] !== currentFilters[key as keyof F]
+    );
+    
+    if (filtersChanged) {
+      onFiltersChange(combinedFilters);
+    }
+  }, [debouncedSearchFilters, otherFilters]);
+
+  // Handler per filtri di ricerca
+  const handleSearchFilterChange = useCallback((field: string, value: string) => {
+    setSearchFilters(prev => ({
+      ...prev,
+      [field]: value
+    } as Partial<F>));
+    
+    // Aggiorna anche tempFilters per la UI
+    setTempFilters(prev => ({
+      ...prev,
+      [field]: value
+    } as F));
+  }, []);
+
+  // Handler per filtri select/number (applicazione immediata)
+  const handleOtherFilterChange = useCallback((field: string, value: string) => {
+    const newOtherFilters = {
+      ...otherFilters,
+      [field]: value
+    } as Partial<F>;
+    
+    setOtherFilters(newOtherFilters);
+    
+    // Aggiorna tempFilters per la UI
+    setTempFilters(prev => ({
+      ...prev,
+      [field]: value
+    } as F));
+    
+    // Applica immediatamente combinando con search filters attuali (solo se diverso)
+    const combinedFilters = { ...newOtherFilters, ...searchFilters } as F;
+    if (combinedFilters[field as keyof F] !== currentFilters[field as keyof F]) {
+      onFiltersChange(combinedFilters);
+    }
+  }, [otherFilters, searchFilters, currentFilters]);
 
   // Rendering dei filtri
   const renderFilters = () => {
@@ -109,10 +200,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
               label={filterConfig.label}
               placeholder={filterConfig.placeholder}
               value={currentValue}
-              onChange={(e) => setTempFilters(prev => ({
-                ...prev,
-                [key]: e.target.value
-              } as F))}
+              onChange={(e) => handleSearchFilterChange(key, e.target.value)}
               size="small"
               sx={{ width: 'auto', minWidth: 300 }}
             />
@@ -125,12 +213,11 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
               <Select
                 value={currentValue}
                 label={filterConfig.label}
-                onChange={(e: SelectChangeEvent<unknown>) => setTempFilters(prev => ({
-                  ...prev,
-                  [key]: e.target.value as string
-                } as F))}
+                onChange={(e: SelectChangeEvent<unknown>) => 
+                  handleOtherFilterChange(key, e.target.value as string)
+                }
               >
-                <MenuItem value="All">{t('common.all')}</MenuItem>
+                <MenuItem value="all">{t('common.dataGrid.all')}</MenuItem>
                 {filterConfig.options?.map(option => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
@@ -147,10 +234,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
               label={filterConfig.label}
               type="number"
               value={currentValue}
-              onChange={(e) => setTempFilters(prev => ({
-                ...prev,
-                [key]: e.target.value
-              } as F))}
+              onChange={(e) => handleOtherFilterChange(key, e.target.value)}
               size="small"
               sx={{ minWidth: 150 }}
             />
@@ -205,18 +289,17 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     }] : [])
   ];
 
-  // Gestione applicazione filtri
-  const handleApplyFilters = () => {
-    onFiltersChange(tempFilters);
-  };
-
   // Gestione reset filtri
   const handleResetFilters = () => {
     const resetFilters = {} as F;
     config.filters.forEach(filterConfig => {
       (resetFilters as any)[filterConfig.field] = filterConfig.defaultValue || '';
     });
+    
+    // Reset di tutti gli stati
     setTempFilters(resetFilters);
+    setSearchFilters({});
+    setOtherFilters({});
     onFiltersChange(resetFilters);
   };
 
@@ -278,28 +361,19 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
           display: 'flex', 
           gap: 2, 
           alignItems: 'flex-end', 
-          flexWrap: 'wrap',
-          mb: 2
+          flexWrap: 'wrap'
         }}>
-          {renderFilters()} <Box sx={{ display: 'flex', gap: 1, borderLeft: '1px solid', borderColor: 'divider', pl: 2 }}>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={handleApplyFilters}
-          >
-            {t('common.apply')}
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleResetFilters}
-          >
-            {t('common.reset')}
-          </Button>
+          {renderFilters()}
+          <Box sx={{ display: 'flex', gap: 1, borderLeft: '1px solid', borderColor: 'divider', pl: 2 }}>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={handleResetFilters}
+            >
+              {t('common.dataGrid.resetFilters')}
+            </Button>
+          </Box>
         </Box>
-        </Box>
-        
-       
       </Box>
 
       {/* DataGrid */}
@@ -334,11 +408,6 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
           }}
         />
       </Box>
-      {/* <Box sx={{ textAlign: 'center', py: 4 }}>
-        <Typography variant="body1" color="text.secondary">
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-        </Typography>
-      </Box> */}
 
       {/* Messaggio quando vuoto */}
       {!isLoading && items.length === 0 && (

@@ -6,7 +6,9 @@
             "welcome_user": "Benvenuto, {{name}}",
             "dataGrid": {
                 "addButtonLabel": "Aggiungi Nuovo",
-                "actions": "Azioni"
+                "actions": "Azioni",
+                "all": "Tutti",
+                "resetFilters": "Rimuovi Filtri"
             }
         },
         "nav": {
