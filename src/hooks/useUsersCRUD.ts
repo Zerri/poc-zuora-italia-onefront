@@ -1,6 +1,6 @@
 // src/hooks/useUsersCRUD.ts
 import { useGenericCRUD } from './useGenericCRUD';
-import type { UserFilters } from '../types/user';
+import type { User, UserFilters } from '../types/user';
 import type { CRUDConfig } from './useGenericCRUD';
 
 /**
@@ -23,7 +23,7 @@ const USER_CONFIG: CRUDConfig = {
  * Hook per la gestione degli utenti
  */
 export function useUsersCRUD(filters: UserFilters) {
-  return useGenericCRUD('users', USER_CONFIG, filters);
+  return useGenericCRUD<User>('users', USER_CONFIG, filters);
 }
 
 export { USER_CONFIG };

@@ -36,7 +36,7 @@ export interface PaginationInfo {
   hasPrev: boolean;
 }
 
-export function useGenericCRUD(
+export function useGenericCRUD<T extends CRUDItem>(
   entityKey: string,
   config: CRUDConfig,
   filters: CRUDFilters
@@ -45,7 +45,8 @@ export function useGenericCRUD(
 
   const query = useQuery({
     queryKey: [entityKey, filters],
-    queryFn: async () => {
+    queryFn: async (): Promise<{ items: T[]; pagination?: PaginationInfo }> => {
+      
       const params = new URLSearchParams();
 
       Object.entries(filters).forEach(([key, value]) => {
@@ -63,16 +64,31 @@ export function useGenericCRUD(
 
       const data = await response.json();
 
-      // Supporta sia la vecchia che la nuova struttura di risposta
-      const items = data.users || data.items || [];
-      const pagination: PaginationInfo = data.pagination || {
-        total: items.length,
-        page: 1,
-        limit: items.length,
-        pages: 1,
-        hasNext: false,
-        hasPrev: false
-      };
+      let items: T[] = [];
+      let pagination: PaginationInfo | undefined = undefined;
+
+      // Caso 1: risposta è un array (no paginazione)
+      if (Array.isArray(data)) {
+        items = data;
+        pagination = undefined; // oppure puoi costruirne uno fittizio se serve coerenza
+      }
+      // Caso 2: risposta è un oggetto (con o senza paginazione)
+      else {
+        items = data.items || [];
+        if (data.pagination) {
+          pagination = data.pagination;
+        } else {
+          // fallback se vuoi che la struttura sia sempre consistente
+          pagination = {
+            total: items.length,
+            page: 1,
+            limit: items.length,
+            pages: 1,
+            hasNext: false,
+            hasPrev: false
+          };
+        }
+      }
 
       return { items, pagination };
     },

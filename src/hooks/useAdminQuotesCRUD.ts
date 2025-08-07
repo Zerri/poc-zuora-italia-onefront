@@ -1,6 +1,6 @@
 // src/hooks/useAdminQuotesCRUD.ts
 import { useGenericCRUD } from './useGenericCRUD';
-import type { AdminQuoteFilters } from '../types/adminQuote';
+import type { AdminQuote, AdminQuoteFilters } from '../types/adminQuote';
 import type { CRUDConfig } from './useGenericCRUD';
 
 /**
@@ -23,7 +23,7 @@ const ADMIN_QUOTE_CONFIG: CRUDConfig = {
  * Hook per la gestione amministrativa dei preventivi
  */
 export function useAdminQuotesCRUD(filters: AdminQuoteFilters) {
-  return useGenericCRUD('admin-quotes', ADMIN_QUOTE_CONFIG, filters);
+  return useGenericCRUD<AdminQuote>('admin-quotes', ADMIN_QUOTE_CONFIG, filters);
 }
 
 export { ADMIN_QUOTE_CONFIG };
