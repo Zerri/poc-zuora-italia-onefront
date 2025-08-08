@@ -18,9 +18,13 @@ export interface User extends BaseEntity {
  * Filtri specifici per gli utenti
  */
 export interface UserFilters extends BaseFilters {
-  // searchTerm è già incluso da BaseFilters
-  status: string;  // 'all' | 'active' | 'inactive' | 'pending'
-  role: string;    // 'all' | 'admin' | 'user' | 'moderator'
+  status?: string;
+  role?: string;
+  searchTerm: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;        // 🆕 Opzionale - può non esserci
+  sortOrder?: 'asc' | 'desc'; // 🆕 Opzionale
 }
 
 /**

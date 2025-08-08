@@ -13,7 +13,7 @@ export interface BaseEntity {
  * Informazioni di ordinamento
  */
 export interface SortInfo {
-  field: string;                    // Campo da ordinare
+  field: string | null;                    // Campo da ordinare
   direction: 'asc' | 'desc';        // Direzione ordinamento
 }
 

@@ -114,28 +114,31 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
         field: currentFilters.sortBy,
         sort: currentFilters.sortOrder === 'desc' ? 'desc' : 'asc'
       }];
-    } else if (config.defaultSort) {
-      return [{
-        field: config.defaultSort.field,
-        sort: config.defaultSort.direction === 'desc' ? 'desc' : 'asc'
-      }];
     }
+    // 🎯 Nessun ordinamento attivo = array vuoto (nessuna freccia)
     return [];
   })();
 
   // Handler per eventi di sorting dal DataGrid
   const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
+    console.log('🔄 Sorting model changed:', sortModel);
+    
     if (!isServerSorting || !onSortChange) return;
 
-    // Se non c'è sorting, usa il default
+    // 🆕 RIMOZIONE ORDINAMENTO (3° click)
     if (sortModel.length === 0) {
-      if (config.defaultSort) {
-        onSortChange(config.defaultSort);
-      }
+      console.log('✅ Rimozione ordinamento - nessun sorting');
+      
+      // Invia al parent che non vuole più nessun ordinamento
+      onSortChange({
+        field: null, // 🎯 NULL = nessun ordinamento
+        direction: 'asc' // Irrilevante quando field è null
+      });
+      
       return;
     }
 
-    // Prendi il primo elemento del sort model
+    // Ordinamento normale (1° e 2° click)
     const sort = sortModel[0];
     const sortInfo: SortInfo = {
       field: sort.field,
@@ -148,9 +151,9 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
       return;
     }
 
-    console.log('🔄 Cambio ordinamento:', sortInfo);
+    console.log('✅ Cambio ordinamento:', sortInfo);
     onSortChange(sortInfo);
-  }, [isServerSorting, onSortChange, config.defaultSort, config.sortableFields]);
+  }, [isServerSorting, onSortChange, config.sortableFields]);
 
   // Controlla se ci sono differenze nei filtri search/number
   const checkPendingSearchFilters = useCallback((newTempFilters: F) => {

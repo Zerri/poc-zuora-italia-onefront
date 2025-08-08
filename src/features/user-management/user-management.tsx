@@ -73,19 +73,28 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   // 🆕 Handler per cambio ordinamento
   const handleSortChange = (sortInfo: SortInfo) => {
     console.log('🔄 Sorting requested:', sortInfo);
-    console.log('🔍 Current filters before change:', { sortBy: filters.sortBy, sortOrder: filters.sortOrder });
     
-    // 🔧 FIX: Forza sempre l'aggiornamento, anche se sembra uguale
-    const newFilters = {
-      ...filters,
-      sortBy: sortInfo.field,
-      sortOrder: sortInfo.direction,
-      page: 1 // Reset alla prima pagina quando si ordina
-    };
+    let newFilters;
     
-    console.log('🔄 New filters after change:', { sortBy: newFilters.sortBy, sortOrder: newFilters.sortOrder });
+    if (sortInfo.field === null) {
+      // 🆕 RIMUOVI ORDINAMENTO COMPLETAMENTE
+      console.log('✅ Rimozione ordinamento');
+      const { sortBy, sortOrder, ...filtersWithoutSort } = filters;
+      newFilters = {
+        ...filtersWithoutSort,
+        page: 1 // Reset paginazione
+      } as UserFilters;
+    } else {
+      // ORDINAMENTO NORMALE
+      newFilters = {
+        ...filters,
+        sortBy: sortInfo.field,
+        sortOrder: sortInfo.direction,
+        page: 1
+      };
+    }
     
-    // Forza il re-render aggiornando sempre lo state
+    console.log('🔄 New filters:', newFilters);
     setFilters(newFilters);
   };
 
