@@ -256,5 +256,7 @@ export const getAdminQuoteGridConfig = (
   addButtonLabel: 'features.adminQuotes.dataGrid.addButtonLabel',
   emptyMessage: 'features.adminQuotes.dataGrid.emptyMessage',
   pageSize: 10,
-  showHeader: false // Gestiremo l'header nella pagina
+  showHeader: false,
+  paginationMode: 'server',
+  pageSizeOptions: [10, 25, 50, 100]
 });

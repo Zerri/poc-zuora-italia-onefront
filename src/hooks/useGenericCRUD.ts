@@ -1,6 +1,7 @@
 // src/hooks/useGenericCRUD.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetch } from "@1f/react-sdk";
+import type { PaginationInfo, PaginatedResponse } from '../types/generic';
 
 export interface CRUDConfig {
   name: string;
@@ -45,7 +46,7 @@ export function useGenericCRUD<T extends CRUDItem>(
 
   const query = useQuery({
     queryKey: [entityKey, filters],
-    queryFn: async (): Promise<{ items: T[]; pagination?: PaginationInfo }> => {
+    queryFn: async (): Promise<PaginatedResponse<T>> => {
       
       const params = new URLSearchParams();
 
@@ -70,24 +71,12 @@ export function useGenericCRUD<T extends CRUDItem>(
       // Caso 1: risposta è un array (no paginazione)
       if (Array.isArray(data)) {
         items = data;
-        pagination = undefined; // oppure puoi costruirne uno fittizio se serve coerenza
+        pagination = undefined;
       }
       // Caso 2: risposta è un oggetto (con o senza paginazione)
       else {
         items = data.items || [];
-        if (data.pagination) {
-          pagination = data.pagination;
-        } else {
-          // fallback se vuoi che la struttura sia sempre consistente
-          pagination = {
-            total: items.length,
-            page: 1,
-            limit: items.length,
-            pages: 1,
-            hasNext: false,
-            hasPrev: false
-          };
-        }
+        pagination = data.pagination || undefined;
       }
 
       return { items, pagination };
@@ -167,6 +156,7 @@ export function useGenericCRUD<T extends CRUDItem>(
     pagination: query.data?.pagination,
     isLoading: query.isLoading,
     error: query.error,
+    refetch: query.refetch,
     createItem: createMutation,
     updateItem: updateMutation,
     deleteItem: deleteMutation,

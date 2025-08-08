@@ -45,7 +45,9 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
     status: 'All',
     salesAgent: 'All',
     period: 'All',
-    searchTerm: ''
+    searchTerm: '',
+    page: 1,
+    limit: 10
   });
   
   // State per dialoghi
@@ -79,6 +81,7 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
   // Hook per gestire i preventivi
   const {
     items: quotes,
+    pagination,
     isLoading,
     error,
     updateItem: updateQuote,
@@ -99,6 +102,29 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
       </VaporThemeProvider>
     );
   }
+
+    // Handler per il cambio di paginazione
+  const handlePaginationChange = (newPage: number, newPageSize: number) => {
+    console.log('Pagination changed:', { page: newPage, pageSize: newPageSize });
+    
+    setFilters(prev => ({
+      ...prev,
+      page: newPage,
+      limit: newPageSize
+    }));
+  };
+
+  // Handler per il cambio filtri (supporta reset paginazione)
+  const handleFiltersChange = (newFilters: AdminQuoteFilters) => {
+    console.log('Filters changed:', newFilters);
+    
+    // Quando cambiano i filtri, reset della paginazione alla prima pagina
+    setFilters({
+      ...newFilters,
+      page: 1,                   // ✅ Reset alla prima pagina
+      limit: filters.limit       // ✅ Mantieni il page size corrente
+    });
+  };
 
   // Handler per visualizzare preventivo
   const handleView = (quote: AdminQuote) => {
@@ -237,6 +263,8 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
               onFiltersChange={setFilters}
               isLoading={isLoading}
               error={error}
+              pagination={pagination}
+              onPaginationChange={handlePaginationChange}
             />
           )}
         </VaporPage.Section>

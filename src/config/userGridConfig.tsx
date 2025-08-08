@@ -1,6 +1,6 @@
 // src/config/userGridConfig.tsx
 import { Box, Typography, Chip, Avatar } from "@vapor/v3-components";
-import { faEdit, faTrash, faEllipsisV } from "@fortawesome/pro-regular-svg-icons";
+import { faEllipsisV, faEdit, faTrash } from "@fortawesome/pro-regular-svg-icons";
 import dayjs from 'dayjs';
 import type { User } from '../types/user';
 import type { DataGridConfig, ColumnConfig, FilterConfig, ActionConfig } from '../types/grid';
@@ -154,7 +154,7 @@ export const getUserGridConfig = (
   onDelete: (user: User) => void,
   onToggleStatus: (user: User) => void
 ): DataGridConfig<User> => ({
-  getRowId: (quote) => quote._id,
+  getRowId: (user) => user._id,
   columns: USER_COLUMNS,
   filters: USER_FILTERS,
   actions: getUserActions(onEdit, onDelete, onToggleStatus),
@@ -163,6 +163,7 @@ export const getUserGridConfig = (
   addButtonLabel: 'features.userManagement.dataGrid.addButtonLabel',
   emptyMessage: 'Nessun utente trovato. Aggiungi il primo utente per iniziare.',
   pageSize: 10,
-  // Configurazione header
-  showHeader: true,           // Mostra l'header
+  showHeader: true,
+  paginationMode: 'server',
+  pageSizeOptions: [10, 25, 50, 100]
 });

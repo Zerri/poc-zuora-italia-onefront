@@ -21,6 +21,26 @@ export interface BaseFilters {
 }
 
 /**
+ * Informazioni di paginazione dal server
+ */
+export interface PaginationInfo {
+  total: number;     // Numero totale di record
+  page: number;      // Pagina corrente (1-based)
+  limit: number;     // Numero di elementi per pagina
+  pages: number;     // Numero totale di pagine
+  hasNext: boolean;  // Ha una pagina successiva
+  hasPrev: boolean;  // Ha una pagina precedente
+}
+
+/**
+ * Risposta paginata dal server
+ */
+export interface PaginatedResponse<T> {
+  items: T[];
+  pagination?: PaginationInfo;
+}
+
+/**
  * Configurazione degli endpoint API per un'entità
  */
 export interface CRUDEndpoints {

@@ -55,4 +55,6 @@ export interface DataGridConfig<T = any> {
   pageSize?: number;
   // Nuove opzioni per l'header
   showHeader?: boolean;          // Se mostrare l'header del DataGrid
+  paginationMode?: 'server' | 'client';  // Modalità paginazione (default: 'client')
+  pageSizeOptions?: number[];    // Opzioni per page size (default: [10, 25, 50, 100])
 }

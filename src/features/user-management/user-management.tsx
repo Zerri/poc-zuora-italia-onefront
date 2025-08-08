@@ -79,6 +79,29 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
     );
   }
 
+  // Handler per il cambio di paginazione
+  const handlePaginationChange = (newPage: number, newPageSize: number) => {
+    console.log('Pagination changed:', { page: newPage, pageSize: newPageSize });
+    
+    setFilters(prev => ({
+      ...prev,
+      page: newPage,
+      limit: newPageSize
+    }));
+  };
+
+  // Handler per il cambio filtri (supporta reset paginazione)
+  const handleFiltersChange = (newFilters: UserFilters) => {
+    console.log('Filters changed:', newFilters);
+    
+    // Quando cambiano i filtri, reset della paginazione alla prima pagina
+    setFilters({
+      ...newFilters,
+      page: 1,
+      limit: filters.limit
+    });
+  };
+
   // Handler per salvataggio utente (CORRETTO)
   const handleSaveUser = async (userData: UserMutationData) => {
     try {
@@ -215,6 +238,8 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
               onAdd={handleAdd}
               isLoading={isLoading}
               error={error}
+              pagination={pagination}
+              onPaginationChange={handlePaginationChange}
             />
           )}
         </VaporPage.Section>
