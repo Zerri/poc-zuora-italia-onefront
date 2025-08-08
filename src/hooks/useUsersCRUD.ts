@@ -4,7 +4,7 @@ import type { User, UserFilters } from '../types/user';
 import type { CRUDConfig } from './useGenericCRUD';
 
 /**
- * Configurazione specifica per l'entità User
+ * Configurazione specifica per l'entità User con supporto sorting
  */
 const USER_CONFIG: CRUDConfig = {
   name: 'users',
@@ -17,6 +17,21 @@ const USER_CONFIG: CRUDConfig = {
   },
   permissions: ['admin'],
   searchFields: ['name', 'email'],
+  
+  // Configurazione sorting
+  defaultSort: {
+    field: 'registrationDate',
+    direction: 'desc'
+  },
+  sortableFields: [
+    'id',                // _id (sempre sicuro)
+    'name',              // fullName (indicizzato)
+    'email',             // email (indicizzato)
+    'status',            // status (indicizzato)
+    'role',              // role (indicizzato)
+    'registrationDate',  // registrationDate (indicizzato)
+    'lastAccess'         // lastAccess (se indicizzato)
+  ]
 };
 
 /**

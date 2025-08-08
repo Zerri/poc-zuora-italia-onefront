@@ -1,7 +1,7 @@
 // src/hooks/useGenericCRUD.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetch } from "@1f/react-sdk";
-import type { PaginationInfo, PaginatedResponse } from '../types/generic';
+import type { PaginationInfo, PaginatedResponse, SortInfo } from '../types/generic';
 
 export interface CRUDConfig {
   name: string;
@@ -14,6 +14,10 @@ export interface CRUDConfig {
   };
   permissions: string[];
   searchFields: string[];
+  
+  // Configurazione sorting
+  defaultSort?: SortInfo;               // Ordinamento di default
+  sortableFields?: string[];            // Campi ordinabili (se omesso, tutti i campi sono ordinabili)
 }
 
 export interface CRUDItem {
@@ -25,15 +29,35 @@ export interface CRUDFilters {
   searchTerm?: string;
   page?: number;
   limit?: number;
+  
+  // Parametri sorting (già presenti in BaseFilters)
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  
   [key: string]: any;
 }
 
+/**
+ * Hook CRUD generico con supporto sorting server-side
+ */
 export function useGenericCRUD<T extends CRUDItem>(
   entityKey: string,
   config: CRUDConfig,
   filters: CRUDFilters
 ) {
   const queryClient = useQueryClient();
+
+  // Funzione per gestire cambio ordinamento
+  const handleSortChange = (sortInfo: SortInfo) => {
+    // Verifica se il campo è ordinabile (se specificato nella config)
+    if (config.sortableFields && !config.sortableFields.includes(sortInfo.field)) {
+      console.warn(`Campo '${sortInfo.field}' non ordinabile per ${entityKey}`);
+      return;
+    }
+
+    // Invalida la query corrente per forzare il refetch con nuovo ordinamento
+    queryClient.invalidateQueries({ queryKey: [entityKey] });
+  };
 
   const query = useQuery({
     queryKey: [entityKey, filters],
@@ -47,7 +71,14 @@ export function useGenericCRUD<T extends CRUDItem>(
         }
       });
 
+      // Se non c'è sortBy ma c'è un default, usalo
+      if (!filters.sortBy && config.defaultSort) {
+        params.append('sortBy', config.defaultSort.field);
+        params.append('sortOrder', config.defaultSort.direction);
+      }
+
       const url = `${config.endpoints.list}?${params.toString()}`;
+      console.log(`🔍 ${entityKey} request:`, url);
 
       const response = await fetch(url);
       if (!response.ok) {
@@ -58,6 +89,7 @@ export function useGenericCRUD<T extends CRUDItem>(
 
       let items: T[] = [];
       let pagination: PaginationInfo | undefined = undefined;
+      let sorting: { sortBy: string; sortOrder: 'asc' | 'desc' } | undefined = undefined;
 
       // Caso 1: risposta è un array (no paginazione)
       if (Array.isArray(data)) {
@@ -68,9 +100,15 @@ export function useGenericCRUD<T extends CRUDItem>(
       else {
         items = data.items || [];
         pagination = data.pagination || undefined;
+        sorting = data.sorting || undefined; // Info sorting dal server
       }
 
-      return { items, pagination };
+      // Log sorting info per debug
+      if (sorting) {
+        console.log(`✅ ${entityKey} ordinato per:`, sorting);
+      }
+
+      return { items, pagination, sorting };
     }
   });
 
@@ -124,10 +162,14 @@ export function useGenericCRUD<T extends CRUDItem>(
     // Data
     items: query.data?.items || [],
     pagination: query.data?.pagination,
+    sorting: query.data?.sorting, // Info sorting corrente
     
     // States
     isLoading: query.isLoading,
     error: query.error,
+    
+    // Sorting handler
+    handleSortChange,
     
     // Mutations
     createItem: createMutation,

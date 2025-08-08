@@ -13,6 +13,7 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     field: 'name',
     headerName: 'Utente',
     flex: 1.5,
+    sortable: true, // Esplicitamente ordinabile
     renderCell: (_, row) => (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
@@ -40,9 +41,17 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     )
   },
   {
+    field: 'email',
+    headerName: 'Email',
+    flex: 1.5,
+    sortable: true, // Nuova colonna email ordinabile
+    renderCell: (value) => value
+  },
+  {
     field: 'role',
     headerName: 'Ruolo',
-    width: 130,
+    flex: 1,
+    sortable: true, // Ordinabile
     renderCell: (value) => (
       <Chip 
         label={value} 
@@ -54,10 +63,11 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
   {
     field: 'status',
     headerName: 'Stato',
-    width: 120,
+    flex: 1,
+    sortable: true, // Ordinabile
     renderCell: (value) => (
       <Chip
-        label={value }
+        label={value}
         size="small"
         color={value === 'active' ? 'success' : value === 'inactive' ? 'error' : 'warning'}
       />
@@ -66,13 +76,15 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
   {
     field: 'registrationDate',
     headerName: 'Data Registrazione',
-    width: 160,
+    flex: 1,
+    sortable: true, // Ordinabile
     renderCell: (value) => value ? dayjs(value).format('DD/MM/YYYY') : '-'
   },
   {
     field: 'lastAccess',
     headerName: 'Ultimo Accesso',
-    width: 160,
+    flex: 1,
+    sortable: true, // Ordinabile
     renderCell: (value) => value ? dayjs(value).format('DD/MM/YYYY HH:mm') : '-'
   }
 ];
@@ -82,7 +94,7 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
  */
 export const USER_FILTERS: FilterConfig[] = [
   {
-    field: 'search',
+    field: 'searchTerm',
     label: 'Cerca utenti...',
     type: 'search',
     placeholder: 'Cerca per nome, email o ID utente...',
@@ -93,10 +105,10 @@ export const USER_FILTERS: FilterConfig[] = [
     label: 'Stato',
     type: 'select',
     options: [
-      { value: 'all', label: 'all' },
-      { value: 'active', label: 'active' },
-      { value: 'inactive', label: 'inactive' },
-      { value: 'pending', label: 'pending' }
+      { value: 'all', label: 'Tutti gli stati' },
+      { value: 'active', label: 'Attivo' },
+      { value: 'inactive', label: 'Inattivo' },
+      { value: 'pending', label: 'In attesa' }
     ],
     defaultValue: 'all'
   },
@@ -105,10 +117,10 @@ export const USER_FILTERS: FilterConfig[] = [
     label: 'Ruolo',
     type: 'select',
     options: [
-      { value: 'all', label: 'all' },
-      { value: 'admin', label: 'admin' },
-      { value: 'user', label: 'user' },
-      { value: 'moderator', label: 'moderator' }
+      { value: 'all', label: 'Tutti i ruoli' },
+      { value: 'admin', label: 'Amministratore' },
+      { value: 'user', label: 'Utente' },
+      { value: 'moderator', label: 'Moderatore' }
     ],
     defaultValue: 'all'
   }
@@ -147,7 +159,7 @@ export const getUserActions = (
 ];
 
 /**
- * Configurazione completa DataGrid per Users
+ * Configurazione completa DataGrid per Users con supporto sorting server-side
  */
 export const getUserGridConfig = (
   onEdit: (user: User) => void,
@@ -157,13 +169,31 @@ export const getUserGridConfig = (
   getRowId: (user) => user._id,
   columns: USER_COLUMNS,
   filters: USER_FILTERS,
-  actions: getUserActions(onEdit, onDelete, onToggleStatus),
+  actions: getUserActions(onToggleStatus, onEdit, onDelete), // 🔧 onOptions → onToggleStatus
   title: 'features.userManagement.dataGrid.title',
   description: 'features.userManagement.dataGrid.description',
   addButtonLabel: 'features.userManagement.dataGrid.addButtonLabel',
   emptyMessage: 'Nessun utente trovato. Aggiungi il primo utente per iniziare.',
   pageSize: 10,
   showHeader: true,
+  
+  // Configurazione paginazione e sorting
   paginationMode: 'server',
-  pageSizeOptions: [10, 25, 50, 100]
+  sortingMode: 'server',           // ABILITA SORTING SERVER-SIDE
+  pageSizeOptions: [10, 25, 50, 100],
+  
+  // Configurazione sorting specifica
+  defaultSort: {
+    field: 'registrationDate',
+    direction: 'desc'
+  },
+  sortableFields: [
+    'id',
+    'name', 
+    'email',
+    'status',
+    'role',
+    'registrationDate',
+    'lastAccess'
+  ]
 });

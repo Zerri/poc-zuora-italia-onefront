@@ -1,5 +1,6 @@
 // src/types/grid.ts
 import { ReactNode } from 'react';
+import type { SortInfo } from './generic';
 
 /**
  * Configurazione di una colonna del DataGrid
@@ -41,7 +42,7 @@ export interface ActionConfig<T = any> {
 }
 
 /**
- * Configurazione completa del DataGrid
+ * Configurazione completa del DataGrid con supporto sorting
  */
 export interface DataGridConfig<T = any> {
   getRowId?: (row: T) => string | number;
@@ -53,8 +54,14 @@ export interface DataGridConfig<T = any> {
   addButtonLabel?: string;
   emptyMessage?: string;
   pageSize?: number;
-  // Nuove opzioni per l'header
-  showHeader?: boolean;          // Se mostrare l'header del DataGrid
-  paginationMode?: 'server' | 'client';  // Modalità paginazione (default: 'client')
-  pageSizeOptions?: number[];    // Opzioni per page size (default: [10, 25, 50, 100])
+  
+  // Opzioni header e paginazione
+  showHeader?: boolean;                              // Se mostrare l'header del DataGrid
+  paginationMode?: 'server' | 'client';            // Modalità paginazione (default: 'client')
+  pageSizeOptions?: number[];                       // Opzioni per page size (default: [10, 25, 50, 100])
+  
+  // Configurazione sorting
+  sortingMode?: 'server' | 'client';               // Modalità sorting (default: 'client')
+  defaultSort?: SortInfo;                           // Ordinamento di default
+  sortableFields?: string[];                        // Campi ordinabili (se omesso, tutti ordinabili)
 }

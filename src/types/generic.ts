@@ -10,6 +10,14 @@ export interface BaseEntity {
 }
 
 /**
+ * Informazioni di ordinamento
+ */
+export interface SortInfo {
+  field: string;                    // Campo da ordinare
+  direction: 'asc' | 'desc';        // Direzione ordinamento
+}
+
+/**
  * Interfaccia base per i filtri di ricerca
  * Ogni sistema di filtri deve includere almeno un campo di ricerca
  */
@@ -17,6 +25,8 @@ export interface BaseFilters {
   searchTerm: string;
   page?: number;
   limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
   [key: string]: any;
 }
 
@@ -38,6 +48,10 @@ export interface PaginationInfo {
 export interface PaginatedResponse<T> {
   items: T[];
   pagination?: PaginationInfo;
+  sorting?: {                      // Info ordinamento attuale
+    sortBy: string;
+    sortOrder: 'asc' | 'desc';
+  };
 }
 
 /**

@@ -1,4 +1,4 @@
-// src/components/GenericDataGrid.tsx - VERSIONE SISTEMATA
+// src/components/GenericDataGrid.tsx - CON SUPPORTO SORTING SERVER-SIDE
 import { useState, useEffect, useCallback } from 'react';
 import {
   Typography,
@@ -12,14 +12,14 @@ import {
   MenuItem,
   IconButton
 } from "@vapor/v3-components";
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridSortModel } from '@mui/x-data-grid';
 import type { SelectChangeEvent } from '@mui/material/Select';
 import { VaporIcon } from "@vapor/v3-components";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
 import { faSearch } from "@fortawesome/pro-regular-svg-icons/faSearch";
 import { useTranslation } from '@1f/react-sdk';
 import type { DataGridConfig } from '../types/grid';
-import type { BaseEntity, BaseFilters, PaginationInfo } from '../types/generic';
+import type { BaseEntity, BaseFilters, PaginationInfo, SortInfo } from '../types/generic';
 import { CustomPagination } from './CustomPagination';
 
 // Helper per localizzazione DataGrid
@@ -58,7 +58,7 @@ const getDataGridLocaleText = (t: any) => ({
   loadingOverlayLabel: t("components.dataGrid.loading"),
 });
 
-// Props del componente con supporto paginazione
+// Props aggiornate con supporto sorting
 interface GenericDataGridProps<T extends BaseEntity, F extends BaseFilters> {
   items: T[];
   config: DataGridConfig<T>;
@@ -71,10 +71,13 @@ interface GenericDataGridProps<T extends BaseEntity, F extends BaseFilters> {
   // Props per paginazione server-side
   pagination?: PaginationInfo;
   onPaginationChange?: (page: number, pageSize: number) => void;
+  
+  // Props per sorting server-side
+  onSortChange?: (sortInfo: SortInfo) => void;
 }
 
 /**
- * DataGrid generico con supporto paginazione custom con pulsanti numerici
+ * DataGrid generico con supporto sorting server-side
  */
 export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
   items,
@@ -85,7 +88,8 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
   isLoading = false,
   error = null,
   pagination,
-  onPaginationChange
+  onPaginationChange,
+  onSortChange // Handler per sorting
 }: GenericDataGridProps<T, F>) {
   const { t } = useTranslation();
 
@@ -98,6 +102,55 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     setTempFilters(currentFilters);
     setHasPendingSearchFilters(false);
   }, [currentFilters]);
+
+  // Determina modalità sorting
+  const isServerSorting = config.sortingMode === 'server' && !!onSortChange;
+  const isServerPagination = config.paginationMode === 'server' && !!pagination;
+
+  // Costruisci sortModel corrente per MUI DataGrid
+  const currentSortModel: GridSortModel = (() => {
+    if (currentFilters.sortBy) {
+      return [{
+        field: currentFilters.sortBy,
+        sort: currentFilters.sortOrder === 'desc' ? 'desc' : 'asc'
+      }];
+    } else if (config.defaultSort) {
+      return [{
+        field: config.defaultSort.field,
+        sort: config.defaultSort.direction === 'desc' ? 'desc' : 'asc'
+      }];
+    }
+    return [];
+  })();
+
+  // Handler per eventi di sorting dal DataGrid
+  const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
+    if (!isServerSorting || !onSortChange) return;
+
+    // Se non c'è sorting, usa il default
+    if (sortModel.length === 0) {
+      if (config.defaultSort) {
+        onSortChange(config.defaultSort);
+      }
+      return;
+    }
+
+    // Prendi il primo elemento del sort model
+    const sort = sortModel[0];
+    const sortInfo: SortInfo = {
+      field: sort.field,
+      direction: sort.sort === 'desc' ? 'desc' : 'asc'
+    };
+
+    // Verifica se il campo è ordinabile
+    if (config.sortableFields && !config.sortableFields.includes(sort.field)) {
+      console.warn(`Campo '${sort.field}' non ordinabile`);
+      return;
+    }
+
+    console.log('🔄 Cambio ordinamento:', sortInfo);
+    onSortChange(sortInfo);
+  }, [isServerSorting, onSortChange, config.defaultSort, config.sortableFields]);
 
   // Controlla se ci sono differenze nei filtri search/number
   const checkPendingSearchFilters = useCallback((newTempFilters: F) => {
@@ -256,8 +309,9 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     ...config.columns.map(col => ({
       field: col.field as string,
       headerName: col.headerName,
-      flex: col.flex || 1,
-      sortable: col.sortable !== false,
+      flex: col.flex,
+      width: col.width,
+      sortable: col.sortable !== false, // Default true
       renderCell: col.renderCell ? (params: any) => col.renderCell!(params.value, params.row) : undefined
     })),
     ...(config.actions.length > 0 ? [{
@@ -268,9 +322,6 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
       renderCell: (params: any) => renderActions(params.row)
     }] : [])
   ];
-
-  // Determina se stiamo usando paginazione server-side
-  const isServerPagination = config.paginationMode === 'server' && !!pagination;
 
   // Rendering errore
   if (error) {
@@ -321,7 +372,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
       <Box sx={{ 
         mb: 3, 
         p: 2, 
-        bgcolor: 'background.paper', 
+        bgcolor: 'background.paper',
         borderRadius: 1,
         border: '1px solid',
         borderColor: 'divider'
@@ -367,17 +418,15 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
         borderRadius: 1,
         bgcolor: 'background.paper'
       }}>
-        {/* DataGrid - con o senza paginazione interna */}
+        {/* DataGrid - con supporto sorting server-side */}
         <DataGrid
           getRowId={config.getRowId}
           rows={items}
           columns={columns}
           loading={isLoading}
           
-          // ✨ SE paginazione server-side, disabilitiamo quella del DataGrid
+          // Configurazione paginazione
           hideFooter={isServerPagination}
-          
-          // ✨ SE paginazione client-side, usiamo quella del DataGrid standard
           {...(!isServerPagination && {
             initialState: {
               pagination: { 
@@ -389,10 +438,18 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
             pageSizeOptions: config.pageSizeOptions || [10, 25, 50, 100]
           })}
           
+          // CONFIGURAZIONE SORTING
+          sortingMode={isServerSorting ? 'server' : 'client'}
+          sortModel={currentSortModel}
+          onSortModelChange={handleSortModelChange}
+          
+          // Disabilita sorting client-side se server-side è attivo
+          disableColumnSelector={false}
+          
           localeText={getDataGridLocaleText(t)}
           disableRowSelectionOnClick
           sx={{
-            border: 'none', // Rimuoviamo il border del DataGrid
+            border: 'none',
             '& .MuiDataGrid-cell:focus': {
               outline: 'none',
             },
@@ -401,27 +458,41 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
             },
             // Assicuriamoci che il DataGrid occupi tutto lo spazio disponibile
             flex: 1,
-            minHeight: isServerPagination ? 400 : 700
+            minHeight: isServerPagination ? 400 : 'auto',
+            // Stili per indicatori sorting
+            '& .MuiDataGrid-columnHeader': {
+              cursor: isServerSorting ? 'pointer' : 'default',
+            },
+            '& .MuiDataGrid-sortIcon': {
+              opacity: isServerSorting ? 1 : 0.7,
+            }
           }}
         />
-
-        {/* ✨ CUSTOM PAGINATION per server-side con pulsanti numerici */}
-        {isServerPagination && onPaginationChange && (
-          <CustomPagination
-            pagination={pagination}
-            onPaginationChange={onPaginationChange}
-            pageSizeOptions={config.pageSizeOptions || [10, 25, 50, 100]}
-            disabled={isLoading}
-          />
+        
+        {/* Paginazione Custom per modalità server */}
+        {isServerPagination && pagination && onPaginationChange && (
+          <Box sx={{ 
+            p: 2, 
+            borderTop: '1px solid', 
+            borderColor: 'divider'
+          }}>
+            <CustomPagination
+              pagination={pagination}
+              onPaginationChange={onPaginationChange}
+              pageSizeOptions={config.pageSizeOptions}
+              disabled={isLoading}
+            />
+          </Box>
         )}
       </Box>
 
-      {/* Messaggio quando vuoto */}
-      {!isLoading && items.length === 0 && (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-          <Typography variant="body1" color="text.secondary">
-            {config.emptyMessage || t('common.noData')}
-          </Typography>
+      {/* Debug info per sorting (rimuovere in produzione) */}
+      {process.env.NODE_ENV === 'development' && isServerSorting && (
+        <Box sx={{ mt: 1, p: 1, bgcolor: 'grey.100', borderRadius: 1, fontSize: '0.75rem' }}>
+          🔍 Debug Sorting: 
+          sortBy={currentFilters.sortBy || 'default'}, 
+          sortOrder={currentFilters.sortOrder || 'default'},
+          mode={config.sortingMode}
         </Box>
       )}
     </Box>
