@@ -82,7 +82,7 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
  */
 export const USER_FILTERS: FilterConfig[] = [
   {
-    field: 'searchTerm',
+    field: 'search',
     label: 'Cerca utenti...',
     type: 'search',
     placeholder: 'Cerca per nome, email o ID utente...',
