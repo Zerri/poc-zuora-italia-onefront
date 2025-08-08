@@ -234,7 +234,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
               items={users}
               config={getUserGridConfig(handleEdit, handleDelete, handleToggleStatus)}
               currentFilters={filters}
-              onFiltersChange={setFilters}
+              onFiltersChange={handleFiltersChange}
               onAdd={handleAdd}
               isLoading={isLoading}
               error={error}

@@ -28,15 +28,6 @@ export interface CRUDFilters {
   [key: string]: any;
 }
 
-export interface PaginationInfo {
-  total: number;
-  page: number;
-  limit: number;
-  pages: number;
-  hasNext: boolean;
-  hasPrev: boolean;
-}
-
 export function useGenericCRUD<T extends CRUDItem>(
   entityKey: string,
   config: CRUDConfig,
@@ -80,30 +71,18 @@ export function useGenericCRUD<T extends CRUDItem>(
       }
 
       return { items, pagination };
-    },
-    staleTime: 5 * 60 * 1000,
-    retry: 3
+    }
   });
 
+  // Mutation per creazione
   const createMutation = useMutation({
-    mutationFn: async (itemData: CRUDItem) => {
-      const dataToSend = {
-        ...itemData,
-        registrationDate: itemData.registrationDate || new Date().toISOString(),
-        lastAccess: itemData.lastAccess || null
-      };
-
+    mutationFn: async (newItem: Partial<T>) => {
       const response = await fetch(config.endpoints.create, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSend),
+        body: JSON.stringify(newItem)
       });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP error ${response.status}: ${errorText}`);
-      }
-
+      if (!response.ok) throw new Error('Failed to create item');
       return response.json();
     },
     onSuccess: () => {
@@ -111,23 +90,15 @@ export function useGenericCRUD<T extends CRUDItem>(
     }
   });
 
+  // Mutation per aggiornamento
   const updateMutation = useMutation({
-    mutationFn: async (itemData: CRUDItem) => {
-      if (!itemData.id) {
-        throw new Error(`ID required for updating ${entityKey}`);
-      }
-
-      const response = await fetch(config.endpoints.update(String(itemData.id)), {
+    mutationFn: async (item: Partial<T> & { id: string | number }) => {
+      const response = await fetch(config.endpoints.update(String(item.id)), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(itemData),
+        body: JSON.stringify(item)
       });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP error ${response.status}: ${errorText}`);
-      }
-
+      if (!response.ok) throw new Error('Failed to update item');
       return response.json();
     },
     onSuccess: () => {
@@ -135,16 +106,14 @@ export function useGenericCRUD<T extends CRUDItem>(
     }
   });
 
+  // Mutation per eliminazione
   const deleteMutation = useMutation({
-    mutationFn: async (itemId: string) => {
-      const response = await fetch(config.endpoints.delete(itemId), {
-        method: 'DELETE',
+    mutationFn: async (id: string) => {
+      const response = await fetch(config.endpoints.delete(id), {
+        method: 'DELETE'
       });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP error ${response.status}: ${errorText}`);
-      }
+      if (!response.ok) throw new Error('Failed to delete item');
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [entityKey] });
@@ -152,24 +121,22 @@ export function useGenericCRUD<T extends CRUDItem>(
   });
 
   return {
+    // Data
     items: query.data?.items || [],
     pagination: query.data?.pagination,
+    
+    // States
     isLoading: query.isLoading,
     error: query.error,
-    refetch: query.refetch,
+    
+    // Mutations
     createItem: createMutation,
     updateItem: updateMutation,
     deleteItem: deleteMutation,
+    
+    // Mutation states
     isCreating: createMutation.isPending,
     isUpdating: updateMutation.isPending,
     isDeleting: deleteMutation.isPending,
-    createError: createMutation.error,
-    updateError: updateMutation.error,
-    deleteError: deleteMutation.error,
-    refreshItems: () => query.refetch(),
-    invalidateCache: () => queryClient.invalidateQueries({ queryKey: [entityKey] }),
-    createSuccess: createMutation.isSuccess,
-    updateSuccess: updateMutation.isSuccess,
-    deleteSuccess: deleteMutation.isSuccess,
   };
 }

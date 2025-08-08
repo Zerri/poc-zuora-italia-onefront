@@ -260,7 +260,7 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
               items={quotes}
               config={getAdminQuoteGridConfig(handleView, handleChangeStatus, handleAssignAgent)}
               currentFilters={filters}
-              onFiltersChange={setFilters}
+              onFiltersChange={handleFiltersChange}
               isLoading={isLoading}
               error={error}
               pagination={pagination}

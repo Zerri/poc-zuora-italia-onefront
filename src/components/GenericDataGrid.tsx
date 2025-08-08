@@ -1,10 +1,4 @@
-// ============================================================================
-// STEP 2: AGGIORNAMENTO GenericDataGrid per PAGINAZIONE SERVER-SIDE
-// ============================================================================
-
-// 📁 src/components/GenericDataGrid.tsx - VERSIONE AGGIORNATA
-// ============================================================================
-
+// src/components/GenericDataGrid.tsx - VERSIONE SISTEMATA
 import { useState, useEffect, useCallback } from 'react';
 import {
   Typography,
@@ -18,7 +12,7 @@ import {
   MenuItem,
   IconButton
 } from "@vapor/v3-components";
-import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import type { SelectChangeEvent } from '@mui/material/Select';
 import { VaporIcon } from "@vapor/v3-components";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
@@ -26,8 +20,9 @@ import { faSearch } from "@fortawesome/pro-regular-svg-icons/faSearch";
 import { useTranslation } from '@1f/react-sdk';
 import type { DataGridConfig } from '../types/grid';
 import type { BaseEntity, BaseFilters, PaginationInfo } from '../types/generic';
+import { CustomPagination } from './CustomPagination';
 
-// Helper per localizzazione DataGrid (rimane invariato)
+// Helper per localizzazione DataGrid
 const getDataGridLocaleText = (t: any) => ({
   // Toolbar
   toolbarDensity: t("components.dataGrid.toolbar.density"),
@@ -52,13 +47,6 @@ const getDataGridLocaleText = (t: any) => ({
       : t("components.dataGrid.footer.rowCounterTextSingular", { count }),
   footerTotalRows: t("components.dataGrid.footer.totalRows"),
   
-  // Pagination
-  MuiTablePagination: {
-    labelRowsPerPage: t("components.dataGrid.pagination.rowsPerPage"),
-    labelDisplayedRows: ({ from, to, count }: { from: number; to: number; count: number }) =>
-      t("components.dataGrid.pagination.displayedRows", { from, to, count }),
-  },
-  
   // No rows
   noRowsLabel: t("components.dataGrid.noRows"),
   noResultsOverlayLabel: t("components.dataGrid.noResults"),
@@ -70,7 +58,7 @@ const getDataGridLocaleText = (t: any) => ({
   loadingOverlayLabel: t("components.dataGrid.loading"),
 });
 
-// ✨ AGGIORNATE: Props del componente con supporto paginazione
+// Props del componente con supporto paginazione
 interface GenericDataGridProps<T extends BaseEntity, F extends BaseFilters> {
   items: T[];
   config: DataGridConfig<T>;
@@ -80,13 +68,13 @@ interface GenericDataGridProps<T extends BaseEntity, F extends BaseFilters> {
   isLoading?: boolean;
   error?: Error | null;
   
-  // ✨ NUOVE PROPS per paginazione server-side
-  pagination?: PaginationInfo;          // Info paginazione dal server
-  onPaginationChange?: (page: number, pageSize: number) => void; // Callback cambio paginazione
+  // Props per paginazione server-side
+  pagination?: PaginationInfo;
+  onPaginationChange?: (page: number, pageSize: number) => void;
 }
 
 /**
- * ✨ AGGIORNATO: DataGrid generico con supporto paginazione server-side
+ * DataGrid generico con supporto paginazione custom con pulsanti numerici
  */
 export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
   items,
@@ -96,7 +84,6 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
   onAdd,
   isLoading = false,
   error = null,
-  // ✨ NUOVE PROPS
   pagination,
   onPaginationChange
 }: GenericDataGridProps<T, F>) {
@@ -106,37 +93,11 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
   const [tempFilters, setTempFilters] = useState<F>(currentFilters);
   const [hasPendingSearchFilters, setHasPendingSearchFilters] = useState<boolean>(false);
 
-  // ✨ NUOVO: State per il modello di paginazione MUI
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: (pagination?.page || 1) - 1, // MUI usa 0-based, il server 1-based
-    pageSize: pagination?.limit || config.pageSize || 10
-  });
-
-  // ✨ NUOVO: Sincronizza il modello di paginazione con i dati dal server
-  useEffect(() => {
-    if (pagination) {
-      setPaginationModel(prev => ({
-        page: Math.max(0, pagination.page - 1), // Converte da 1-based a 0-based
-        pageSize: pagination.limit
-      }));
-    }
-  }, [pagination]);
-
   // Sincronizza filtri temporanei quando cambiano quelli esterni
   useEffect(() => {
     setTempFilters(currentFilters);
     setHasPendingSearchFilters(false);
   }, [currentFilters]);
-
-  // ✨ NUOVO: Handler per il cambio di paginazione
-  const handlePaginationModelChange = useCallback((newModel: GridPaginationModel) => {
-    setPaginationModel(newModel);
-    
-    // Se abbiamo il callback, invia i nuovi parametri di paginazione
-    if (onPaginationChange) {
-      onPaginationChange(newModel.page + 1, newModel.pageSize); // Converte a 1-based
-    }
-  }, [onPaginationChange]);
 
   // Controlla se ci sono differenze nei filtri search/number
   const checkPendingSearchFilters = useCallback((newTempFilters: F) => {
@@ -152,7 +113,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     return hasDifferences;
   }, [config.filters, currentFilters]);
 
-  // Handler unificato per tutti i filtri (rimane invariato)
+  // Handler unificato per tutti i filtri
   const handleFilterChange = useCallback((field: string, value: string) => {
     const newTempFilters = {
       ...tempFilters,
@@ -163,31 +124,39 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
 
     const filterConfig = config.filters.find(f => f.field === field);
     if (filterConfig?.type === 'select') {
-      onFiltersChange(newTempFilters);
+      // I filtri select si applicano immediatamente e resettano la paginazione
+      const filtersWithResetPage = { ...newTempFilters, page: 1 } as F;
+      onFiltersChange(filtersWithResetPage);
     } else {
       checkPendingSearchFilters(newTempFilters);
     }
   }, [tempFilters, config.filters, onFiltersChange, checkPendingSearchFilters]);
 
-  // Applica filtri search/number (rimane invariato)
+  // Applica filtri search/number
   const handleApplySearchFilters = () => {
-    onFiltersChange(tempFilters);
+    // Quando applico filtri di ricerca, reset della paginazione
+    const filtersWithResetPage = { ...tempFilters, page: 1 } as F;
+    onFiltersChange(filtersWithResetPage);
     setHasPendingSearchFilters(false);
   };
 
-  // Reset filtri (rimane invariato)
+  // Reset filtri
   const handleResetFilters = () => {
     const resetFilters = {} as F;
     config.filters.forEach(filterConfig => {
       (resetFilters as any)[filterConfig.field] = filterConfig.defaultValue || '';
     });
     
+    // Mantieni page e limit attuali durante il reset
+    (resetFilters as any).page = 1;
+    (resetFilters as any).limit = currentFilters.limit || 10;
+    
     setTempFilters(resetFilters);
     setHasPendingSearchFilters(false);
     onFiltersChange(resetFilters);
   };
 
-  // Rendering dei filtri (rimane invariato)
+  // Rendering dei filtri
   const renderFilters = () => {
     return config.filters.map((filterConfig) => {
       const key = filterConfig.field;
@@ -202,6 +171,11 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
               placeholder={filterConfig.placeholder}
               value={currentValue}
               onChange={(e) => handleFilterChange(key, e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleApplySearchFilters();
+                }
+              }}
               size="small"
               sx={{ width: 'auto', minWidth: 300 }}
             />
@@ -235,6 +209,11 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
               type="number"
               value={currentValue}
               onChange={(e) => handleFilterChange(key, e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleApplySearchFilters();
+                }
+              }}
               size="small"
               sx={{ minWidth: 150 }}
             />
@@ -246,7 +225,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     });
   };
 
-  // Rendering delle azioni per ogni riga (rimane invariato)
+  // Rendering delle azioni per ogni riga
   const renderActions = (item: T) => {
     return (
       <Box sx={{ display: 'flex', gap: 0.5, py: 1 }}>
@@ -257,7 +236,10 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
               key={action.key}
               size="small"
               color={action.color || 'primary'}
-              onClick={() => action.onClick(item)}
+              onClick={(e) => {
+                e.stopPropagation();
+                action.onClick(item);
+              }}
               disabled={action.disabled ? action.disabled(item) : false}
               title={action.label}
             >
@@ -269,7 +251,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     );
   };
 
-  // Converti configurazione colonne in formato DataGrid (rimane invariato)
+  // Converti configurazione colonne in formato DataGrid
   const columns: GridColDef[] = [
     ...config.columns.map(col => ({
       field: col.field as string,
@@ -287,11 +269,10 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     }] : [])
   ];
 
-  // ✨ NUOVE: Configurazioni per paginazione
+  // Determina se stiamo usando paginazione server-side
   const isServerPagination = config.paginationMode === 'server' && !!pagination;
-  const pageSizeOptions = config.pageSizeOptions || [10, 25, 50, 100];
 
-  // Rendering errore (rimane invariato)
+  // Rendering errore
   if (error) {
     return (
       <Box>
@@ -304,7 +285,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
 
   return (
     <Box>
-      {/* Header (rimane invariato) */}
+      {/* Header */}
       {config.showHeader && (
         <Box sx={{ 
           mb: 3, 
@@ -336,7 +317,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
         </Box>
       )}
 
-      {/* Sezione filtri (rimane invariata) */}
+      {/* Sezione filtri */}
       <Box sx={{ 
         mb: 3, 
         p: 2, 
@@ -377,34 +358,26 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
         </Box>
       </Box>
 
-      {/* ✨ AGGIORNATO: DataGrid con supporto paginazione server-side */}
+      {/* Container per DataGrid + Paginazione Custom */}
       <Box sx={{ 
         display: 'flex',
         flexDirection: 'column',
-        minHeight: '700px',
+        border: '1px solid',
+        borderColor: 'divider',
+        borderRadius: 1,
+        bgcolor: 'background.paper'
       }}>
+        {/* DataGrid - con o senza paginazione interna */}
         <DataGrid
           getRowId={config.getRowId}
           rows={items}
           columns={columns}
           loading={isLoading}
           
-          // ✨ CONFIGURAZIONE PAGINAZIONE
-          paginationMode={isServerPagination ? 'server' : 'client'}
-          pageSizeOptions={pageSizeOptions}
-          paginationModel={paginationModel}
-          onPaginationModelChange={handlePaginationModelChange}
+          // ✨ SE paginazione server-side, disabilitiamo quella del DataGrid
+          hideFooter={isServerPagination}
           
-          // ✨ PROPS SPECIFICHE PER PAGINAZIONE SERVER-SIDE
-          {...(isServerPagination && {
-            rowCount: pagination?.total || 0,
-            paginationMeta: {
-              hasNextPage: pagination?.hasNext || false,
-              hasPreviousPage: pagination?.hasPrev || false,
-            }
-          })}
-          
-          // ✨ FALLBACK per paginazione client-side (compatibilità)
+          // ✨ SE paginazione client-side, usiamo quella del DataGrid standard
           {...(!isServerPagination && {
             initialState: {
               pagination: { 
@@ -412,23 +385,38 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
                   pageSize: config.pageSize || 10 
                 } 
               }
-            }
+            },
+            pageSizeOptions: config.pageSizeOptions || [10, 25, 50, 100]
           })}
           
           localeText={getDataGridLocaleText(t)}
           disableRowSelectionOnClick
           sx={{
+            border: 'none', // Rimuoviamo il border del DataGrid
             '& .MuiDataGrid-cell:focus': {
               outline: 'none',
             },
             '& .MuiDataGrid-row:hover': {
               backgroundColor: 'action.hover',
             },
+            // Assicuriamoci che il DataGrid occupi tutto lo spazio disponibile
+            flex: 1,
+            minHeight: isServerPagination ? 400 : 700
           }}
         />
+
+        {/* ✨ CUSTOM PAGINATION per server-side con pulsanti numerici */}
+        {isServerPagination && onPaginationChange && (
+          <CustomPagination
+            pagination={pagination}
+            onPaginationChange={onPaginationChange}
+            pageSizeOptions={config.pageSizeOptions || [10, 25, 50, 100]}
+            disabled={isLoading}
+          />
+        )}
       </Box>
 
-      {/* Messaggio quando vuoto (rimane invariato) */}
+      {/* Messaggio quando vuoto */}
       {!isLoading && items.length === 0 && (
         <Box sx={{ textAlign: 'center', py: 4 }}>
           <Typography variant="body1" color="text.secondary">

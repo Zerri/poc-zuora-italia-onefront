@@ -439,6 +439,10 @@
             }
         }, 
         "components": {
+            "pagination": {
+                "displayedRows": "{{from}}-{{to}} di {{count}} elementi",
+                "rowsPerPage": "Righe per pagina"
+            },
             "roleSelector": {
                 "roles": {
                     "admin": "Admin",
@@ -504,10 +508,6 @@
                 "rowCounterText": "{{count}} righe",
                 "rowCounterTextSingular": "{{count}} riga",
                 "totalRows": "Righe totali:"
-                },
-                "pagination": {
-                "rowsPerPage": "Righe per pagina:",
-                "displayedRows": "{{from}}–{{to}} di {{count}}"
                 },
                 "noRows": "Nessuna riga",
                 "noResults": "Nessun risultato trovato",
