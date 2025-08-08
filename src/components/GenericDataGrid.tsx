@@ -131,7 +131,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
       
       // Invia al parent che non vuole più nessun ordinamento
       onSortChange({
-        field: null, // 🎯 NULL = nessun ordinamento
+        field: '', // 🎯 NULL = nessun ordinamento
         direction: 'asc' // Irrilevante quando field è null
       });
       

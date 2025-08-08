@@ -71,8 +71,8 @@ export function useGenericCRUD<T extends CRUDItem>(
         }
       });
 
-      // Se non c'è sortBy ma c'è un default, usalo
-      if (!filters.sortBy && config.defaultSort) {
+      // Se non c'è sortBy ma c'è un default valido, usalo
+      if (!filters.sortBy && config.defaultSort && config.defaultSort.field.length > 0) {
         params.append('sortBy', config.defaultSort.field);
         params.append('sortOrder', config.defaultSort.direction);
       }

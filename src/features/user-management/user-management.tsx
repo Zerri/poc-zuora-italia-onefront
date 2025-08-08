@@ -12,7 +12,7 @@ import { useTranslation } from '@1f/react-sdk';
 import { useRole } from '../../contexts/RoleContext';
 import { SnackbarState } from '../../types';
 import type { User, UserFilters, UserMutationData } from '../../types/user';
-import type { SortInfo } from '../../types/generic'; // 🆕 Import SortInfo
+import type { SortInfo } from '../../types/generic'; // Import SortInfo
 import { GenericDataGrid } from '../../components/GenericDataGrid';
 import { UserDrawer } from './components/UserDrawer';
 import { useUsersCRUD } from '../../hooks/useUsersCRUD';
@@ -28,14 +28,14 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   const { t } = useTranslation();
   const { role } = useRole();
   
-  // 🆕 State per filtri e ricerca con supporto sorting
+  // State per filtri e ricerca con supporto sorting
   const [filters, setFilters] = useState<UserFilters>({
     status: 'all',
     role: 'all',
     searchTerm: '',
     page: 1,
     limit: 10,
-    // 🆕 Ordinamento di default
+    // Ordinamento di default
     sortBy: 'registrationDate',
     sortOrder: 'desc'
   });
@@ -56,7 +56,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   const {
     items: users,
     pagination,
-    sorting, // 🆕 Info sorting dal server (se disponibile)
+    sorting, // Info sorting dal server (se disponibile)
     isLoading,
     error,
     createItem: createUser,
@@ -68,16 +68,16 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
 
   console.log('User Management Page - Users:', users);
   console.log('User Management Page - Pagination:', pagination);
-  console.log('🔍 User Management Page - Sorting:', sorting); // 🆕 Debug sorting
+  console.log('🔍 User Management Page - Sorting:', sorting); // Debug sorting
 
-  // 🆕 Handler per cambio ordinamento
+  // Handler per cambio ordinamento
   const handleSortChange = (sortInfo: SortInfo) => {
     console.log('🔄 Sorting requested:', sortInfo);
     
     let newFilters;
     
-    if (sortInfo.field === null) {
-      // 🆕 RIMUOVI ORDINAMENTO COMPLETAMENTE
+    if (sortInfo.field === "" || !sortInfo.field) {
+      // RIMUOVI ORDINAMENTO COMPLETAMENTE
       console.log('✅ Rimozione ordinamento');
       const { sortBy, sortOrder, ...filtersWithoutSort } = filters;
       newFilters = {
@@ -265,7 +265,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
             </Box>
           ) : (
             <Box>
-              {/* 🆕 DataGrid con supporto sorting server-side */}
+              {/* DataGrid con supporto sorting server-side */}
               <GenericDataGrid
                 items={users}
                 config={getUserGridConfig(handleEdit, handleDelete, handleToggleStatus)}
@@ -279,7 +279,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
                 onSortChange={handleSortChange} // ✨ AGGIUNTO SUPPORTO SORTING
               />
 
-              {/* 🆕 Debug info sorting (solo in development) */}
+              {/* Debug info sorting (solo in development) */}
               {process.env.NODE_ENV === 'development' && (
                 <Box sx={{ 
                   mt: 2, 
