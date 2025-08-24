@@ -1,5 +1,5 @@
 // src/features/admin-quotes/admin-quotes.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   VaporThemeProvider,
@@ -25,6 +25,7 @@ import { useTranslation } from '@1f/react-sdk';
 import { useRole } from '../../contexts/RoleContext';
 import { SnackbarState } from '../../types';
 import type { AdminQuote, AdminQuoteFilters } from '../../types/adminQuote';
+import type { SortInfo } from '../../types/generic';
 import { GenericDataGrid } from '../../components/GenericDataGrid';
 import { useAdminQuotesCRUD } from '../../hooks/useAdminQuotesCRUD';
 import { getAdminQuoteGridConfig } from '../../config/adminQuoteGridConfig';
@@ -47,8 +48,15 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
     period: 'All',
     searchTerm: '',
     page: 1,
-    limit: 10
+    limit: 10,
+    sortBy: 'createdAt',
+    sortOrder: 'desc'
   });
+
+  useEffect(() => {
+  console.log('📊 === ADMIN QUOTES FILTERS CHANGED ===');
+  console.log('🔄 Filtri aggiornati:', filters);
+}, [filters]);
   
   // State per dialoghi
   const [statusDialog, setStatusDialog] = useState<{
@@ -82,11 +90,49 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
   const {
     items: quotes,
     pagination,
+    sorting,
     isLoading,
     error,
     updateItem: updateQuote,
     isUpdating
   } = useAdminQuotesCRUD(filters);
+
+    console.log('Admin Quotes Page - Users:', quotes);
+  console.log('Admin Quotes Page - Pagination:', pagination);
+  console.log('🔍 Admin Quotes Page - Sorting:', sorting); // Debug sorting
+
+  // Handler per il cambio ordinamento
+  const handleSortChange = (sortInfo: SortInfo) => {
+    console.log('🎯 === ADMIN QUOTES SORT CHANGE ===');
+    console.log('📥 SortInfo ricevuto:', sortInfo);
+    console.log('📋 Filtri attuali PRIMA:', filters);
+    
+    let newFilters;
+    
+    if (sortInfo.field === "" || !sortInfo.field) {
+      // RIMUOVI ORDINAMENTO COMPLETAMENTE
+      console.log('✅ Admin Quotes - Rimozione ordinamento');
+      const { sortBy, sortOrder, ...filtersWithoutSort } = filters;
+      newFilters = {
+        ...filtersWithoutSort,
+        page: 1 // Reset paginazione
+      } as AdminQuoteFilters;
+    } else {
+      // ORDINAMENTO NORMALE
+      console.log('🔀 Admin Quotes - Ordinamento normale');
+      newFilters = {
+        ...filters,
+        sortBy: sortInfo.field,
+        sortOrder: sortInfo.direction,
+        page: 1
+      };
+    }
+    
+    console.log('🔄 Admin Quotes - New filters:', newFilters);
+    setFilters(newFilters);
+    console.log('✅ setFilters chiamato');
+  };
+
 
   // Verifica permessi - solo admin può accedere
   if (role !== 'admin') {
@@ -207,6 +253,7 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
   };
+  
 
   // Gestione errori di caricamento
   if (error) {
@@ -222,6 +269,25 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
       </VaporThemeProvider>
     );
   }
+
+  console.log('🔧 DEBUG - Admin Quotes Props Check:');
+console.log('🔧 handleSortChange defined?', typeof handleSortChange);
+console.log('🔧 handleSortChange function:', handleSortChange);
+console.log('🔧 GenericDataGrid props che stiamo passando:', {
+  hasItems: !!quotes,
+  itemsCount: quotes?.length,
+  hasConfig: !!getAdminQuoteGridConfig,
+  hasOnSortChange: !!handleSortChange,
+  currentFilters: filters
+});
+
+const gridConfig = getAdminQuoteGridConfig(handleView, handleChangeStatus, handleAssignAgent);
+console.log('🔧 DEBUG - Grid Config:', {
+  sortingMode: gridConfig.sortingMode,
+  defaultSort: gridConfig.defaultSort,
+  sortableFields: gridConfig.sortableFields,
+  columnsCount: gridConfig.columns?.length
+});
 
   return (
     <VaporThemeProvider>
@@ -258,13 +324,14 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
           ) : (
             <GenericDataGrid
               items={quotes}
-              config={getAdminQuoteGridConfig(handleView, handleChangeStatus, handleAssignAgent)}
+              config={gridConfig}
               currentFilters={filters}
               onFiltersChange={handleFiltersChange}
               isLoading={isLoading}
               error={error}
               pagination={pagination}
               onPaginationChange={handlePaginationChange}
+              onSortChange={handleSortChange}
             />
           )}
         </VaporPage.Section>

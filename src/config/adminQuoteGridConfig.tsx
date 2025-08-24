@@ -65,12 +65,14 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
     field: 'number',
     headerName: 'Numero',
     flex: 1,
+    sortable: true,
     renderCell: (value) => value
   },
   {
     field: 'customer',
     headerName: 'Cliente',
     flex: 1.5,
+    sortable: true,
     renderCell: (row) => (
       // <Box>
       //   <Typography variant="body2" fontWeight="medium">
@@ -105,20 +107,22 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
       </Box>
     )
   },
-  {
-    field: 'salesAgent',
-    headerName: 'Sales Agent',
-    flex: 1,
-    renderCell: (value) => (
-      <Typography variant="body2">
-        {value}
-      </Typography>
-    )
-  },
+  // {
+  //   field: 'salesAgent',
+  //   headerName: 'Sales Agent',
+  //   flex: 1,
+  //   sortable: true,
+  //   renderCell: (value) => (
+  //     <Typography variant="body2">
+  //       {value}
+  //     </Typography>
+  //   )
+  // },
   {
     field: 'status',
     headerName: 'Stato',
     flex: 1,
+    sortable: true,
     renderCell: (value) => (
       <Chip
         label={translateStatus(value)}
@@ -131,6 +135,7 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
     field: 'type',
     headerName: 'Tipo',
     flex: 1,
+    sortable: true,
     renderCell: (value) => (
       <Chip
         label={translateType(value)}
@@ -143,20 +148,23 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
     field: 'value',
     headerName: 'Valore',
     flex: 1,
+    sortable: true,
     renderCell: (value) => formatCurrency(value)
   },
   {
     field: 'createdAt',
     headerName: 'Data Creazione',
     flex: 1,
+    sortable: true,
     renderCell: (value) => dayjs(value).format('DD/MM/YYYY')
   },
-  {
-    field: 'lastActivity',
-    headerName: 'Ultima Attività',
-    flex: 1,
-    renderCell: (value) => dayjs(value).format('DD/MM/YYYY HH:mm')
-  }
+  // {
+  //   field: 'lastActivity',
+  //   headerName: 'Ultima Attività',
+  //   flex: 1,
+  //   sortable: true,
+  //   renderCell: (value) => dayjs(value).format('DD/MM/YYYY HH:mm')
+  // }
 ];
 
 /**
@@ -258,5 +266,20 @@ export const getAdminQuoteGridConfig = (
   pageSize: 10,
   showHeader: false,
   paginationMode: 'server',
-  pageSizeOptions: [10, 25, 50, 100]
+  sortingMode: 'server',
+  pageSizeOptions: [10, 25, 50, 100],
+  defaultSort: {
+    field: 'createdAt',
+    direction: 'desc'
+  },
+  sortableFields: [
+    'number',
+    'customer',
+    // 'salesAgent', 
+    'status',
+    'type',
+    'value',
+    'createdAt',
+    // 'lastActivity'
+  ]
 });

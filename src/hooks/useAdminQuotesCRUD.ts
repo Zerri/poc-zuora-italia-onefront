@@ -4,7 +4,7 @@ import type { AdminQuote, AdminQuoteFilters } from '../types/adminQuote';
 import type { CRUDConfig } from './useGenericCRUD';
 
 /**
- * Configurazione specifica per l'entità AdminQuote
+ * Configurazione specifica per l'entità AdminQuote con supporto sorting
  */
 const ADMIN_QUOTE_CONFIG: CRUDConfig = {
   name: 'admin-quotes',
@@ -17,10 +17,26 @@ const ADMIN_QUOTE_CONFIG: CRUDConfig = {
   },
   permissions: ['admin'],
   searchFields: ['number', 'customer.name'],
+  
+  // ✅ CONFIGURAZIONE SORTING
+  defaultSort: {
+    field: 'createdAt',
+    direction: 'desc'
+  },
+  sortableFields: [
+    'number',        // Numero preventivo
+    'customer',      // Nome cliente (server deve gestire customer.name)
+    // 'salesAgent',    // Sales agent
+    'status',        // Stato
+    'type',          // Tipo
+    'value',         // Valore
+    'createdAt',     // Data creazione
+    // 'lastActivity'   // Ultima attività
+  ]
 };
 
 /**
- * Hook per la gestione amministrativa dei preventivi
+ * Hook per la gestione amministrativa dei preventivi con supporto sorting
  */
 export function useAdminQuotesCRUD(filters: AdminQuoteFilters) {
   return useGenericCRUD<AdminQuote>('admin-quotes', ADMIN_QUOTE_CONFIG, filters);
