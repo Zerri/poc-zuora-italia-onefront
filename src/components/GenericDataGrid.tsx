@@ -1,4 +1,4 @@
-// src/components/GenericDataGrid.tsx - CON SUPPORTO SORTING SERVER-SIDE
+// src/components/GenericDataGrid.tsx - CON SUPPORTO SORTING SERVER-SIDE E ACTIONSMENU
 import { useState, useEffect, useCallback } from 'react';
 import {
   Typography,
@@ -10,7 +10,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  IconButton
 } from "@vapor/v3-components";
 import { DataGrid, GridColDef, GridSortModel } from '@mui/x-data-grid';
 import type { SelectChangeEvent } from '@mui/material/Select';
@@ -21,17 +20,15 @@ import { useTranslation } from '@1f/react-sdk';
 import type { DataGridConfig } from '../types/grid';
 import type { BaseEntity, BaseFilters, PaginationInfo, SortInfo } from '../types/generic';
 import { CustomPagination } from './CustomPagination';
+import { ActionsMenu } from './ActionsMenu'; // ✨ NUOVO IMPORT
 
 // Helper per localizzazione DataGrid
 const getDataGridLocaleText = (t: any) => ({
-  // Toolbar
   toolbarDensity: t("components.dataGrid.toolbar.density"),
   toolbarDensityLabel: t("components.dataGrid.toolbar.densityLabel"),
   toolbarDensityCompact: t("components.dataGrid.toolbar.densityCompact"),
   toolbarDensityStandard: t("components.dataGrid.toolbar.densityStandard"),
   toolbarDensityComfortable: t("components.dataGrid.toolbar.densityComfortable"),
-  
-  // Column menu
   columnMenuLabel: t("components.dataGrid.columnMenu.label"),
   columnMenuShowColumns: t("components.dataGrid.columnMenu.showColumns"),
   columnMenuFilter: t("components.dataGrid.columnMenu.filter"),
@@ -39,22 +36,14 @@ const getDataGridLocaleText = (t: any) => ({
   columnMenuUnsort: t("components.dataGrid.columnMenu.unsort"),
   columnMenuSortAsc: t("components.dataGrid.columnMenu.sortAsc"),
   columnMenuSortDesc: t("components.dataGrid.columnMenu.sortDesc"),
-  
-  // Footer
   footerRowSelected: (count: number) =>
     count !== 1
       ? t("components.dataGrid.footer.rowCounterText", { count })
       : t("components.dataGrid.footer.rowCounterTextSingular", { count }),
   footerTotalRows: t("components.dataGrid.footer.totalRows"),
-  
-  // No rows
   noRowsLabel: t("components.dataGrid.noRows"),
   noResultsOverlayLabel: t("components.dataGrid.noResults"),
-  
-  // Error
   errorOverlayDefaultLabel: t("components.dataGrid.error"),
-  
-  // Loading
   loadingOverlayLabel: t("components.dataGrid.loading"),
 });
 
@@ -89,7 +78,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
   error = null,
   pagination,
   onPaginationChange,
-  onSortChange // Handler per sorting
+  onSortChange
 }: GenericDataGridProps<T, F>) {
   const { t } = useTranslation();
 
@@ -115,43 +104,32 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
         sort: currentFilters.sortOrder === 'desc' ? 'desc' : 'asc'
       }];
     }
-    // 🎯 Nessun ordinamento attivo = array vuoto (nessuna freccia)
     return [];
   })();
 
   // Handler per eventi di sorting dal DataGrid
   const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
-    console.log('🔄 Sorting model changed:', sortModel);
-    
     if (!isServerSorting || !onSortChange) return;
 
-    // 🆕 RIMOZIONE ORDINAMENTO (3° click)
     if (sortModel.length === 0) {
-      console.log('✅ Rimozione ordinamento - nessun sorting');
-      
-      // Invia al parent che non vuole più nessun ordinamento
       onSortChange({
-        field: '', // 🎯 NULL = nessun ordinamento
-        direction: 'asc' // Irrilevante quando field è null
+        field: '',
+        direction: 'asc'
       });
-      
       return;
     }
 
-    // Ordinamento normale (1° e 2° click)
     const sort = sortModel[0];
     const sortInfo: SortInfo = {
       field: sort.field,
       direction: sort.sort === 'desc' ? 'desc' : 'asc'
     };
 
-    // Verifica se il campo è ordinabile
     if (config.sortableFields && !config.sortableFields.includes(sort.field)) {
       console.warn(`Campo '${sort.field}' non ordinabile`);
       return;
     }
 
-    console.log('✅ Cambio ordinamento:', sortInfo);
     onSortChange(sortInfo);
   }, [isServerSorting, onSortChange, config.sortableFields]);
 
@@ -180,7 +158,6 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
 
     const filterConfig = config.filters.find(f => f.field === field);
     if (filterConfig?.type === 'select') {
-      // I filtri select si applicano immediatamente e resettano la paginazione
       const filtersWithResetPage = { ...newTempFilters, page: 1 } as F;
       onFiltersChange(filtersWithResetPage);
     } else {
@@ -190,7 +167,6 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
 
   // Applica filtri search/number
   const handleApplySearchFilters = () => {
-    // Quando applico filtri di ricerca, reset della paginazione
     const filtersWithResetPage = { ...tempFilters, page: 1 } as F;
     onFiltersChange(filtersWithResetPage);
     setHasPendingSearchFilters(false);
@@ -203,7 +179,6 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
       (resetFilters as any)[filterConfig.field] = filterConfig.defaultValue || '';
     });
     
-    // Mantieni page e limit attuali durante il reset
     (resetFilters as any).page = 1;
     (resetFilters as any).limit = currentFilters.limit || 10;
     
@@ -281,52 +256,30 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     });
   };
 
-  // Rendering delle azioni per ogni riga
-  const renderActions = (item: T) => {
-    return (
-      <Box sx={{ display: 'flex', gap: 0.5, py: 1 }}>
-        {config.actions
-          .filter(action => !action.visible || action.visible(item))
-          .map(action => (
-            <IconButton
-              key={action.key}
-              size="small"
-              color={action.color || 'primary'}
-              onClick={(e) => {
-                e.stopPropagation();
-                action.onClick(item);
-              }}
-              disabled={action.disabled ? action.disabled(item) : false}
-              title={action.label}
-            >
-              {action.icon && <VaporIcon icon={action.icon} size="s" />}
-            </IconButton>
-          ))
-        }
-      </Box>
-    );
-  };
-
-  // Converti configurazione colonne in formato DataGrid
+  // ✨ SOSTITUITO: renderActions con ActionsMenu
   const columns: GridColDef[] = [
     ...config.columns.map(col => ({
       field: col.field as string,
       headerName: col.headerName,
       flex: col.flex,
       width: col.width,
-      sortable: col.sortable !== false, // Default true
+      sortable: col.sortable !== false,
       renderCell: col.renderCell ? (params: any) => col.renderCell!(params.value, params.row) : undefined
     })),
     ...(config.actions.length > 0 ? [{
       field: 'actions',
-      headerName: t('common.dataGrid.actions'),
-      width: config.actions.length * 40 + 20,
+      headerName: 'Opzioni',
+      width: 100,
       sortable: false,
-      renderCell: (params: any) => renderActions(params.row)
+      renderCell: (params: any) => (
+        <ActionsMenu
+          item={params.row}
+          actions={config.actions}
+        />
+      )
     }] : [])
   ];
 
-  // Rendering errore
   if (error) {
     return (
       <Box>
@@ -421,14 +374,13 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
         borderRadius: 1,
         bgcolor: 'background.paper'
       }}>
-        {/* DataGrid - con supporto sorting server-side */}
+        {/* DataGrid */}
         <DataGrid
           getRowId={config.getRowId}
           rows={items}
           columns={columns}
           loading={isLoading}
           
-          // Configurazione paginazione
           hideFooter={isServerPagination}
           {...(!isServerPagination && {
             initialState: {
@@ -441,12 +393,10 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
             pageSizeOptions: config.pageSizeOptions || [10, 25, 50, 100]
           })}
           
-          // CONFIGURAZIONE SORTING
           sortingMode={isServerSorting ? 'server' : 'client'}
           sortModel={currentSortModel}
           onSortModelChange={handleSortModelChange}
           
-          // Disabilita sorting client-side se server-side è attivo
           disableColumnSelector={false}
           
           localeText={getDataGridLocaleText(t)}
@@ -459,10 +409,8 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
             '& .MuiDataGrid-row:hover': {
               backgroundColor: 'action.hover',
             },
-            // Assicuriamoci che il DataGrid occupi tutto lo spazio disponibile
             flex: 1,
             minHeight: isServerPagination ? 400 : 'auto',
-            // Stili per indicatori sorting
             '& .MuiDataGrid-columnHeader': {
               cursor: isServerSorting ? 'pointer' : 'default',
             },

@@ -160,7 +160,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
             <Box>
               <GenericDataGrid
                 items={users}
-                config={getUserGridConfig(handleEdit, handleDelete, handleToggleStatus)}
+                config={getUserGridConfig(handleEdit, handleToggleStatus, handleDelete )}
                 currentFilters={filters}
                 onFiltersChange={handleFiltersChange}
                 onAdd={handleAdd}
