@@ -10,53 +10,50 @@ import {
 } from "@vapor/v3-components";
 import { useTranslation } from '@1f/react-sdk';
 import { useRole } from '../../contexts/RoleContext';
-import { SnackbarState } from '../../types';
 import type { User, UserFilters, UserMutationData } from '../../types/user';
-import type { SortInfo } from '../../types/generic'; // Import SortInfo
 import { GenericDataGrid } from '../../components/GenericDataGrid';
 import { UserDrawer } from './components/UserDrawer';
 import { useUsersCRUD } from '../../hooks/useUsersCRUD';
 import { getUserGridConfig } from '../../config/userGridConfig';
+import { useDataGridHandlers } from '../../hooks/useDataGridHandlers'; // ✨ NUOVO HOOK
 
 interface UserManagementPageProps {}
 
-/**
- * @component UserManagementPage
- * @description Pagina principale per la gestione utenti del sistema
- */
 export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   const { t } = useTranslation();
   const { role } = useRole();
   
-  // State per filtri e ricerca con supporto sorting
+  // State per filtri
   const [filters, setFilters] = useState<UserFilters>({
     status: 'all',
     role: 'all',
     searchTerm: '',
     page: 1,
     limit: 10,
-    // Ordinamento di default
     sortBy: 'registrationDate',
     sortOrder: 'desc'
   });
   
-  // State per drawer management
+  // ✨ HOOK CENTRALIZZATO per handlers comuni
+  const {
+    snackbar,
+    showSnackbar,
+    handleCloseSnackbar,
+    handlePaginationChange,
+    handleFiltersChange,
+    handleSortChange
+  } = useDataGridHandlers(filters, setFilters);
+  
+  // State specifici per user management
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  
-  // State per messaggi
-  const [snackbar, setSnackbar] = useState<SnackbarState>({ 
-    open: false, 
-    message: '', 
-    severity: 'success' 
-  });
 
-  // Hook per gestire gli utenti
+  // Hook CRUD
   const {
     items: users,
     pagination,
-    sorting, // Info sorting dal server (se disponibile)
+    sorting,
     isLoading,
     error,
     createItem: createUser,
@@ -68,37 +65,75 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
 
   console.log('User Management Page - Users:', users);
   console.log('User Management Page - Pagination:', pagination);
-  console.log('🔍 User Management Page - Sorting:', sorting); // Debug sorting
+  console.log('🔍 User Management Page - Sorting:', sorting);
 
-  // Handler per cambio ordinamento
-  const handleSortChange = (sortInfo: SortInfo) => {
-    console.log('🔄 Sorting requested:', sortInfo);
-    
-    let newFilters;
-    
-    if (sortInfo.field === "" || !sortInfo.field) {
-      // RIMUOVI ORDINAMENTO COMPLETAMENTE
-      console.log('✅ Rimozione ordinamento');
-      const { sortBy, sortOrder, ...filtersWithoutSort } = filters;
-      newFilters = {
-        ...filtersWithoutSort,
-        page: 1 // Reset paginazione
-      } as UserFilters;
-    } else {
-      // ORDINAMENTO NORMALE
-      newFilters = {
-        ...filters,
-        sortBy: sortInfo.field,
-        sortOrder: sortInfo.direction,
-        page: 1
-      };
-    }
-    
-    console.log('🔄 New filters:', newFilters);
-    setFilters(newFilters);
+  // Handlers specifici per user management
+  const handleAdd = () => {
+    setSelectedUser(null);
+    setIsEditing(false);
+    setDrawerOpen(true);
   };
 
-  // Verifica permessi - solo admin può accedere
+  const handleEdit = (user: User) => {
+    setSelectedUser(user);
+    setIsEditing(true);
+    setDrawerOpen(true);
+  };
+
+  const handleDelete = async (user: User) => {
+    if (!window.confirm(t("features.userManagement.confirmDelete"))) return;
+    
+    try {
+      await deleteUser.mutateAsync(String(user.id)); // ✅ Cast a string
+      showSnackbar(t("features.userManagement.success.userDeleted"), 'success');
+    } catch (error) {
+      showSnackbar(t("features.userManagement.errors.deleteError"), 'error');
+    }
+  };
+
+  const handleToggleStatus = async (user: User) => {
+    try {
+      const newStatus = user.status === 'active' ? 'inactive' : 'active';
+      await updateUser.mutateAsync({
+        id: user.id,
+        status: newStatus
+      });
+      showSnackbar(t("features.userManagement.success.statusUpdated"), 'success');
+    } catch (error) {
+      showSnackbar(t("features.userManagement.errors.statusUpdateError"), 'error');
+    }
+  };
+
+  const handleSaveUser = async (userData: UserMutationData) => {
+    try {
+      if (isEditing && selectedUser) {
+        await updateUser.mutateAsync({
+          ...userData,
+          id: selectedUser.id
+        });
+        showSnackbar(t("features.userManagement.success.userUpdated"), 'success');
+      } else {
+        await createUser.mutateAsync({
+          ...userData,
+          registrationDate: new Date().toISOString(),
+          lastAccess: null
+        });
+        showSnackbar(t("features.userManagement.success.userCreated"), 'success');
+      }
+      setDrawerOpen(false);
+      setSelectedUser(null);
+      setIsEditing(false);
+    } catch (error) {
+      showSnackbar(
+        isEditing 
+          ? t("features.userManagement.errors.updateError")
+          : t("features.userManagement.errors.createError"),
+        'error'
+      );
+    }
+  };
+
+  // Verifica permessi
   if (role !== 'admin') {
     return (
       <VaporThemeProvider>
@@ -113,151 +148,9 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
     );
   }
 
-  // Handler per il cambio di paginazione
-  const handlePaginationChange = (newPage: number, newPageSize: number) => {
-    console.log('Pagination changed:', { page: newPage, pageSize: newPageSize });
-    
-    setFilters(prev => ({
-      ...prev,
-      page: newPage,
-      limit: newPageSize
-    }));
-  };
-
-  // Handler per il cambio filtri (supporta reset paginazione)
-  const handleFiltersChange = (newFilters: UserFilters) => {
-    console.log('Filters changed:', newFilters);
-    
-    // Quando cambiano i filtri, reset della paginazione alla prima pagina
-    setFilters({
-      ...newFilters,
-      page: 1,
-      limit: filters.limit
-    });
-  };
-
-  // Handler per salvataggio utente (CORRETTO)
-  const handleSaveUser = async (userData: UserMutationData) => {
-    try {
-      if (isEditing && selectedUser) {
-        // Aggiornamento utente esistente
-        await updateUser.mutateAsync({
-          ...userData,
-          id: selectedUser.id
-        });
-        setSnackbar({
-          open: true,
-          message: t("features.userManagement.success.userUpdated"),
-          severity: 'success'
-        });
-      } else {
-        // Creazione nuovo utente
-        await createUser.mutateAsync({
-          ...userData,
-          registrationDate: new Date().toISOString(),
-          lastAccess: null
-        });
-        setSnackbar({
-          open: true,
-          message: t("features.userManagement.success.userCreated"),
-          severity: 'success'
-        });
-      }
-      
-      // Chiudi il drawer
-      setDrawerOpen(false);
-      setSelectedUser(null);
-      setIsEditing(false);
-      
-    } catch (error) {
-      console.error('Save user failed:', error);
-      setSnackbar({
-        open: true,
-        message: t("features.userManagement.errors.saveFailed"),
-        severity: 'error'
-      });
-    }
-  };
-
-  // Handler per chiudere snackbar
-  const handleCloseSnackbar = () => {
-    setSnackbar(prev => ({ ...prev, open: false }));
-  };
-
-  // Handler per aprire drawer in modalità aggiungi
-  const handleAdd = () => {
-    setSelectedUser(null);
-    setIsEditing(false);
-    setDrawerOpen(true);
-  };
-
-  // Handler per aprire drawer in modalità modifica
-  const handleEdit = (user: User) => {
-    setSelectedUser(user);
-    setIsEditing(true);
-    setDrawerOpen(true);
-  };
-
-  // Handler per eliminare utente
-  const handleDelete = async (user: User) => {
-    if (window.confirm(t('features.userManagement.confirmDelete', { name: user.name }))) {
-      try {
-        await deleteUser.mutateAsync(user.id.toString());
-        setSnackbar({
-          open: true,
-          message: t('features.userManagement.success.userDeleted'),
-          severity: 'success'
-        });
-      } catch (error) {
-        setSnackbar({
-          open: true,
-          message: t('features.userManagement.errors.actionFailed'),
-          severity: 'error'
-        });
-      }
-    }
-  };
-
-  // Handler per cambiare stato utente
-  const handleToggleStatus = async (user: User) => {
-    const newStatus: 'active' | 'inactive' = user.status === 'active' ? 'inactive' : 'active';
-    try {
-      await updateUser.mutateAsync({
-        ...user,
-        status: newStatus
-      });
-      setSnackbar({
-        open: true,
-        message: t('features.userManagement.success.statusChanged'),
-        severity: 'success'
-      });
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: t('features.userManagement.errors.actionFailed'),
-        severity: 'error'
-      });
-    }
-  };
-
-  // Gestione errori di caricamento
-  if (error) {
-    return (
-      <VaporThemeProvider>
-        <VaporPage title={t("features.userManagement.title")}>
-          <VaporPage.Section>
-            <Alert severity="error" sx={{ mb: 3 }}>
-              {t("features.userManagement.errors.loadFailed")}: {error.message}
-            </Alert>
-          </VaporPage.Section>
-        </VaporPage>
-      </VaporThemeProvider>
-    );
-  }
-
   return (
     <VaporThemeProvider>
-      <VaporPage title={t("features.userManagement.title")}>
+      <VaporPage>
         <VaporPage.Section>
           {isLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -265,7 +158,6 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
             </Box>
           ) : (
             <Box>
-              {/* DataGrid con supporto sorting server-side */}
               <GenericDataGrid
                 items={users}
                 config={getUserGridConfig(handleEdit, handleDelete, handleToggleStatus)}
@@ -276,7 +168,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
                 error={error}
                 pagination={pagination}
                 onPaginationChange={handlePaginationChange}
-                onSortChange={handleSortChange} // ✨ AGGIUNTO SUPPORTO SORTING
+                onSortChange={handleSortChange}
               />
 
               {/* Debug info sorting (solo in development) */}
@@ -317,7 +209,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
         isSaving={isCreating || isUpdating}
       />
 
-      {/* Snackbar per messaggi */}
+      {/* ✨ SNACKBAR CENTRALIZZATO */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

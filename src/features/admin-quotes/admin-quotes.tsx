@@ -9,7 +9,6 @@ import {
   CircularProgress,
   Alert,
   Box,
-  VaporIcon,
   Snackbar,
   Dialog,
   DialogTitle,
@@ -20,22 +19,16 @@ import {
   Select,
   MenuItem
 } from "@vapor/v3-components";
-import { faFileInvoice } from "@fortawesome/pro-regular-svg-icons/faFileInvoice";
 import { useTranslation } from '@1f/react-sdk';
 import { useRole } from '../../contexts/RoleContext';
-import { SnackbarState } from '../../types';
 import type { AdminQuote, AdminQuoteFilters } from '../../types/adminQuote';
-import type { SortInfo } from '../../types/generic';
 import { GenericDataGrid } from '../../components/GenericDataGrid';
 import { useAdminQuotesCRUD } from '../../hooks/useAdminQuotesCRUD';
 import { getAdminQuoteGridConfig } from '../../config/adminQuoteGridConfig';
+import { useDataGridHandlers } from '../../hooks/useDataGridHandlers'; // ✨ HOOK COMUNE
 
 interface AdminQuotesPageProps {}
 
-/**
- * @component AdminQuotesPage
- * @description Pagina principale per la gestione amministrativa preventivi
- */
 export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
   const { t } = useTranslation();
   const { role } = useRole();
@@ -53,12 +46,22 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
     sortOrder: 'desc'
   });
 
+  // ✨ HOOK CENTRALIZZATO per handlers comuni
+  const {
+    snackbar,
+    showSnackbar,
+    handleCloseSnackbar,
+    handlePaginationChange,
+    handleFiltersChange,
+    handleSortChange
+  } = useDataGridHandlers(filters, setFilters);
+
   useEffect(() => {
-  console.log('📊 === ADMIN QUOTES FILTERS CHANGED ===');
-  console.log('🔄 Filtri aggiornati:', filters);
-}, [filters]);
+    console.log('📊 === ADMIN QUOTES FILTERS CHANGED ===');
+    console.log('🔄 Filtri aggiornati:', filters);
+  }, [filters]);
   
-  // State per dialoghi
+  // State per dialoghi (logica specifica mantenuta)
   const [statusDialog, setStatusDialog] = useState<{
     open: boolean;
     quote: AdminQuote | null;
@@ -78,15 +81,8 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
     quote: null,
     newAgent: ''
   });
-  
-  // State per messaggi
-  const [snackbar, setSnackbar] = useState<SnackbarState>({ 
-    open: false, 
-    message: '', 
-    severity: 'success' 
-  });
 
-  // Hook per gestire i preventivi
+  // Hook CRUD
   const {
     items: quotes,
     pagination,
@@ -97,44 +93,66 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
     isUpdating
   } = useAdminQuotesCRUD(filters);
 
-    console.log('Admin Quotes Page - Users:', quotes);
+  console.log('Admin Quotes Page - Quotes:', quotes);
   console.log('Admin Quotes Page - Pagination:', pagination);
-  console.log('🔍 Admin Quotes Page - Sorting:', sorting); // Debug sorting
+  console.log('🔍 Admin Quotes Page - Sorting:', sorting);
 
-  // Handler per il cambio ordinamento
-  const handleSortChange = (sortInfo: SortInfo) => {
-    console.log('🎯 === ADMIN QUOTES SORT CHANGE ===');
-    console.log('📥 SortInfo ricevuto:', sortInfo);
-    console.log('📋 Filtri attuali PRIMA:', filters);
-    
-    let newFilters;
-    
-    if (sortInfo.field === "" || !sortInfo.field) {
-      // RIMUOVI ORDINAMENTO COMPLETAMENTE
-      console.log('✅ Admin Quotes - Rimozione ordinamento');
-      const { sortBy, sortOrder, ...filtersWithoutSort } = filters;
-      newFilters = {
-        ...filtersWithoutSort,
-        page: 1 // Reset paginazione
-      } as AdminQuoteFilters;
-    } else {
-      // ORDINAMENTO NORMALE
-      console.log('🔀 Admin Quotes - Ordinamento normale');
-      newFilters = {
-        ...filters,
-        sortBy: sortInfo.field,
-        sortOrder: sortInfo.direction,
-        page: 1
-      };
-    }
-    
-    console.log('🔄 Admin Quotes - New filters:', newFilters);
-    setFilters(newFilters);
-    console.log('✅ setFilters chiamato');
+  // Handlers specifici per quote management
+  const handleView = (quote: AdminQuote) => {
+    navigate(`/quote/${quote._id}`);
   };
 
+  const handleChangeStatus = (quote: AdminQuote) => {
+    setStatusDialog({
+      open: true,
+      quote,
+      newStatus: quote.status
+    });
+  };
 
-  // Verifica permessi - solo admin può accedere
+  const handleAssignAgent = (quote: AdminQuote) => {
+    setAgentDialog({
+      open: true,
+      quote,
+      newAgent: quote.salesAgent
+    });
+  };
+
+  const handleConfirmStatusChange = async () => {
+    if (!statusDialog.quote) return;
+    
+    try {
+      await updateQuote.mutateAsync({
+        id: statusDialog.quote.id,
+        status: statusDialog.newStatus as any,
+        lastActivity: new Date().toISOString()
+      });
+      
+      showSnackbar(t('features.adminQuotes.success.statusChanged'), 'success');
+      setStatusDialog({ open: false, quote: null, newStatus: '' });
+    } catch (error) {
+      showSnackbar(t('features.adminQuotes.errors.actionFailed'), 'error');
+    }
+  };
+
+  const handleConfirmAgentAssign = async () => {
+    if (!agentDialog.quote) return;
+    
+    try {
+      await updateQuote.mutateAsync({
+        id: agentDialog.quote.id,
+        salesAgent: agentDialog.newAgent,
+        lastActivity: new Date().toISOString()
+      });
+      
+      showSnackbar(t('features.adminQuotes.success.agentAssigned'), 'success');
+      setAgentDialog({ open: false, quote: null, newAgent: '' });
+    } catch (error) {
+      showSnackbar(t('features.adminQuotes.errors.actionFailed'), 'error');
+    }
+  };
+
+  // Verifica permessi
   if (role !== 'admin') {
     return (
       <VaporThemeProvider>
@@ -149,113 +167,7 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
     );
   }
 
-    // Handler per il cambio di paginazione
-  const handlePaginationChange = (newPage: number, newPageSize: number) => {
-    console.log('Pagination changed:', { page: newPage, pageSize: newPageSize });
-    
-    setFilters(prev => ({
-      ...prev,
-      page: newPage,
-      limit: newPageSize
-    }));
-  };
-
-  // Handler per il cambio filtri (supporta reset paginazione)
-  const handleFiltersChange = (newFilters: AdminQuoteFilters) => {
-    console.log('Filters changed:', newFilters);
-    
-    // Quando cambiano i filtri, reset della paginazione alla prima pagina
-    setFilters({
-      ...newFilters,
-      page: 1,                   // ✅ Reset alla prima pagina
-      limit: filters.limit       // ✅ Mantieni il page size corrente
-    });
-  };
-
-  // Handler per visualizzare preventivo
-  const handleView = (quote: AdminQuote) => {
-    navigate(`/quote/${quote._id}`);
-  };
-
-  // Handler per aprire dialog cambio stato
-  const handleChangeStatus = (quote: AdminQuote) => {
-    setStatusDialog({
-      open: true,
-      quote,
-      newStatus: quote.status
-    });
-  };
-
-  // Handler per aprire dialog assegnazione agent
-  const handleAssignAgent = (quote: AdminQuote) => {
-    setAgentDialog({
-      open: true,
-      quote,
-      newAgent: quote.salesAgent
-    });
-  };
-
-  // Handler per confermare cambio stato
-  const handleConfirmStatusChange = async () => {
-    if (!statusDialog.quote) return;
-    
-    try {
-      await updateQuote.mutateAsync({
-        id: statusDialog.quote.id,
-        status: statusDialog.newStatus as any,
-        lastActivity: new Date().toISOString()
-      });
-      
-      setSnackbar({
-        open: true,
-        message: t('features.adminQuotes.success.statusChanged'),
-        severity: 'success'
-      });
-      
-      setStatusDialog({ open: false, quote: null, newStatus: '' });
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: t('features.adminQuotes.errors.actionFailed'),
-        severity: 'error'
-      });
-    }
-  };
-
-  // Handler per confermare assegnazione agent
-  const handleConfirmAgentAssign = async () => {
-    if (!agentDialog.quote) return;
-    
-    try {
-      await updateQuote.mutateAsync({
-        id: agentDialog.quote.id,
-        salesAgent: agentDialog.newAgent,
-        lastActivity: new Date().toISOString()
-      });
-      
-      setSnackbar({
-        open: true,
-        message: t('features.adminQuotes.success.agentAssigned'),
-        severity: 'success'
-      });
-      
-      setAgentDialog({ open: false, quote: null, newAgent: '' });
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: t('features.adminQuotes.errors.actionFailed'),
-        severity: 'error'
-      });
-    }
-  };
-
-  // Handler per chiudere snackbar
-  const handleCloseSnackbar = () => {
-    setSnackbar(prev => ({ ...prev, open: false }));
-  };
-  
-
-  // Gestione errori di caricamento
+  // Gestione errori
   if (error) {
     return (
       <VaporThemeProvider>
@@ -270,52 +182,11 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
     );
   }
 
-  console.log('🔧 DEBUG - Admin Quotes Props Check:');
-console.log('🔧 handleSortChange defined?', typeof handleSortChange);
-console.log('🔧 handleSortChange function:', handleSortChange);
-console.log('🔧 GenericDataGrid props che stiamo passando:', {
-  hasItems: !!quotes,
-  itemsCount: quotes?.length,
-  hasConfig: !!getAdminQuoteGridConfig,
-  hasOnSortChange: !!handleSortChange,
-  currentFilters: filters
-});
-
-const gridConfig = getAdminQuoteGridConfig(handleView, handleChangeStatus, handleAssignAgent);
-console.log('🔧 DEBUG - Grid Config:', {
-  sortingMode: gridConfig.sortingMode,
-  defaultSort: gridConfig.defaultSort,
-  sortableFields: gridConfig.sortableFields,
-  columnsCount: gridConfig.columns?.length
-});
+  const gridConfig = getAdminQuoteGridConfig(handleView, handleChangeStatus, handleAssignAgent);
 
   return (
     <VaporThemeProvider>
       <VaporPage title={t("features.adminQuotes.title")}>
-        {/* Header Section personalizzato */}
-        <Box sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box>
-              <Typography variant="h5" sx={{ mb: 1, fontWeight: 'medium' }}>
-                {t("features.adminQuotes.dataGrid.title")}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t("features.adminQuotes.dataGrid.description")}
-              </Typography>
-            </Box>
-            
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<VaporIcon icon={faFileInvoice} />}
-              onClick={() => navigate('/customers')}
-              size='small'
-            >
-              {t("features.adminQuotes.dataGrid.addButtonLabel")}
-            </Button>
-          </Box>
-        </Box>
-
         <VaporPage.Section>
           {isLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -412,7 +283,7 @@ console.log('🔧 DEBUG - Grid Config:', {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar per messaggi */}
+      {/* ✨ SNACKBAR CENTRALIZZATO */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
