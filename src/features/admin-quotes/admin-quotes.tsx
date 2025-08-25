@@ -25,7 +25,7 @@ import type { AdminQuote, AdminQuoteFilters } from '../../types/adminQuote';
 import { GenericDataGrid } from '../../components/GenericDataGrid';
 import { useAdminQuotesCRUD } from '../../hooks/useAdminQuotesCRUD';
 import { getAdminQuoteGridConfig } from '../../config/adminQuoteGridConfig';
-import { useDataGridHandlers } from '../../hooks/useDataGridHandlers'; // ✨ HOOK COMUNE
+import { useDataGridHandlers } from '../../hooks/useDataGridHandlers';
 
 interface AdminQuotesPageProps {}
 
@@ -46,7 +46,7 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
     sortOrder: 'desc'
   });
 
-  // ✨ HOOK CENTRALIZZATO per handlers comuni
+  // Hook centralizzato per handlers comuni
   const {
     snackbar,
     showSnackbar,
@@ -118,6 +118,30 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
     });
   };
 
+  // ✨ NUOVO: Handlers per bulk actions
+  const handleBulkExport = (selectedQuotes: AdminQuote[]) => {
+    const quoteInfo = selectedQuotes.length > 0 
+      ? `${selectedQuotes.length} preventivi selezionati:\n${selectedQuotes.map(q => `- ${q.number} - ${q.customer?.name} (${q.status})`).join('\n')}`
+      : 'Export di tutti i preventivi visibili';
+    
+    alert(`📊 BULK ACTION: Export Preventivi\n\n${quoteInfo}\n\nIn futuro: sarà generato un file Excel con dettagli`);
+    showSnackbar('Export completato con successo', 'success');
+  };
+
+  const handleBulkArchive = (selectedQuotes: AdminQuote[]) => {
+    const quoteInfo = `${selectedQuotes.length} preventivi selezionati:\n${selectedQuotes.map(q => `- ${q.number} - ${q.customer?.name} - Stato: ${q.status}`).join('\n')}`;
+    
+    alert(`📁 BULK ACTION: Archiviazione\n\n${quoteInfo}\n\nIn futuro: API call per archiviare in batch`);
+    showSnackbar(`${selectedQuotes.length} preventivi archiviati`, 'success');
+  };
+
+  const handleBulkAssignAgent = (selectedQuotes: AdminQuote[]) => {
+    const quoteInfo = `${selectedQuotes.length} preventivi selezionati:\n${selectedQuotes.map(q => `- ${q.number} - ${q.customer?.name} - Agent attuale: ${q.salesAgent || 'Non assegnato'}`).join('\n')}`;
+    
+    alert(`👤 BULK ACTION: Assegnazione Agent\n\n${quoteInfo}\n\nIn futuro: Dialog per scegliere agent e assegnare in batch`);
+    showSnackbar(`Agent assegnato a ${selectedQuotes.length} preventivi`, 'success');
+  };
+
   const handleConfirmStatusChange = async () => {
     if (!statusDialog.quote) return;
     
@@ -182,8 +206,6 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
     );
   }
 
-  const gridConfig = getAdminQuoteGridConfig(handleView, handleChangeStatus, handleAssignAgent);
-
   return (
     <VaporThemeProvider>
       <VaporPage title={t("features.adminQuotes.title")}>
@@ -195,7 +217,14 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
           ) : (
             <GenericDataGrid
               items={quotes}
-              config={gridConfig}
+              config={getAdminQuoteGridConfig(
+                handleView, 
+                handleChangeStatus, 
+                handleAssignAgent,
+                handleBulkExport,
+                handleBulkArchive,
+                handleBulkAssignAgent
+              )}
               currentFilters={filters}
               onFiltersChange={handleFiltersChange}
               isLoading={isLoading}
@@ -208,82 +237,68 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
         </VaporPage.Section>
       </VaporPage>
 
-      {/* Dialog Cambio Stato */}
+      {/* Dialog cambio stato */}
       <Dialog open={statusDialog.open} onClose={() => setStatusDialog({ open: false, quote: null, newStatus: '' })}>
         <DialogTitle>Cambia Stato Preventivo</DialogTitle>
         <DialogContent>
-          <Box sx={{ pt: 2, minWidth: 300 }}>
-            <Typography variant="body2" sx={{ mb: 2 }}>
-              Preventivo: <strong>{statusDialog.quote?.number}</strong>
-            </Typography>
-            <FormControl fullWidth size="small">
-              <InputLabel>Nuovo Stato</InputLabel>
-              <Select
-                value={statusDialog.newStatus}
-                label="Nuovo Stato"
-                onChange={(e) => setStatusDialog(prev => ({ ...prev, newStatus: e.target.value as string }))}
-              >
-                <MenuItem value="Draft">Bozza</MenuItem>
-                <MenuItem value="Sent">Inviato</MenuItem>
-                <MenuItem value="Accepted">Accettato</MenuItem>
-                <MenuItem value="Rejected">Rifiutato</MenuItem>
-                <MenuItem value="Migration">Migrazione</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Preventivo: {statusDialog.quote?.number}
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel>Nuovo Stato</InputLabel>
+            <Select
+              value={statusDialog.newStatus}
+              onChange={(e) => setStatusDialog(prev => ({ ...prev, newStatus: e.target.value as string }))}
+            >
+              <MenuItem value="Draft">Bozza</MenuItem>
+              <MenuItem value="Sent">Inviato</MenuItem>
+              <MenuItem value="Accepted">Accettato</MenuItem>
+              <MenuItem value="Rejected">Rifiutato</MenuItem>
+              <MenuItem value="Migration">Migrazione</MenuItem>
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setStatusDialog({ open: false, quote: null, newStatus: '' })}>
             Annulla
           </Button>
-          <Button 
-            onClick={handleConfirmStatusChange} 
-            variant="contained"
-            disabled={isUpdating}
-          >
-            {isUpdating ? 'Salvando...' : 'Conferma'}
+          <Button onClick={handleConfirmStatusChange} variant="contained" disabled={isUpdating}>
+            Conferma
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Dialog Assegnazione Agent */}
+      {/* Dialog assegnazione agent */}
       <Dialog open={agentDialog.open} onClose={() => setAgentDialog({ open: false, quote: null, newAgent: '' })}>
         <DialogTitle>Assegna Sales Agent</DialogTitle>
         <DialogContent>
-          <Box sx={{ pt: 2, minWidth: 300 }}>
-            <Typography variant="body2" sx={{ mb: 2 }}>
-              Preventivo: <strong>{agentDialog.quote?.number}</strong>
-            </Typography>
-            <FormControl fullWidth size="small">
-              <InputLabel>Sales Agent</InputLabel>
-              <Select
-                value={agentDialog.newAgent}
-                label="Sales Agent"
-                onChange={(e) => setAgentDialog(prev => ({ ...prev, newAgent: e.target.value as string }))}
-              >
-                <MenuItem value="Mario Rossi">Mario Rossi</MenuItem>
-                <MenuItem value="Sara Bianchi">Sara Bianchi</MenuItem>
-                <MenuItem value="Luca Verdi">Luca Verdi</MenuItem>
-                <MenuItem value="Anna Neri">Anna Neri</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Preventivo: {agentDialog.quote?.number}
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel>Sales Agent</InputLabel>
+            <Select
+              value={agentDialog.newAgent}
+              onChange={(e) => setAgentDialog(prev => ({ ...prev, newAgent: e.target.value as string }))}
+            >
+              <MenuItem value="Mario Rossi">Mario Rossi</MenuItem>
+              <MenuItem value="Sara Bianchi">Sara Bianchi</MenuItem>
+              <MenuItem value="Luca Verdi">Luca Verdi</MenuItem>
+              <MenuItem value="Anna Neri">Anna Neri</MenuItem>
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setAgentDialog({ open: false, quote: null, newAgent: '' })}>
             Annulla
           </Button>
-          <Button 
-            onClick={handleConfirmAgentAssign} 
-            variant="contained"
-            disabled={isUpdating}
-          >
-            {isUpdating ? 'Salvando...' : 'Assegna'}
+          <Button onClick={handleConfirmAgentAssign} variant="contained" disabled={isUpdating}>
+            Assegna
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* ✨ SNACKBAR CENTRALIZZATO */}
+      {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

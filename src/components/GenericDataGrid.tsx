@@ -1,4 +1,4 @@
-// src/components/GenericDataGrid.tsx - CON SUPPORTO SORTING SERVER-SIDE E ACTIONSMENU
+// src/components/GenericDataGrid.tsx - CON SUPPORTO SELEZIONE MULTIPLA
 import { useState, useEffect, useCallback } from 'react';
 import {
   Typography,
@@ -11,7 +11,7 @@ import {
   Select,
   MenuItem,
 } from "@vapor/v3-components";
-import { DataGrid, GridColDef, GridSortModel } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridSortModel, GridRowSelectionModel } from '@mui/x-data-grid';
 import type { SelectChangeEvent } from '@mui/material/Select';
 import { VaporIcon } from "@vapor/v3-components";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons/faPlus";
@@ -20,7 +20,8 @@ import { useTranslation } from '@1f/react-sdk';
 import type { DataGridConfig } from '../types/grid';
 import type { BaseEntity, BaseFilters, PaginationInfo, SortInfo } from '../types/generic';
 import { CustomPagination } from './CustomPagination';
-import { ActionsMenu } from './ActionsMenu'; // ✨ NUOVO IMPORT
+import { ActionsMenu } from './ActionsMenu';
+import { BulkActionsMenu } from './BulkActionsMenu';
 
 // Helper per localizzazione DataGrid
 const getDataGridLocaleText = (t: any) => ({
@@ -47,7 +48,7 @@ const getDataGridLocaleText = (t: any) => ({
   loadingOverlayLabel: t("components.dataGrid.loading"),
 });
 
-// Props aggiornate con supporto sorting
+// Props aggiornate con supporto selezione multipla
 interface GenericDataGridProps<T extends BaseEntity, F extends BaseFilters> {
   items: T[];
   config: DataGridConfig<T>;
@@ -66,7 +67,7 @@ interface GenericDataGridProps<T extends BaseEntity, F extends BaseFilters> {
 }
 
 /**
- * DataGrid generico con supporto sorting server-side
+ * DataGrid generico con supporto sorting server-side e selezione multipla
  */
 export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
   items,
@@ -85,6 +86,10 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
   // State per i filtri temporanei
   const [tempFilters, setTempFilters] = useState<F>(currentFilters);
   const [hasPendingSearchFilters, setHasPendingSearchFilters] = useState<boolean>(false);
+  
+  // ✨ NUOVO: State per selezione multipla
+  const [selectedItems, setSelectedItems] = useState<GridRowSelectionModel>([]);
+  const [selectedItemsData, setSelectedItemsData] = useState<T[]>([]);
 
   // Sincronizza filtri temporanei quando cambiano quelli esterni
   useEffect(() => {
@@ -92,9 +97,32 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     setHasPendingSearchFilters(false);
   }, [currentFilters]);
 
+  // ✨ NUOVO: Reset selezioni quando cambiano filtri o paginazione
+  useEffect(() => {
+    setSelectedItems([]);
+    setSelectedItemsData([]);
+  }, [currentFilters.page, currentFilters.searchTerm, currentFilters.sortBy, currentFilters.sortOrder]);
+
+  // ✨ NUOVO: Aggiorna selectedItemsData quando cambia selectedItems o items
+  useEffect(() => {
+    if (selectedItems.length === 0) {
+      setSelectedItemsData([]);
+      return;
+    }
+
+    const getRowId = config.getRowId || ((row: T) => row.id);
+    const selectedData = items.filter(item => 
+      selectedItems.includes(getRowId(item))
+    );
+    setSelectedItemsData(selectedData);
+  }, [selectedItems, items, config.getRowId]);
+
   // Determina modalità sorting
   const isServerSorting = config.sortingMode === 'server' && !!onSortChange;
   const isServerPagination = config.paginationMode === 'server' && !!pagination;
+  
+  // ✨ NUOVO: Determina se la selezione multipla è abilitata
+  const isMultiSelectEnabled = config.enableMultiSelect === true;
 
   // Costruisci sortModel corrente per MUI DataGrid
   const currentSortModel: GridSortModel = (() => {
@@ -125,47 +153,30 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
       direction: sort.sort === 'desc' ? 'desc' : 'asc'
     };
 
-    if (config.sortableFields && !config.sortableFields.includes(sort.field)) {
-      console.warn(`Campo '${sort.field}' non ordinabile`);
-      return;
-    }
-
     onSortChange(sortInfo);
-  }, [isServerSorting, onSortChange, config.sortableFields]);
+  }, [isServerSorting, onSortChange]);
 
-  // Controlla se ci sono differenze nei filtri search/number
-  const checkPendingSearchFilters = useCallback((newTempFilters: F) => {
-    const searchFields = config.filters
-      .filter(f => f.type === 'search' || f.type === 'number')
-      .map(f => f.field);
-    
-    const hasDifferences = searchFields.some(field => 
-      newTempFilters[field as keyof F] !== currentFilters[field as keyof F]
-    );
-    
-    setHasPendingSearchFilters(hasDifferences);
-    return hasDifferences;
-  }, [config.filters, currentFilters]);
+  // ✨ NUOVO: Handler per cambio selezione
+  const handleSelectionModelChange = useCallback((newSelection: GridRowSelectionModel) => {
+    setSelectedItems(newSelection);
+  }, []);
 
-  // Handler unificato per tutti i filtri
-  const handleFilterChange = useCallback((field: string, value: string) => {
-    const newTempFilters = {
-      ...tempFilters,
-      [field]: value
-    } as F;
-    
-    setTempFilters(newTempFilters);
+  // Handler per modifiche filtri
+  const handleFilterChange = (field: string, value: any) => {
+    const updatedFilters = { ...tempFilters, [field]: value } as F;
+    setTempFilters(updatedFilters);
 
+    // Se non è un filtro di ricerca, applica subito
     const filterConfig = config.filters.find(f => f.field === field);
-    if (filterConfig?.type === 'select') {
-      const filtersWithResetPage = { ...newTempFilters, page: 1 } as F;
-      onFiltersChange(filtersWithResetPage);
+    if (!filterConfig || filterConfig.type !== 'search') {
+      onFiltersChange(updatedFilters);
+      setHasPendingSearchFilters(false);
     } else {
-      checkPendingSearchFilters(newTempFilters);
+      setHasPendingSearchFilters(true);
     }
-  }, [tempFilters, config.filters, onFiltersChange, checkPendingSearchFilters]);
+  };
 
-  // Applica filtri search/number
+  // Applica filtri di ricerca
   const handleApplySearchFilters = () => {
     const filtersWithResetPage = { ...tempFilters, page: 1 } as F;
     onFiltersChange(filtersWithResetPage);
@@ -256,7 +267,7 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
     });
   };
 
-  // ✨ SOSTITUITO: renderActions con ActionsMenu
+  // Costruzione colonne con azioni
   const columns: GridColDef[] = [
     ...config.columns.map(col => ({
       field: col.field as string,
@@ -310,17 +321,30 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
               {t(config.description)}
             </Typography>
           </Box>
-          {onAdd && (
-            <Button
-              disabled={isLoading}
-              variant="contained"
-              startIcon={<VaporIcon icon={faPlus} />}
-              onClick={onAdd}
-              size='small'
-            >
-              {t(config.addButtonLabel || 'common.dataGrid.addButtonLabel')}
-            </Button>
-          )}
+          
+          {/* Bottoni azioni */}
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            
+            {/* Bottone Aggiungi */}
+            {onAdd && (
+              <Button
+                disabled={isLoading}
+                variant="contained"
+                startIcon={<VaporIcon icon={faPlus} />}
+                onClick={onAdd}
+                size='small'
+              >
+                {t(config.addButtonLabel || 'common.dataGrid.addButtonLabel')}
+              </Button>
+            )}
+
+            {isMultiSelectEnabled && config.bulkActions && config.bulkActions.length > 0 && (
+              <BulkActionsMenu
+                selectedItems={selectedItemsData}
+                bulkActions={config.bulkActions}
+              />
+            )}
+          </Box>
         </Box>
       )}
 
@@ -381,6 +405,12 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
           columns={columns}
           loading={isLoading}
           
+          // ✨ NUOVO: Configurazione selezione multipla
+          checkboxSelection={isMultiSelectEnabled}
+          rowSelectionModel={selectedItems}
+          onRowSelectionModelChange={handleSelectionModelChange}
+          disableRowSelectionOnClick={isMultiSelectEnabled}
+          
           hideFooter={isServerPagination}
           {...(!isServerPagination && {
             initialState: {
@@ -400,7 +430,6 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
           disableColumnSelector={false}
           
           localeText={getDataGridLocaleText(t)}
-          disableRowSelectionOnClick
           sx={{
             border: 'none',
             '& .MuiDataGrid-cell:focus': {
@@ -414,38 +443,19 @@ export function GenericDataGrid<T extends BaseEntity, F extends BaseFilters>({
             '& .MuiDataGrid-columnHeader': {
               cursor: isServerSorting ? 'pointer' : 'default',
             },
-            '& .MuiDataGrid-sortIcon': {
-              opacity: isServerSorting ? 1 : 0.7,
-            }
           }}
         />
         
-        {/* Paginazione Custom per modalità server */}
+        {/* Paginazione Custom per Server-side */}
         {isServerPagination && pagination && onPaginationChange && (
-          <Box sx={{ 
-            p: 2, 
-            borderTop: '1px solid', 
-            borderColor: 'divider'
-          }}>
-            <CustomPagination
-              pagination={pagination}
-              onPaginationChange={onPaginationChange}
-              pageSizeOptions={config.pageSizeOptions}
-              disabled={isLoading}
-            />
-          </Box>
+          <CustomPagination
+            pagination={pagination}
+            onPaginationChange={onPaginationChange}
+            pageSizeOptions={config.pageSizeOptions || [10, 25, 50, 100]}
+            disabled={isLoading}
+          />
         )}
       </Box>
-
-      {/* Debug info per sorting (rimuovere in produzione) */}
-      {process.env.NODE_ENV === 'development' && isServerSorting && (
-        <Box sx={{ mt: 1, p: 1, bgcolor: 'grey.100', borderRadius: 1, fontSize: '0.75rem' }}>
-          🔍 Debug Sorting: 
-          sortBy={currentFilters.sortBy || 'default'}, 
-          sortOrder={currentFilters.sortOrder || 'default'},
-          mode={config.sortingMode}
-        </Box>
-      )}
     </Box>
   );
 }

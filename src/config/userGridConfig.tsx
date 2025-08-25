@@ -1,9 +1,9 @@
 // src/config/userGridConfig.tsx
 import { Box, Typography, Chip, Avatar } from "@vapor/v3-components";
-import { faPowerOff, faEdit, faTrash } from "@fortawesome/pro-regular-svg-icons";
+import { faPowerOff, faEdit, faTrash, faDownload, faUserSlash } from "@fortawesome/pro-regular-svg-icons";
 import dayjs from 'dayjs';
 import type { User } from '../types/user';
-import type { DataGridConfig, ColumnConfig, FilterConfig, ActionConfig } from '../types/grid';
+import type { DataGridConfig, ColumnConfig, FilterConfig, ActionConfig, BulkActionConfig } from '../types/grid';
 
 /**
  * Configurazione colonne per Users
@@ -13,7 +13,7 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     field: 'name',
     headerName: 'Utente',
     flex: 1.5,
-    sortable: true, // Esplicitamente ordinabile
+    sortable: true,
     renderCell: (_, row) => (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
@@ -44,14 +44,14 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     field: 'email',
     headerName: 'Email',
     flex: 1.5,
-    sortable: true, // Nuova colonna email ordinabile
+    sortable: true,
     renderCell: (value) => value
   },
   {
     field: 'role',
     headerName: 'Ruolo',
     flex: 1,
-    sortable: true, // Ordinabile
+    sortable: true,
     renderCell: (value) => (
       <Chip 
         label={value} 
@@ -64,7 +64,7 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     field: 'status',
     headerName: 'Stato',
     flex: 1,
-    sortable: true, // Ordinabile
+    sortable: true,
     renderCell: (value) => (
       <Chip
         label={value}
@@ -77,14 +77,14 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     field: 'registrationDate',
     headerName: 'Data Registrazione',
     flex: 1,
-    sortable: true, // Ordinabile
+    sortable: true,
     renderCell: (value) => value ? dayjs(value).format('DD/MM/YYYY') : '-'
   },
   {
     field: 'lastAccess',
     headerName: 'Ultimo Accesso',
     flex: 1,
-    sortable: true, // Ordinabile
+    sortable: true,
     renderCell: (value) => value ? dayjs(value).format('DD/MM/YYYY HH:mm') : '-'
   }
 ];
@@ -159,17 +159,69 @@ export const getUserActions = (
 ];
 
 /**
- * Configurazione completa DataGrid per Users con supporto sorting server-side
+ * ✨ NUOVO: Funzione per generare le azioni bulk per Users
+ */
+export const getUserBulkActions = (
+  onBulkExport: (users: User[]) => void,
+  onBulkDeactivate: (users: User[]) => void,
+  onBulkDelete: (users: User[]) => void,
+): BulkActionConfig<User>[] => [
+  // Azione sempre attiva - Export
+  {
+    key: 'export',
+    label: 'Esporta Utenti',
+    icon: faDownload,
+    color: 'primary',
+    onClick: onBulkExport,
+    requiresSelection: false // Sempre attiva
+  },
+  
+  // Azioni che richiedono selezione
+  {
+    key: 'deactivate',
+    label: 'Disattiva Utenti',
+    icon: faUserSlash,
+    color: 'warning',
+    onClick: onBulkDeactivate,
+    requiresSelection: true,
+    confirmMessage: 'Sei sicuro di voler disattivare gli utenti selezionati?',
+    disabled: (selectedUsers) => {
+      // Non permettere se ci sono admin selezionati
+      return selectedUsers.some(user => user.role === 'admin');
+    }
+  },
+  {
+    key: 'delete',
+    label: 'Elimina Utenti',
+    icon: faTrash,
+    color: 'error',
+    onClick: onBulkDelete,
+    requiresSelection: true,
+    confirmMessage: 'Sei sicuro di voler eliminare definitivamente gli utenti selezionati?',
+    disabled: (selectedUsers) => {
+      // Non permettere se ci sono admin selezionati
+      return selectedUsers.some(user => user.role === 'admin');
+    }
+  }
+];
+
+/**
+ * Configurazione completa DataGrid per Users con supporto sorting server-side e bulk actions
  */
 export const getUserGridConfig = (
   onEdit: (user: User) => void,
   onToggleStatus: (user: User) => void,
   onDelete: (user: User) => void,
+  onBulkExport: (users: User[]) => void,
+  onBulkDeactivate: (users: User[]) => void,
+  onBulkDelete: (users: User[]) => void,
 ): DataGridConfig<User> => ({
   getRowId: (user) => user._id,
   columns: USER_COLUMNS,
   filters: USER_FILTERS,
   actions: getUserActions(onEdit, onToggleStatus, onDelete),
+  bulkActions: getUserBulkActions(onBulkExport, onBulkDeactivate, onBulkDelete),
+  enableMultiSelect: true,
   title: 'features.userManagement.dataGrid.title',
   description: 'features.userManagement.dataGrid.description',
   addButtonLabel: 'features.userManagement.dataGrid.addButtonLabel',
@@ -177,12 +229,10 @@ export const getUserGridConfig = (
   pageSize: 10,
   showHeader: true,
   
-  // Configurazione paginazione e sorting
   paginationMode: 'server',
-  sortingMode: 'server',           // ABILITA SORTING SERVER-SIDE
+  sortingMode: 'server',
   pageSizeOptions: [10, 25, 50, 100],
   
-  // Configurazione sorting specifica
   defaultSort: {
     field: 'registrationDate',
     direction: 'desc'

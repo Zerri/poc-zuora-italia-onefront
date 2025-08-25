@@ -1,9 +1,9 @@
 // src/config/adminQuoteGridConfig.tsx
 import { Box, Typography, Chip, Avatar } from "@vapor/v3-components";
-import { faEye, faEdit, faUserCheck } from "@fortawesome/pro-regular-svg-icons";
+import { faEye, faEdit, faUserCheck, faDownload, faClock } from "@fortawesome/pro-regular-svg-icons";
 import dayjs from 'dayjs';
 import type { AdminQuote } from '../types/adminQuote';
-import type { DataGridConfig, ColumnConfig, FilterConfig, ActionConfig } from '../types/grid';
+import type { DataGridConfig, ColumnConfig, FilterConfig, ActionConfig, BulkActionConfig } from '../types/grid';
 
 /**
  * Helper per formattare valuta
@@ -247,24 +247,65 @@ export const getAdminQuoteActions = (
   }
 ];
 
+export const getAdminQuoteBulkActions = (
+  onBulkExport: (quotes: AdminQuote[]) => void,
+  onBulkArchive: (quotes: AdminQuote[]) => void,
+  onBulkAssignAgent: (quotes: AdminQuote[]) => void
+): BulkActionConfig<AdminQuote>[] => [
+  // Sempre attivo - Export
+  {
+    key: 'export',
+    label: 'Esporta Preventivi',
+    icon: faDownload,
+    color: 'primary',
+    requiresSelection: false,
+    onClick: onBulkExport
+  },
+  
+  // Richiedono selezione
+  {
+    key: 'archive',
+    label: 'Archivia Preventivi',
+    icon: faClock,
+    color: 'warning',
+    requiresSelection: true,
+    onClick: onBulkArchive,
+    confirmMessage: 'Sei sicuro di voler archiviare i preventivi selezionati?',
+    disabled: (selectedQuotes) => selectedQuotes.some(quote => quote.status === 'Accepted')
+  },
+  {
+    key: 'assignAgent',
+    label: 'Assegna Agent in Bulk',
+    icon: faUserCheck,
+    color: 'primary', 
+    requiresSelection: true,
+    onClick: onBulkAssignAgent
+  }
+];
+
 /**
  * Configurazione completa DataGrid per AdminQuotes
  */
 export const getAdminQuoteGridConfig = (
   onView: (quote: AdminQuote) => void,
   onChangeStatus: (quote: AdminQuote) => void,
-  onAssignAgent: (quote: AdminQuote) => void
+  onAssignAgent: (quote: AdminQuote) => void,
+  onBulkExport: (quotes: AdminQuote[]) => void,
+  onBulkArchive: (quotes: AdminQuote[]) => void,
+  onBulkAssignAgent: (quotes: AdminQuote[]) => void
 ): DataGridConfig<AdminQuote> => ({
   getRowId: (quote) => quote._id,
   columns: ADMIN_QUOTE_COLUMNS,
   filters: ADMIN_QUOTE_FILTERS,
   actions: getAdminQuoteActions(onView, onChangeStatus, onAssignAgent),
+  bulkActions: getAdminQuoteBulkActions(onBulkExport, onBulkArchive, onBulkAssignAgent),
+  enableMultiSelect: true,
   title: 'features.adminQuotes.dataGrid.title',
   description: 'features.adminQuotes.dataGrid.description',
   addButtonLabel: 'features.adminQuotes.dataGrid.addButtonLabel',
   emptyMessage: 'features.adminQuotes.dataGrid.emptyMessage',
   pageSize: 10,
-  showHeader: false,
+  showHeader: true,
   paginationMode: 'server',
   sortingMode: 'server',
   pageSizeOptions: [10, 25, 50, 100],

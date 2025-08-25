@@ -29,7 +29,7 @@ export interface FilterConfig {
 }
 
 /**
- * Configurazione di un'azione su una riga
+ * Configurazione di un'azione su una riga singola
  */
 export interface ActionConfig<T = any> {
   key: string;                                       // Chiave univoca azione
@@ -42,13 +42,32 @@ export interface ActionConfig<T = any> {
 }
 
 /**
- * Configurazione completa del DataGrid con supporto sorting
+ * Configurazione di un'azione bulk (su più elementi)
+ */
+export interface BulkActionConfig<T = any> {
+  key: string;                                       // Chiave univoca azione
+  label: string;                                     // Label dell'azione
+  icon?: any;                                        // Icona FontAwesome
+  color?: 'primary' | 'secondary' | 'error' | 'warning' | 'success';
+  onClick: (items: T[]) => void;                     // Funzione da eseguire con array di items
+  requiresSelection: boolean;                        // Se true, necessita almeno 1 item selezionato
+  disabled?: (selectedItems: T[]) => boolean;        // Abilita/disabilita in base a selezione
+  confirmMessage?: string;                           // Messaggio di conferma opzionale
+}
+
+/**
+ * Configurazione completa del DataGrid con supporto sorting e bulk actions
  */
 export interface DataGridConfig<T = any> {
   getRowId?: (row: T) => string | number;
   columns: ColumnConfig<T>[];
   filters: FilterConfig[];
   actions: ActionConfig<T>[];
+  
+  // ✨ NUOVO: Supporto azioni bulk
+  bulkActions?: BulkActionConfig<T>[];               // Azioni bulk disponibili
+  enableMultiSelect?: boolean;                       // Abilita selezione multipla (default: false)
+  
   title: string;
   description: string;
   addButtonLabel?: string;

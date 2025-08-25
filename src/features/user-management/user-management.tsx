@@ -15,7 +15,7 @@ import { GenericDataGrid } from '../../components/GenericDataGrid';
 import { UserDrawer } from './components/UserDrawer';
 import { useUsersCRUD } from '../../hooks/useUsersCRUD';
 import { getUserGridConfig } from '../../config/userGridConfig';
-import { useDataGridHandlers } from '../../hooks/useDataGridHandlers'; // ✨ NUOVO HOOK
+import { useDataGridHandlers } from '../../hooks/useDataGridHandlers';
 
 interface UserManagementPageProps {}
 
@@ -34,7 +34,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
     sortOrder: 'desc'
   });
   
-  // ✨ HOOK CENTRALIZZATO per handlers comuni
+  // Hook centralizzato per handlers comuni
   const {
     snackbar,
     showSnackbar,
@@ -49,7 +49,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  // Hook CRUD
+  // Hook CRUD  
   const {
     items: users,
     pagination,
@@ -66,6 +66,19 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   console.log('User Management Page - Users:', users);
   console.log('User Management Page - Pagination:', pagination);
   console.log('🔍 User Management Page - Sorting:', sorting);
+
+  // ✅ Controllo accesso admin
+  if (role !== 'admin') {
+    return (
+      <VaporThemeProvider>
+        <VaporPage title={t("features.userManagement.title")}>
+          <Alert severity="error">
+            {t("common.errors.unauthorized")}
+          </Alert>
+        </VaporPage>
+      </VaporThemeProvider>
+    );
+  }
 
   // Handlers specifici per user management
   const handleAdd = () => {
@@ -84,7 +97,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
     if (!window.confirm(t("features.userManagement.confirmDelete"))) return;
     
     try {
-      await deleteUser.mutateAsync(String(user.id)); // ✅ Cast a string
+      await deleteUser.mutateAsync(String(user.id));
       showSnackbar(t("features.userManagement.success.userDeleted"), 'success');
     } catch (error) {
       showSnackbar(t("features.userManagement.errors.deleteError"), 'error');
@@ -95,13 +108,37 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
     try {
       const newStatus = user.status === 'active' ? 'inactive' : 'active';
       await updateUser.mutateAsync({
-        id: user.id,
+        id: String(user.id),
         status: newStatus
       });
       showSnackbar(t("features.userManagement.success.statusUpdated"), 'success');
     } catch (error) {
-      showSnackbar(t("features.userManagement.errors.statusUpdateError"), 'error');
+      showSnackbar(t("features.userManagement.errors.statusError"), 'error');
     }
+  };
+
+  // ✨ NUOVO: Handlers per bulk actions
+  const handleBulkExport = (selectedUsers: User[]) => {
+    const userInfo = selectedUsers.length > 0 
+      ? `${selectedUsers.length} utenti selezionati:\n${selectedUsers.map(u => `- ${u.fullName} (${u.email})`).join('\n')}`
+      : 'Export di tutti gli utenti disponibili';
+    
+    alert(`🔄 BULK ACTION: Export\n\n${userInfo}\n\nIn futuro: sarà generato un file CSV/Excel`);
+    showSnackbar('Export completato con successo', 'success');
+  };
+
+  const handleBulkDeactivate = (selectedUsers: User[]) => {
+    const userInfo = `${selectedUsers.length} utenti selezionati:\n${selectedUsers.map(u => `- ${u.fullName} (${u.email}) - Stato: ${u.status}`).join('\n')}`;
+    
+    alert(`⚠️ BULK ACTION: Disattivazione\n\n${userInfo}\n\nIn futuro: API call per disattivare in batch`);
+    showSnackbar(`${selectedUsers.length} utenti disattivati`, 'success');
+  };
+
+  const handleBulkDelete = (selectedUsers: User[]) => {
+    const userInfo = `${selectedUsers.length} utenti selezionati:\n${selectedUsers.map(u => `- ${u.fullName} (${u.email}) - Ruolo: ${u.role}`).join('\n')}`;
+    
+    alert(`🗑️ BULK ACTION: Eliminazione\n\n${userInfo}\n\nIn futuro: API call per eliminare in batch`);
+    showSnackbar(`${selectedUsers.length} utenti eliminati`, 'success');
   };
 
   const handleSaveUser = async (userData: UserMutationData) => {
@@ -137,7 +174,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   if (role !== 'admin') {
     return (
       <VaporThemeProvider>
-        <VaporPage>
+        <VaporPage title={t("features.userManagement.title")}>
           <VaporPage.Section>
             <Alert severity="error" sx={{ mb: 3 }}>
               {t("features.userManagement.errors.noPermission")}
@@ -150,7 +187,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
 
   return (
     <VaporThemeProvider>
-      <VaporPage>
+      <VaporPage title={t("features.userManagement.title")}>
         <VaporPage.Section>
           {isLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -160,7 +197,14 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
             <Box>
               <GenericDataGrid
                 items={users}
-                config={getUserGridConfig(handleEdit, handleToggleStatus, handleDelete )}
+                config={getUserGridConfig(
+                  handleEdit, 
+                  handleToggleStatus, 
+                  handleDelete,
+                  handleBulkExport,
+                  handleBulkDeactivate,
+                  handleBulkDelete
+                )}
                 currentFilters={filters}
                 onFiltersChange={handleFiltersChange}
                 onAdd={handleAdd}
