@@ -3,6 +3,7 @@ import { Box, Typography } from '@vapor/v3-components';
 
 export const WelcomeMessage = () => {
 	const tokenData = useTokenData();
+	console.log("🔍 WelcomeMessage render, tokenData:", tokenData);
 	const { t } = useTranslation();
 
 	return (

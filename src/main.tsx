@@ -1,5 +1,4 @@
 import { OneFront } from "@1f/react-sdk";
-
 import { foobar } from "./features/foobar";
 import { shellNav } from "./features/shellNav";
 import { dashboard } from "./features/dashboard";
