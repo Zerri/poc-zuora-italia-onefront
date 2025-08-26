@@ -9,7 +9,6 @@ import {
   Snackbar,
 } from "@vapor/v3-components";
 import { useTranslation } from '@1f/react-sdk';
-import { useRole } from '../../contexts/RoleContext';
 import type { User, UserFilters, UserMutationData } from '../../types/user';
 import { GenericDataGrid } from '../../components/GenericDataGrid';
 import { UserDrawer } from './components/UserDrawer';
@@ -21,7 +20,6 @@ interface UserManagementPageProps {}
 
 export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   const { t } = useTranslation();
-  const { role } = useRole();
   
   // State per filtri
   const [filters, setFilters] = useState<UserFilters>({
@@ -66,19 +64,6 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   console.log('User Management Page - Users:', users);
   console.log('User Management Page - Pagination:', pagination);
   console.log('🔍 User Management Page - Sorting:', sorting);
-
-  // ✅ Controllo accesso admin
-  if (role !== 'admin') {
-    return (
-      <VaporThemeProvider>
-        <VaporPage title={t("features.userManagement.title")}>
-          <Alert severity="error">
-            {t("common.errors.unauthorized")}
-          </Alert>
-        </VaporPage>
-      </VaporThemeProvider>
-    );
-  }
 
   // Handlers specifici per user management
   const handleAdd = () => {
@@ -169,21 +154,6 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
       );
     }
   };
-
-  // Verifica permessi
-  if (role !== 'admin') {
-    return (
-      <VaporThemeProvider>
-        <VaporPage title={t("features.userManagement.title")}>
-          <VaporPage.Section>
-            <Alert severity="error" sx={{ mb: 3 }}>
-              {t("features.userManagement.errors.noPermission")}
-            </Alert>
-          </VaporPage.Section>
-        </VaporPage>
-      </VaporThemeProvider>
-    );
-  }
 
   return (
     <VaporThemeProvider>

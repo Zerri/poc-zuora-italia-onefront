@@ -1,5 +1,6 @@
-// src/features/user-management/index.tsx
+// src/features/admin-quotes/index.tsx
 import { AdminQuotesPage } from './admin-quotes';
+import { ProtectedRoute } from '../../components/ProtectedRoute';
 
 export const adminQuotes = () => [
   {
@@ -7,7 +8,11 @@ export const adminQuotes = () => [
     handler: {
       exact: true,
       path: '/admin-quotes',
-      element: <AdminQuotesPage />,
+      element: (
+        <ProtectedRoute requiredRoute="/admin-quotes">
+          <AdminQuotesPage />
+        </ProtectedRoute>
+      ),
     },
   },
 ];

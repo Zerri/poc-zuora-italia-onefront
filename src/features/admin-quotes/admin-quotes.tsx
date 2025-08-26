@@ -20,7 +20,6 @@ import {
   MenuItem
 } from "@vapor/v3-components";
 import { useTranslation } from '@1f/react-sdk';
-import { useRole } from '../../contexts/RoleContext';
 import type { AdminQuote, AdminQuoteFilters } from '../../types/adminQuote';
 import { GenericDataGrid } from '../../components/GenericDataGrid';
 import { useAdminQuotesCRUD } from '../../hooks/useAdminQuotesCRUD';
@@ -31,7 +30,6 @@ interface AdminQuotesPageProps {}
 
 export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
   const { t } = useTranslation();
-  const { role } = useRole();
   const navigate = useNavigate();
   
   // State per filtri
@@ -175,21 +173,6 @@ export const AdminQuotesPage: React.FC<AdminQuotesPageProps> = () => {
       showSnackbar(t('features.adminQuotes.errors.actionFailed'), 'error');
     }
   };
-
-  // Verifica permessi
-  if (role !== 'admin') {
-    return (
-      <VaporThemeProvider>
-        <VaporPage>
-          <VaporPage.Section>
-            <Alert severity="error" sx={{ mb: 3 }}>
-              {t("features.userManagement.errors.noPermission")}
-            </Alert>
-          </VaporPage.Section>
-        </VaporPage>
-      </VaporThemeProvider>
-    );
-  }
 
   // Gestione errori
   if (error) {

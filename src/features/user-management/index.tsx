@@ -1,5 +1,6 @@
 // src/features/user-management/index.tsx
 import { UserManagementPage } from './user-management';
+import { ProtectedRoute } from '../../components/ProtectedRoute';
 
 export const userManagement = () => [
   {
@@ -7,7 +8,11 @@ export const userManagement = () => [
     handler: {
       exact: true,
       path: '/user-management',
-      element: <UserManagementPage />,
+      element: (
+        <ProtectedRoute requiredRoute="/user-management">
+          <UserManagementPage />
+        </ProtectedRoute>
+      ),
     },
   },
 ];
