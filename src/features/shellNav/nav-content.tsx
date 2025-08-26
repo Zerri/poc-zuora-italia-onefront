@@ -1,165 +1,79 @@
+// src/features/shellNav/nav-content.tsx
 import { useEffect } from "react";
 import { useMenu } from "@1f/react-sdk";
 import { useNavigate } from "react-router-dom";
 import { VaporIcon } from '@vapor/v3-components'
-import { faSliders } from "@fortawesome/pro-regular-svg-icons/faSliders";
-import { faChartSimple } from "@fortawesome/pro-regular-svg-icons/faChartSimple";
-import { faGauge } from "@fortawesome/pro-regular-svg-icons/faGauge";
-import { faUserTie } from "@fortawesome/pro-regular-svg-icons/faUserTie";
-import { faFileInvoice } from "@fortawesome/pro-regular-svg-icons/faFileInvoice";
-import { faBook } from "@fortawesome/pro-regular-svg-icons/faBook";
-import { faUsers } from "@fortawesome/pro-regular-svg-icons/faUsers";
 import { useTranslation } from '@1f/react-sdk';
+import { usePermissions } from '../../hooks/usePermissions';
+import { getMenuByRole, MenuItem } from '../../config/menuConfig';
 
 export const NavContent = () => {
   const { t, ready } = useTranslation();
   const navigate = useNavigate();
   const { setMenuTree } = useMenu();
+  const { userRoles } = usePermissions();
 
-  const settingsItems = [
-    {
-      label: t("nav.settings_items.vendors"),
-      onClickFunction: () => {},
-      // closePopoverAfterClick: true
-    },
-    {
-      label: t("nav.settings_items.purchase_orders"),
-      onClickFunction: () => {},
-      // closePopoverAfterClick: true
-    },
-    {
-      label: t("nav.settings_items.purchase_receives"),
-      onClickFunction: () => {},
-      // closePopoverAfterClick: true
-    },
-    {
-      label: t("nav.settings_items.bills"),
-      onClickFunction: () => {},
-      // closePopoverAfterClick: true
-    }
-  ];
+  /**
+   * Converte MenuItem[] in formato compatibile con setMenuTree
+   * Gestisce struttura nested complessa dall'implementazione originale
+   */
+  const convertMenuItems = (items: MenuItem[]) => {
+    return items.map(item => {
+      const baseItem: any = {
+        label: t(item.label),
+        icon: item.icon ? <VaporIcon icon={item.icon} /> : undefined,
+        ...(item.route && { onClickFunction: () => navigate(item.route!) })
+      };
 
-  const reportsItems = [
-    {
-      label: t("nav.reports_items.invoicing"),
-      children: [
-        {
-          label: t("nav.reports_items.invoices"),
-          onClickFunction: () => {},
-          // closePopoverAfterClick: true
-        },
-        {
-          label: t("nav.reports_items.reminders"),
-          onClickFunction: () => {},
-          // closePopoverAfterClick: true
-        },
-        {
-          label: t("nav.reports_items.subscriptions"),
-          onClickFunction: () => {},
-          // closePopoverAfterClick: true
-        }
-      ]
-    },
-    {
-      label: t("nav.reports_items.customers"),
-      children: [
-        {
-          label: t("nav.reports_items.customers"),
-          onClickFunction: () => {},
-          // closePopoverAfterClick: true
-        },
-        {
-          label: t("nav.reports_items.customer_groups"),
-          onClickFunction: () => {},
-          // closePopoverAfterClick: true
-        },
-        {
-          label: t("nav.reports_items.customer_setup"),
-          onClickFunction: () => {},
-          // closePopoverAfterClick: true
-        }
-      ]
-    },
-    {
-      label: t("nav.reports_items.packages"),
-      onClickFunction: () => {},
-      // closePopoverAfterClick: true
-    },
-    {
-      label: t("nav.reports_items.shipments"),
-      onClickFunction: () => {},
-      // closePopoverAfterClick: true
-    }
-  ];
+      // Gestione children per Reports (badge support)
+      if (item.label === "nav.reports") {
+        baseItem.badgeProps = {
+          variant: "dot",
+          color: "primary"
+        };
+      }
 
-  const menuTree = [
-    {
-      label: t("nav.dashboard"),
-      icon: <VaporIcon icon={faGauge} />,
-      // children: dashboardItems
-      onClickFunction: () => {
-        navigate("/");
-      },
-    },
-    {
-      label: t("nav.customers"),
-      icon: <VaporIcon icon={faUserTie} />,
-      // children: customersItems
-      onClickFunction: () => {
-        navigate("/customers");
-      },
-    },
-    {
-      label: t("nav.quotes"),
-      icon: <VaporIcon icon={faFileInvoice} />,
-      // children: quotesItems
-      onClickFunction: () => {
-        navigate("/quotes");
-      },
-    },
-    {
-      label: t("nav.catalog"),
-      icon: <VaporIcon icon={faBook} />,
-      // children: catalogItems
-      onClickFunction: () => {
-        navigate("/catalog");
-      },
-    },
-    {
-      label: t("nav.userManagement"),
-      icon: <VaporIcon icon={faUsers} />,
-      onClickFunction: () => {
-        navigate("/user-management");
-      },
-    },
-    {
-      label: t("nav.adminQuotes"),
-      icon: <VaporIcon icon={faFileInvoice} />,
-      onClickFunction: () => {
-        navigate("/admin-quotes");
-      },
-    },
-    {
-      label: t("nav.reports"),
-      icon: <VaporIcon icon={faChartSimple} />,
-      badgeProps: {
-        variant: "dot",
-        color: "primary"
-      },
-      children: reportsItems
-    },
-    {
-      label: t("nav.settings"),
-      icon: <VaporIcon icon={faSliders} />,
-      children: settingsItems
-    },
-  ];
-  
+      // Gestione children complessi (nested structure)
+      if (item.children) {
+        baseItem.children = item.children.map((child: any) => {
+          // Se il child ha suoi children (nested submenu)
+          if (child.children) {
+            return {
+              label: t(child.label),
+              children: child.children.map((nestedChild: any) => ({
+                label: t(nestedChild.label),
+                onClickFunction: nestedChild.onClickFunction || (() => {}),
+                closePopoverAfterClick: true
+              }))
+            };
+          } else {
+            // Child semplice
+            return {
+              label: t(child.label),
+              onClickFunction: child.onClickFunction || (() => {}),
+              closePopoverAfterClick: true
+            };
+          }
+        });
+      }
+
+      return baseItem;
+    });
+  };
+
   useEffect(() => {
-    if (ready) {
+    if (ready && userRoles.length > 0) {
+      // Ottieni menu dinamico basato su ruolo
+      const userMenuItems = getMenuByRole(userRoles);
+      const menuTree = convertMenuItems(userMenuItems);
+      
+      console.log('🔧 Dynamic Menu - User Roles:', userRoles);
+      console.log('🔧 Dynamic Menu - Menu Items:', userMenuItems);
+      console.log('🔧 Dynamic Menu - Converted Tree:', menuTree);
+      
       setMenuTree(menuTree);
     }
-  }, [ready]);
+  }, [ready, userRoles, t, navigate, setMenuTree]);
 
   return null;
 };
