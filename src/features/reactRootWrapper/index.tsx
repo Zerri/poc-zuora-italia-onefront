@@ -2,6 +2,7 @@ import { AppQueryProvider } from './AppQueryProvider';
 import { AppAuthRedirectGate } from './AppAuthRedirectGate';
 import { AppRoleProvider } from './AppRoleProvider';
 import { AppUserProvider } from './AppUserProvider';
+import { AppDemoRoleProvider } from './AppDemoRoleProvider';
 
 // Export della configurazione con provider separati
 // L'ordinamento di questi provider è importante per garantire che le dipendenze siano rispettate
@@ -16,6 +17,12 @@ export const react_root_wrapper = () => [
     target: "$REACT_ROOT_WRAPPER",
     handler: {
       component: AppAuthRedirectGate,
+    },
+  },
+  {
+    target: '$REACT_ROOT_WRAPPER',
+    handler: {
+      component: AppDemoRoleProvider,
     },
   },
   {

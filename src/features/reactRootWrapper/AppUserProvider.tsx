@@ -1,6 +1,7 @@
 // src/features/reactRootWrapper/AppUserProvider.tsx
 import React, { createContext, useContext, ReactNode } from 'react';
 import { useCurrentUser, UserData } from '../../hooks/useCurrentUser';
+import { useDemoRole } from "./AppDemoRoleProvider";
 import { VaporThemeProvider, CircularProgress, Box, Typography, Button } from "@vapor/v3-components";
 
 interface UserContextType {
@@ -14,7 +15,8 @@ interface AppUserProviderProps {
 }
 
 export const AppUserProvider: React.FC<AppUserProviderProps> = ({ children }) => {
-  const { data: user, isLoading, error } = useCurrentUser();
+  const { demoRole } = useDemoRole();
+  const { data: user, isLoading, error } = useCurrentUser({ role: demoRole });
   
   // Mostra loading mentre carica /me
   if (isLoading) {

@@ -14,7 +14,11 @@ export interface UserData {
   permissions: Record<string, Record<string, boolean>>;
 }
 
-export const useCurrentUser = () => {
+interface UseCurrentUserOptions {
+  role?: string | null; // "ADMIN" | "SALES"
+}
+
+export const useCurrentUser = ({ role }: UseCurrentUserOptions = {}) => {
   const { tokenData } = useAuth();
   const [data, setData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +32,8 @@ export const useCurrentUser = () => {
       setError(null);
       
       try {
-        const response = await fetch(`${import.meta.env.VITE_APP_BE}/me`);
+        const path = role ? `/me?role=${role}` : "/me";
+        const response = await fetch(`${import.meta.env.VITE_APP_BE}${path}`);
         if (!response.ok) {
           throw new Error(`HTTP error: ${response.status}`);
         }
