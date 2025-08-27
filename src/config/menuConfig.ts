@@ -240,27 +240,3 @@ const buildMultiRoleMenu = (userRoles: string[]): MenuItem[] => {
   
   return finalMenu;
 };
-
-/**
- * Funzione per verificare se utente ha accesso a una route - AGGIORNATA
- * Ora supporta anche route dentro submenu "Amministrazione"
- */
-export const hasRouteAccess = (userRoles: string[], route: string): boolean => {
-  const userMenu = getMenuByRole(userRoles);
-  
-  const hasAccess = (items: MenuItem[]): boolean => {
-    return items.some(item => {
-      // Match diretto sulla route
-      if (item.route === route) return true;
-      
-      // Ricerca nei children standard
-      if (item.children) {
-        return hasAccess(item.children);
-      }
-      
-      return false;
-    });
-  };
-  
-  return hasAccess(userMenu);
-};

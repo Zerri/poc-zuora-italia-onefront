@@ -5,14 +5,16 @@ import { useMenu } from "@1f/react-sdk";
 import { useNavigate } from "react-router-dom";
 import { VaporIcon } from '@vapor/v3-components'
 import { useTranslation } from '@1f/react-sdk';
-import { usePermissions } from '../../hooks/usePermissions';
+import { useUser } from '../reactRootWrapper/AppUserProvider';
 import { getMenuByRole, MenuItem } from '../../config/menuConfig';
 
 export const NavContent = () => {
   const { t, ready } = useTranslation();
   const navigate = useNavigate();
   const { setMenuTree } = useMenu();
-  const { userRoles } = usePermissions();
+  
+  const { user } = useUser();
+  const userRoles = user?.roles || [];
 
   /**
    * Converte MenuItem[] in formato compatibile con setMenuTree
