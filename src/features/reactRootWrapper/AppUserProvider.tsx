@@ -2,6 +2,7 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import { useCurrentUser, UserData } from '../../hooks/useCurrentUser';
 import { useDemoRole } from "./AppDemoRoleProvider";
+import { useAuth } from "@1f/react-sdk";
 import { VaporThemeProvider, CircularProgress, Box, Typography, Button } from "@vapor/v3-components";
 
 interface UserContextType {
@@ -15,10 +16,39 @@ interface AppUserProviderProps {
 }
 
 export const AppUserProvider: React.FC<AppUserProviderProps> = ({ children }) => {
+  const { loading: authLoading, tokenData } = useAuth();
   const { demoRole } = useDemoRole();
   const { data: user, isLoading, error } = useCurrentUser({ role: demoRole });
   
-  // Mostra loading mentre carica /me
+  // Se l'auth sta ancora caricando, mostra loading
+  if (authLoading) {
+    return (
+      <VaporThemeProvider>
+        <Box 
+          display="flex" 
+          flexDirection="column"
+          justifyContent="center" 
+          alignItems="center" 
+          height="100vh"
+          gap={2}
+        >
+          <CircularProgress />
+          <Typography variant="body2" color="text.secondary">
+            Verifica autenticazione...
+          </Typography>
+        </Box>
+      </VaporThemeProvider>
+    );
+  }
+
+  // Se non c'è token, non dovremmo essere qui ma è un fallback di sicurezza
+  if (!tokenData) {
+    console.log('🔐 AppUserProvider: No token found, should be handled by auth system');
+    // Non bloccare l'app, lascia che l'auth system gestisca
+    return children;
+  }
+  
+  // Mostra loading mentre carica /me (solo se abbiamo token)
   if (isLoading) {
     return (
       <VaporThemeProvider>
@@ -39,7 +69,7 @@ export const AppUserProvider: React.FC<AppUserProviderProps> = ({ children }) =>
     );
   }
   
-  // Se errore, mostra componente errore fisso (niente more re-mount)
+  // Se errore, mostra componente errore fisso (niente re-mount)
   if (error) {
     console.error('Failed to fetch user data:', error);
     return (

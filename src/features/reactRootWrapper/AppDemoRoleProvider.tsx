@@ -1,6 +1,7 @@
 // src/features/reactRootWrapper/AppDemoRoleProvider.tsx
 import React, { createContext, useContext, ReactNode, useState } from "react";
-import { VaporThemeProvider, Box, Typography, Button } from "@vapor/v3-components";
+import { VaporThemeProvider, Box, Typography, Button, CircularProgress } from "@vapor/v3-components";
+import { useAuth } from "@1f/react-sdk";
 
 type DemoRole = "ADMIN" | "SALES";
 
@@ -15,12 +16,56 @@ interface AppDemoRoleProviderProps {
 }
 
 export const AppDemoRoleProvider: React.FC<AppDemoRoleProviderProps> = ({ children }) => {
-  const [demoRole, setDemoRole] = useState<DemoRole | null>(
-    import.meta.env.VITE_APP_DEMO_ROLE_ENABLED === "true" ? null : "SALES" // default "SALES" se disabilitato
-  );
+  const { loading, tokenData } = useAuth();
+  const [demoRole, setDemoRole] = useState<DemoRole | null>(null);
 
-  // Step 1: schermata di selezione ruolo
-  if (import.meta.env.VITE_APP_DEMO_ROLE_ENABLED === "true" && !demoRole) {
+  // Se l'auth sta ancora caricando, mostra loading
+  if (loading) {
+    return (
+      <VaporThemeProvider>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          height="100vh"
+          gap={2}
+        >
+          <CircularProgress />
+          <Typography variant="body2" color="text.secondary">
+            Verifica autenticazione...
+          </Typography>
+        </Box>
+      </VaporThemeProvider>
+    );
+  }
+
+  // Se non c'è token, il sistema deve gestire l'autenticazione (SSO login)
+  // Non mostriamo la selezione ruolo senza token, ma forniamo comunque il context
+  if (!tokenData) {
+    // Qui l'auth system di OneFront dovrebbe gestire il redirect al login
+    // Non blocchiamo, lasciamo che il sistema di auth faccia il suo lavoro
+    console.log('🔐 No token found, auth system should handle login redirect');
+    
+    // IMPORTANTE: Forniamo sempre il context, ma senza forzare ruoli
+    return (
+      <DemoRoleContext.Provider value={{ demoRole: null }}>
+        {children}
+      </DemoRoleContext.Provider>
+    );
+  }
+
+  // Se c'è il token ma modalità demo DISABILITATA → procedi senza selezione ruolo
+  if (import.meta.env.VITE_APP_DEMO_ROLE_ENABLED !== "true") {
+    return (
+      <DemoRoleContext.Provider value={{ demoRole: null }}>
+        {children}
+      </DemoRoleContext.Provider>
+    );
+  }
+
+  // Se c'è il token e modalità demo attiva ma nessun ruolo selezionato
+  if (!demoRole) {
     return (
       <VaporThemeProvider>
         <Box
@@ -32,6 +77,9 @@ export const AppDemoRoleProvider: React.FC<AppDemoRoleProviderProps> = ({ childr
           gap={3}
         >
           <Typography variant="h5">Seleziona un ruolo demo</Typography>
+          <Typography variant="body2" color="text.secondary" textAlign="center">
+            Modalità demo attiva. Scegli il ruolo per simulare l'esperienza utente.
+          </Typography>
           <Box display="flex" gap={2}>
             <Button variant="contained" onClick={() => setDemoRole("ADMIN")}>
               Admin
@@ -45,7 +93,7 @@ export const AppDemoRoleProvider: React.FC<AppDemoRoleProviderProps> = ({ childr
     );
   }
 
-  // Step 2: passiamo il contesto ai children
+  // Passa il contesto ai children (con token verificato)
   return (
     <DemoRoleContext.Provider value={{ demoRole }}>
       {children}
