@@ -6,6 +6,7 @@ import { faChartSimple } from "@fortawesome/pro-regular-svg-icons/faChartSimple"
 import { faSliders } from "@fortawesome/pro-regular-svg-icons/faSliders";
 import { faUserTie } from "@fortawesome/pro-regular-svg-icons/faUserTie";
 import { faBook } from "@fortawesome/pro-regular-svg-icons/faBook";
+import { faUserShield } from "@fortawesome/pro-regular-svg-icons/faUserShield";
 
 export interface MenuItem {
   label: string;
@@ -28,15 +29,15 @@ const reportsItems = [
     children: [
       {
         label: "nav.reports_items.invoices",
-        onClickFunction: () => {}
+        route: "/reports/invoices"
       },
       {
         label: "nav.reports_items.reminders", 
-        onClickFunction: () => {}
+        route: "/reports/reminders"
       },
       {
         label: "nav.reports_items.subscriptions",
-        onClickFunction: () => {}
+        route: "/reports/subscriptions"
       }
     ]
   },
@@ -45,21 +46,21 @@ const reportsItems = [
     children: [
       {
         label: "nav.reports_items.customers",
-        onClickFunction: () => {}
+        route: "/reports/customers"
       },
       {
         label: "nav.reports_items.customer_groups",
-        onClickFunction: () => {}
+        route: "/reports/customer-groups"
       },
       {
         label: "nav.reports_items.customer_setup",
-        onClickFunction: () => {}
+        route: "/reports/customer-setup"
       }
     ]
   },
   {
     label: "nav.reports_items.packages",
-    onClickFunction: () => {}
+    route: "/report/package"
   },
   {
     label: "nav.reports_items.shipments",
@@ -111,13 +112,11 @@ export const ROLE_MENUS: MenuConfig = {
     },
     {
       label: "nav.reports",
-      // route: "/reports",
       icon: faChartSimple,
       children: reportsItems
     },
     {
       label: "nav.settings",
-      // route: "/settings",
       icon: faSliders,
       children: settingsItems
     }
@@ -143,36 +142,122 @@ export const ROLE_MENUS: MenuConfig = {
       label: "nav.catalog",
       route: "/catalog",
       icon: faBook
-    },
+    }
+  ],
+
+  BACKOFFICE: [
     {
-      label: "nav.settings",
-      // route: "/settings", 
-      icon: faSliders,
-      children: settingsItems
+      label: "nav.dashboard",
+      route: "/",
+      icon: faGauge
     }
   ]
 };
 
 /**
- * Funzione per ottenere menu basato su ruolo utente
+ * Funzione per ottenere menu basato su ruolo utente - NUOVA IMPLEMENTAZIONE
+ * Gestisce ruoli singoli e multipli con raggruppamento admin
  */
 export const getMenuByRole = (userRoles: string[]): MenuItem[] => {
-  // Prende il primo ruolo dell'utente (assumendo un ruolo singolo)
-  const primaryRole = userRoles[0];
-  
-  return ROLE_MENUS[primaryRole] || [];
+  if (!userRoles || userRoles.length === 0) {
+    return [];
+  }
+
+  // CASO 1: Ruolo singolo - logica invariata
+  if (userRoles.length === 1) {
+    const singleRole = userRoles[0];
+    return ROLE_MENUS[singleRole] || [];
+  }
+
+  // CASO 2: Ruoli multipli - nuova logica
+  if (userRoles.length > 1) {
+    return buildMultiRoleMenu(userRoles);
+  }
+
+  return [];
 };
 
 /**
- * Funzione per verificare se utente ha accesso a una route
+ * Costruisce menu per utenti con ruoli multipli
+ * Priorità: SALES first, ADMIN sotto "Amministrazione"
+ */
+const buildMultiRoleMenu = (userRoles: string[]): MenuItem[] => {
+  const finalMenu: MenuItem[] = [];
+  const adminItems: MenuItem[] = [];
+  
+  // Ordina ruoli: non-ADMIN first, ADMIN last
+  const sortedRoles = [...userRoles].sort((a, b) => {
+    if (a === 'ADMIN' && b !== 'ADMIN') return 1;
+    if (a !== 'ADMIN' && b === 'ADMIN') return -1;
+    return 0;
+  });
+
+  console.log('🔧 Multi-role menu build - Original roles:', userRoles);
+  console.log('🔧 Multi-role menu build - Sorted roles:', sortedRoles);
+
+  // Processa ogni ruolo
+  sortedRoles.forEach(role => {
+    const roleMenu = ROLE_MENUS[role] || [];
+    
+    if (role === 'ADMIN') {
+      // Raccogli voci ADMIN per raggrupparle
+      adminItems.push(...roleMenu);
+    } else {
+      // Aggiungi voci non-ADMIN direttamente al menu principale
+      roleMenu.forEach(item => {
+        // Evita duplicati (es. Dashboard presente in più ruoli)
+        const existingItem = finalMenu.find(existing => 
+          existing.label === item.label || existing.route === item.route
+        );
+        
+        if (!existingItem) {
+          finalMenu.push({...item});
+        }
+      });
+    }
+  });
+
+  // Se ci sono voci admin, aggiungile sotto "Amministrazione"
+  if (adminItems.length > 0) {
+    const administrationMenuItem: MenuItem = {
+      label: "nav.administration",
+      icon: faUserShield,
+      children: adminItems.map(item => ({
+        label: item.label,
+        // SEMPLIFICATO: Mantieni la route originale per il NavContent esistente
+        route: item.route,
+        // Mantieni onClickFunction per voci senza route
+        onClickFunction: item.onClickFunction,
+        // Mantieni children per submenu complessi (Reports, Settings)
+        ...(item.children && { children: item.children })
+      }))
+    };
+
+    finalMenu.push(administrationMenuItem);
+  }
+
+  console.log('🔧 Multi-role menu build - Final menu:', finalMenu);
+  
+  return finalMenu;
+};
+
+/**
+ * Funzione per verificare se utente ha accesso a una route - AGGIORNATA
+ * Ora supporta anche route dentro submenu "Amministrazione"
  */
 export const hasRouteAccess = (userRoles: string[], route: string): boolean => {
   const userMenu = getMenuByRole(userRoles);
   
   const hasAccess = (items: MenuItem[]): boolean => {
     return items.some(item => {
+      // Match diretto sulla route
       if (item.route === route) return true;
-      if (item.children) return hasAccess(item.children);
+      
+      // Ricerca nei children standard
+      if (item.children) {
+        return hasAccess(item.children);
+      }
+      
       return false;
     });
   };

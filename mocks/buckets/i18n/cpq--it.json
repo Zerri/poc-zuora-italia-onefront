@@ -13,6 +13,7 @@
             }
         },
         "nav": {
+            "administration": "Amministrazione",
             "dashboard": "Dashboard",
             "customers": "Clienti",
             "quotes": "Preventivi",

@@ -13,6 +13,7 @@
             }
         },
         "nav": {
+            "administration": "Administration",
             "dashboard": "Dashboard",
             "customers": "Customers",
             "quotes": "Quotes",

@@ -1,4 +1,5 @@
-// src/features/shellNav/nav-content.tsx
+// src/features/shellNav/nav-content.tsx - VERSIONE CORRETTA
+
 import { useEffect } from "react";
 import { useMenu } from "@1f/react-sdk";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +16,7 @@ export const NavContent = () => {
 
   /**
    * Converte MenuItem[] in formato compatibile con setMenuTree
-   * Gestisce struttura nested complessa dall'implementazione originale
+   * ✅ FIXED: Gestisce route anche nei submenu children
    */
   const convertMenuItems = (items: MenuItem[]) => {
     return items.map(item => {
@@ -33,24 +34,40 @@ export const NavContent = () => {
         };
       }
 
-      // Gestione children complessi (nested structure)
+      // ✅ FIXED: Gestione children con supporto completo per route
       if (item.children) {
         baseItem.children = item.children.map((child: any) => {
+          
           // Se il child ha suoi children (nested submenu)
           if (child.children) {
             return {
               label: t(child.label),
               children: child.children.map((nestedChild: any) => ({
                 label: t(nestedChild.label),
-                onClickFunction: nestedChild.onClickFunction || (() => {}),
+                // ✅ FIXED: Controlla prima route, poi onClickFunction
+                onClickFunction: nestedChild.route 
+                  ? () => {
+                      console.log('🔧 Navigating to nested route:', nestedChild.route);
+                      navigate(nestedChild.route);
+                    }
+                  : nestedChild.onClickFunction || (() => {
+                      console.log('🔧 No route or function for nested child:', nestedChild.label);
+                    }),
                 closePopoverAfterClick: true
               }))
             };
           } else {
-            // Child semplice
+            // ✅ FIXED: Child semplice con supporto route
             return {
               label: t(child.label),
-              onClickFunction: child.onClickFunction || (() => {}),
+              onClickFunction: child.route 
+                ? () => {
+                    console.log('🔧 Navigating to child route:', child.route);
+                    navigate(child.route);
+                  }
+                : child.onClickFunction || (() => {
+                    console.log('🔧 No route or function for child:', child.label);
+                  }),
               closePopoverAfterClick: true
             };
           }
