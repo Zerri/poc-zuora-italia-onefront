@@ -102,12 +102,12 @@ export const ROLE_MENUS: MenuConfig = {
     },
     {
       label: "nav.userManagement", 
-      route: "/user-management",
+      route: "/admin/users",
       icon: faUsers
     },
     {
       label: "nav.adminQuotes",
-      route: "/admin-quotes", 
+      route: "/admin/quotes", 
       icon: faFileInvoice
     },
     {

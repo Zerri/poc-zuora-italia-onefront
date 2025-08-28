@@ -12,6 +12,7 @@ export interface UserData {
     icon: string;
   }>;
   permissions: Record<string, Record<string, boolean>>;
+  featureFlags: Record<string, boolean>;
 }
 
 interface UseCurrentUserOptions {
