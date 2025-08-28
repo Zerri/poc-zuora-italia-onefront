@@ -27,4 +27,7 @@ export const ROUTE_PERMISSIONS: Record<
 
   // // Dashboard nuova (feature flag)
   // "/dashboard/new": (p) => p.hasFeature("newDashboard"),
+
+  // Feature standalone (non route) – esempio AIDrawer
+  "aiDrawer": (p) => p.isSales() && p.hasFeature("aiDrawer"),
 };

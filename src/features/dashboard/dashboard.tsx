@@ -3,11 +3,11 @@ import { VaporThemeProvider, VaporPage, Box, Typography, Paper, Chip } from '@va
 import { WelcomeMessage } from './welcome-message';
 import { useUser } from '../reactRootWrapper/AppUserProvider';
 import { AIDrawer } from './ai-drawer';
-import { usePermissions } from '../../hooks/usePermissions';
+import { useRouteAccess } from '../../hooks/useRouteAccess';
 
 export const Dashboard = () => {
 	const { user } = useUser();
-	const perms = usePermissions();
+	const { canAccess } = useRouteAccess();
 	
 	return (
 		<VaporThemeProvider>
@@ -88,7 +88,8 @@ export const Dashboard = () => {
 						</Box>
 					</Paper>
 					
-					{perms.isSales() && perms.hasFeature("aiDrawer") && <AIDrawer />}
+					{/* Mostra AIDrawer solo se SALES e feature abilitata */}
+          {canAccess("aiDrawer") && <AIDrawer />}
 				</VaporPage.Section>
 			</VaporPage>
 		</VaporThemeProvider>
