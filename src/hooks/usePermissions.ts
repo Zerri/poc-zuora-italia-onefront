@@ -18,6 +18,7 @@ export const usePermissions = () => {
     // Ruoli
     hasRole: (role: string) => user?.roles?.includes(role) || false,
     isAdmin: () => user?.roles?.includes("ADMIN") || false,
+    isSales: () => user?.roles.includes("SALES") || false,
 
     // Feature flags
     hasFeature: (flag: string) => user?.featureFlags?.[flag] || false,

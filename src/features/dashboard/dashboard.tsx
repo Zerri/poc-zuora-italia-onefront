@@ -1,13 +1,13 @@
 // src/features/dashboard/dashboard.tsx
 import { VaporThemeProvider, VaporPage, Box, Typography, Paper, Chip } from '@vapor/v3-components';
 import { WelcomeMessage } from './welcome-message';
-import { useRole } from '../../contexts/RoleContext';
 import { useUser } from '../reactRootWrapper/AppUserProvider';
 import { AIDrawer } from './ai-drawer';
+import { usePermissions } from '../../hooks/usePermissions';
 
 export const Dashboard = () => {
-	const { role } = useRole();
 	const { user } = useUser();
+	const perms = usePermissions();
 	
 	return (
 		<VaporThemeProvider>
@@ -87,13 +87,8 @@ export const Dashboard = () => {
 							</Box>
 						</Box>
 					</Paper>
-
-					{/* Vecchio role selector per confronto */}
-					<Typography variant="body2" color="text.secondary">
-						Vecchio role context: {role}
-					</Typography>
 					
-					<AIDrawer />
+					{perms.isSales() && perms.hasFeature("aiDrawer") && <AIDrawer />}
 				</VaporPage.Section>
 			</VaporPage>
 		</VaporThemeProvider>
