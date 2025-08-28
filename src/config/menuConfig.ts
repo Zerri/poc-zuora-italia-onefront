@@ -106,6 +106,11 @@ export const ROLE_MENUS: MenuConfig = {
       icon: faUsers
     },
     {
+      label: "nav.customerManagement",
+      route: "/admin/customers",
+      icon: faUserTie
+    },
+    {
       label: "nav.adminQuotes",
       route: "/admin/quotes", 
       icon: faFileInvoice

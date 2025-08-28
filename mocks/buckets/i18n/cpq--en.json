@@ -19,6 +19,7 @@
             "quotes": "Quotes",
             "catalog": "Catalog",
             "userManagement": "User Management",
+            "customerManagement": "Customer Management",
             "adminQuotes": "Quote Management",
             "reports": "Reports",
             "reports_items": {
@@ -41,6 +42,17 @@
             }   
         },
         "features": {
+            "customerManagement" : {
+                "title": "Customer Management",
+                "dataGrid": {
+                    "title": "Customers",
+                    "description": "View, edit, and manage customers.",
+                    "addButtonLabel": "Add New Customer",
+                    "emptyMessage": "No customers found. Add the first customer to get started.",
+                    "searchPlaceholder": "Search by name, sector, or email...",
+                    "confirmDelete": "Are you sure you want to delete customer {{name}}?"
+                }
+            },
             "userManagement": {
                 "title": "User Management",
                 "dataGrid": {

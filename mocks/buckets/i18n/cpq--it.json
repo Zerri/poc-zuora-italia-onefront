@@ -19,6 +19,7 @@
             "quotes": "Preventivi",
             "catalog": "Catalogo",
             "userManagement": "Gestione Utenti",
+            "customerManagement": "Gestione Clienti",
             "adminQuotes": "Gestione Preventivi",
             "reports": "Report",
             "reports_items": {
@@ -41,6 +42,17 @@
             }   
         },
         "features": {
+            "customerManagement" : {
+                "title": "Gestione Clienti",
+                "dataGrid": {
+                    "title": "Clienti",
+                    "description": "Visualizza, modifica e gestisci i clienti.",
+                    "addButtonLabel": "Aggiungi Nuovo Cliente",
+                    "emptyMessage": "Nessun cliente trovato. Aggiungi il primo cliente per iniziare.",
+                    "searchPlaceholder": "Cerca per nome, settore o email...",
+                    "confirmDelete": "Sei sicuro di voler eliminare il cliente {{name}}?"
+                }
+            },
             "userManagement": {
                 "title": "Gestione Utenti",
                 "dataGrid": {

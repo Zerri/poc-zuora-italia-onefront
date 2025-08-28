@@ -12,6 +12,7 @@ export const ROUTE_PERMISSIONS: Record<
   // Admin
   "/admin/users": (p) => p.isAdmin(),
   "/admin/quotes": (p) => p.isAdmin(),
+  "/admin/customers": (p) => p.isAdmin(),
 
   // // Quotes
   // "/quotes": (p) => p.canView("quotes"),
