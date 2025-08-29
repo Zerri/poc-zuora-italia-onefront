@@ -22,16 +22,7 @@ const USER_CONFIG: CRUDConfig = {
   defaultSort: {
     field: 'registrationDate',
     direction: 'desc'
-  },
-  sortableFields: [
-    'id',                // _id (sempre sicuro)
-    'name',              // fullName (indicizzato)
-    'email',             // email (indicizzato)
-    'status',            // status (indicizzato)
-    'role',              // role (indicizzato)
-    'registrationDate',  // registrationDate (indicizzato)
-    'lastAccess'         // lastAccess (se indicizzato)
-  ]
+  }
 };
 
 /**

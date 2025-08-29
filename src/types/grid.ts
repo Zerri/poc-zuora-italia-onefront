@@ -82,5 +82,4 @@ export interface DataGridConfig<T = any> {
   // Configurazione sorting
   sortingMode?: 'server' | 'client';               // Modalità sorting (default: 'client')
   defaultSort?: SortInfo;                           // Ordinamento di default
-  sortableFields?: string[];                        // Campi ordinabili (se omesso, tutti ordinabili)
 }

@@ -22,17 +22,7 @@ const ADMIN_QUOTE_CONFIG: CRUDConfig = {
   defaultSort: {
     field: 'createdAt',
     direction: 'desc'
-  },
-  sortableFields: [
-    'number',        // Numero preventivo
-    'customer',      // Nome cliente (server deve gestire customer.name)
-    // 'salesAgent',    // Sales agent
-    'status',        // Stato
-    'type',          // Tipo
-    'value',         // Valore
-    'createdAt',     // Data creazione
-    // 'lastActivity'   // Ultima attività
-  ]
+  }
 };
 
 /**

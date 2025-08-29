@@ -23,16 +23,7 @@ const CUSTOMERS_CONFIG: CRUDConfig = {
   defaultSort: {
     field: 'ultimoContatto',
     direction: 'desc'
-  },
-  sortableFields: [
-    'nome',
-    'tipo', 
-    'settore',
-    'email',
-    'valore',
-    'ultimoContatto',
-    'migrabile'
-  ]
+  }
 };
 
 /**

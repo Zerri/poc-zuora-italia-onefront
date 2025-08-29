@@ -17,7 +17,6 @@ export interface CRUDConfig {
   
   // Configurazione sorting
   defaultSort?: SortInfo;               // Ordinamento di default
-  sortableFields?: string[];            // Campi ordinabili (se omesso, tutti i campi sono ordinabili)
 }
 
 export interface CRUDItem {
@@ -46,18 +45,6 @@ export function useGenericCRUD<T extends CRUDItem>(
   filters: CRUDFilters
 ) {
   const queryClient = useQueryClient();
-
-  // Funzione per gestire cambio ordinamento
-  const handleSortChange = (sortInfo: SortInfo) => {
-    // Verifica se il campo è ordinabile (se specificato nella config)
-    if (config.sortableFields && !config.sortableFields.includes(sortInfo.field)) {
-      console.warn(`Campo '${sortInfo.field}' non ordinabile per ${entityKey}`);
-      return;
-    }
-
-    // Invalida la query corrente per forzare il refetch con nuovo ordinamento
-    queryClient.invalidateQueries({ queryKey: [entityKey] });
-  };
 
   const query = useQuery({
     queryKey: [entityKey, filters],
@@ -167,9 +154,6 @@ export function useGenericCRUD<T extends CRUDItem>(
     // States
     isLoading: query.isLoading,
     error: query.error,
-    
-    // Sorting handler
-    handleSortChange,
     
     // Mutations
     createItem: createMutation,
