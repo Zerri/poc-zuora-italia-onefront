@@ -11,7 +11,7 @@ export const CUSTOMERS_COLUMNS: ColumnConfig<Customer>[] = [
   {
     field: 'nome',
     headerName: 'Nome Cliente',
-   flex: 1.5,
+    flex: 1.5,
     renderCell: (value, row) => (      
       <Box sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
         <Box sx={{ ml: 1, display: 'flex', flexDirection: 'column' }}>
@@ -94,6 +94,7 @@ export const CUSTOMERS_COLUMNS: ColumnConfig<Customer>[] = [
     field: 'migrabile',
     headerName: 'Migrabile',
     flex: 1,
+    sortable: false, // Disabilitato sorting per questo campo
     renderCell: (value) => (
       <Box display="flex" justifyContent="center" sx={{ py: 1.5 }}>
         <Chip
@@ -244,11 +245,5 @@ export const getCustomersGridConfig = (
   defaultSort: {
     field: 'ultimoContatto',
     direction: 'desc'
-  },
-  sortableFields: [
-    'name', 
-    'sector',
-    'value',
-    'lastContact',
-  ]
+  }
 });
