@@ -65,14 +65,12 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
     field: 'number',
     headerName: 'Numero',
     flex: 1,
-    sortable: true,
     renderCell: (value) => value
   },
   {
     field: 'customer',
     headerName: 'Cliente',
     flex: 1.5,
-    sortable: true,
     renderCell: (row) => (
       // <Box>
       //   <Typography variant="body2" fontWeight="medium">
@@ -111,7 +109,6 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
   //   field: 'salesAgent',
   //   headerName: 'Sales Agent',
   //   flex: 1,
-  //   sortable: true,
   //   renderCell: (value) => (
   //     <Typography variant="body2">
   //       {value}
@@ -122,7 +119,6 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
     field: 'status',
     headerName: 'Stato',
     flex: 1,
-    sortable: true,
     renderCell: (value) => (
       <Chip
         label={translateStatus(value)}
@@ -135,7 +131,7 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
     field: 'type',
     headerName: 'Tipo',
     flex: 1,
-    sortable: true,
+    sortable: false, // Disabilitato sorting per tipo
     renderCell: (value) => (
       <Chip
         label={translateType(value)}
@@ -148,21 +144,18 @@ export const ADMIN_QUOTE_COLUMNS: ColumnConfig<AdminQuote>[] = [
     field: 'value',
     headerName: 'Valore',
     flex: 1,
-    sortable: true,
     renderCell: (value) => formatCurrency(value)
   },
   {
     field: 'createdAt',
     headerName: 'Data Creazione',
     flex: 1,
-    sortable: true,
     renderCell: (value) => dayjs(value).format('DD/MM/YYYY')
   },
   // {
   //   field: 'lastActivity',
   //   headerName: 'Ultima Attività',
   //   flex: 1,
-  //   sortable: true,
   //   renderCell: (value) => dayjs(value).format('DD/MM/YYYY HH:mm')
   // }
 ];
@@ -312,15 +305,5 @@ export const getAdminQuoteGridConfig = (
   defaultSort: {
     field: 'createdAt',
     direction: 'desc'
-  },
-  sortableFields: [
-    'number',
-    'customer',
-    // 'salesAgent', 
-    'status',
-    'type',
-    'value',
-    'createdAt',
-    // 'lastActivity'
-  ]
+  }
 });
