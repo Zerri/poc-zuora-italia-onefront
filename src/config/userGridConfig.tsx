@@ -13,7 +13,6 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     field: 'name',
     headerName: 'Utente',
     flex: 1.5,
-    sortable: true,
     renderCell: (_, row) => (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
@@ -44,14 +43,13 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     field: 'email',
     headerName: 'Email',
     flex: 1.5,
-    sortable: true,
     renderCell: (value) => value
   },
   {
     field: 'role',
     headerName: 'Ruolo',
     flex: 1,
-    sortable: true,
+    sortable: false,  // Disabilitato sorting per ruolo
     renderCell: (value) => (
       <Chip 
         label={value} 
@@ -64,7 +62,6 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     field: 'status',
     headerName: 'Stato',
     flex: 1,
-    sortable: true,
     renderCell: (value) => (
       <Chip
         label={value}
@@ -77,14 +74,12 @@ export const USER_COLUMNS: ColumnConfig<User>[] = [
     field: 'registrationDate',
     headerName: 'Data Registrazione',
     flex: 1,
-    sortable: true,
     renderCell: (value) => value ? dayjs(value).format('DD/MM/YYYY') : '-'
   },
   {
     field: 'lastAccess',
     headerName: 'Ultimo Accesso',
     flex: 1,
-    sortable: true,
     renderCell: (value) => value ? dayjs(value).format('DD/MM/YYYY HH:mm') : '-'
   }
 ];
@@ -236,14 +231,5 @@ export const getUserGridConfig = (
   defaultSort: {
     field: 'registrationDate',
     direction: 'desc'
-  },
-  sortableFields: [
-    'id',
-    'name', 
-    'email',
-    'status',
-    'role',
-    'registrationDate',
-    'lastAccess'
-  ]
+  }
 });
