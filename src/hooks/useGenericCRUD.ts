@@ -10,7 +10,7 @@ export interface CRUDConfig {
     update: (id: string) => string;
     delete: (id: string) => string;
   };
-  permissions: string[];
+  permissions: string[];  // TODO: Implement permission-based access control
   searchFields: string[];
   
   // Configurazione sorting
