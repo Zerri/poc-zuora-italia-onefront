@@ -1,5 +1,6 @@
 // src/features/user-management/user-management.tsx
 import React, { useState } from 'react';
+
 import {
   VaporThemeProvider,
   VaporPage,
@@ -9,12 +10,14 @@ import {
   Snackbar,
 } from "@vapor/v3-components";
 import { useTranslation } from '@1f/react-sdk';
+
 import type { User, UserFilters, UserMutationData } from '../../types/user';
 import { GenericDataGrid } from '../../components/GenericDataGrid';
-import { UserDrawer } from './components/UserDrawer';
-import { useUsersCRUD } from '../../hooks/useUsersCRUD';
 import { getUserGridConfig } from '../../config/userGridConfig';
 import { useDataGridHandlers } from '../../hooks/useDataGridHandlers';
+import { useUsersCRUD } from '../../hooks/useUsersCRUD';
+
+import { UserDrawer } from './components/UserDrawer';
 
 interface UserManagementPageProps {}
 
