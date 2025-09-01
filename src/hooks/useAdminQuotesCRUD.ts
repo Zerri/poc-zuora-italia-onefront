@@ -7,8 +7,6 @@ import type { CRUDConfig } from './useGenericCRUD';
  * Configurazione specifica per l'entità AdminQuote con supporto sorting
  */
 const ADMIN_QUOTE_CONFIG: CRUDConfig = {
-  name: 'admin-quotes',
-  displayName: 'Preventivi Amministrativi',
   endpoints: {
     list: `${import.meta.env.VITE_APP_BE}/quotes`, // Stesso endpoint, ma con filtri/permessi diversi
     create: `${import.meta.env.VITE_APP_BE}/quotes`,

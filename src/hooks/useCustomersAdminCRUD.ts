@@ -8,8 +8,6 @@ import type { CRUDConfig } from './useGenericCRUD';
  * Definisce endpoints, permessi e comportamenti specifici
  */
 const CUSTOMERS_CONFIG: CRUDConfig = {
-  name: 'customers-admin',
-  displayName: 'Customers Admin',
   endpoints: {
     list: `${import.meta.env.VITE_APP_BE}/customers`,
     create: `${import.meta.env.VITE_APP_BE}/customers`,

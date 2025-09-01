@@ -4,8 +4,6 @@ import { fetch } from "@1f/react-sdk";
 import type { PaginationInfo, PaginatedResponse, SortInfo } from '../types/generic';
 
 export interface CRUDConfig {
-  name: string;
-  displayName: string;
   endpoints: {
     list: string;
     create: string;

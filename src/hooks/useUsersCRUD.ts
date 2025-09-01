@@ -7,8 +7,6 @@ import type { CRUDConfig } from './useGenericCRUD';
  * Configurazione specifica per l'entità User con supporto sorting
  */
 const USER_CONFIG: CRUDConfig = {
-  name: 'users',
-  displayName: 'Utenti',
   endpoints: {
     list: `${import.meta.env.VITE_APP_BE}/users`,
     create: `${import.meta.env.VITE_APP_BE}/users`,
