@@ -22,7 +22,7 @@ export interface SortInfo {
  * Ogni sistema di filtri deve includere almeno un campo di ricerca
  */
 export interface BaseFilters {
-  searchTerm: string;
+  searchTerm?: string;
   page?: number;
   limit?: number;
   sortBy?: string;

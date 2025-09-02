@@ -10,13 +10,14 @@ import {
 } from "@vapor/v3-components";
 import { useTranslation } from '@1f/react-sdk';
 
-import type { CRUDItem, CRUDFilters, CRUDConfig } from '../hooks/useGenericCRUD';
+import type { CRUDItem, CRUDConfig } from '../hooks/useGenericCRUD';
+import type { BaseFilters } from '../types/generic';
 import { useGenericCRUD } from '../hooks/useGenericCRUD';
 import { GenericDataGrid } from './GenericDataGrid';
 import { useDataGridHandlers } from '../hooks/useDataGridHandlers';
-import type { GridConfig } from '../types/grid';
+import type { DataGridConfig } from '../types/grid';
 
-export interface EntityManagementConfig<TEntity extends CRUDItem, TFilters extends CRUDFilters, TMutationData> {
+export interface EntityManagementConfig<TEntity extends CRUDItem, TFilters extends BaseFilters, TMutationData> {
   /** Chiave per identificare l'entità (es. 'users', 'quotes', 'customers') */
   entityKey: string;
   
@@ -30,12 +31,11 @@ export interface EntityManagementConfig<TEntity extends CRUDItem, TFilters exten
   /** Configurazione della griglia */
   getGridConfig: (
     handleEdit: (item: TEntity) => void,
-    handleToggleStatus?: (item: TEntity) => void,
     handleDelete?: (item: TEntity) => void,
     handleBulkExport?: (items: TEntity[]) => void,
     handleBulkDeactivate?: (items: TEntity[]) => void,
     handleBulkDelete?: (items: TEntity[]) => void
-  ) => GridConfig<TEntity>;
+  ) => DataGridConfig<TEntity>;
   
   /** Componente drawer per creazione/modifica */
   DrawerComponent: React.ComponentType<{
@@ -64,13 +64,13 @@ export interface EntityManagementConfig<TEntity extends CRUDItem, TFilters exten
   };
 }
 
-interface EntityManagementPageProps<TEntity extends CRUDItem, TFilters extends CRUDFilters, TMutationData> {
+interface EntityManagementPageProps<TEntity extends CRUDItem, TFilters extends BaseFilters, TMutationData> {
   config: EntityManagementConfig<TEntity, TFilters, TMutationData>;
 }
 
 export function EntityManagementPage<
   TEntity extends CRUDItem, 
-  TFilters extends CRUDFilters, 
+  TFilters extends BaseFilters, 
   TMutationData
 >({ config }: EntityManagementPageProps<TEntity, TFilters, TMutationData>) {
   const { t } = useTranslation();
@@ -136,24 +136,6 @@ export function EntityManagementPage<
       showSnackbar(t(`${config.translationKey}.success.deleted`), 'success');
     } catch (error) {
       showSnackbar(t(`${config.translationKey}.errors.delete`), 'error');
-    }
-  };
-
-  const handleToggleStatus = async (item: TEntity) => {
-    try {
-      if (config.customHandlers?.onToggleStatus) {
-        await config.customHandlers.onToggleStatus(item, updateItem);
-      } else {
-        // Implementazione di default per toggle status
-        const newStatus = (item as any).status === 'active' ? 'inactive' : 'active';
-        await updateItem.mutateAsync({
-          id: String(item._id),
-          status: newStatus
-        });
-      }
-      showSnackbar(t(`${config.translationKey}.success.statusUpdated`), 'success');
-    } catch (error) {
-      showSnackbar(t(`${config.translationKey}.errors.status`), 'error');
     }
   };
 
@@ -233,7 +215,6 @@ export function EntityManagementPage<
                 items={items}
                 config={config.getGridConfig(
                   handleEdit, 
-                  handleToggleStatus, 
                   handleDelete,
                   handleBulkExport,
                   handleBulkDeactivate,

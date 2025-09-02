@@ -1,7 +1,7 @@
 // src/hooks/useGenericCRUD.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetch } from "@1f/react-sdk";
-import type { PaginationInfo, PaginatedResponse, SortInfo } from '../types/generic';
+import type { PaginationInfo, PaginatedResponse, SortInfo, BaseFilters } from '../types/generic';
 
 export interface CRUDConfig {
   endpoints: {
@@ -19,20 +19,10 @@ export interface CRUDConfig {
 
 export interface CRUDItem {
   _id?: string | number;
+  id: string | number;
   [key: string]: any;
 }
 
-export interface CRUDFilters {
-  searchTerm?: string;
-  page?: number;
-  limit?: number;
-  
-  // Parametri sorting (già presenti in BaseFilters)
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
-  
-  [key: string]: any;
-}
 
 /**
  * Hook CRUD generico con supporto sorting server-side
@@ -40,7 +30,7 @@ export interface CRUDFilters {
 export function useGenericCRUD<T extends CRUDItem>(
   entityKey: string,
   config: CRUDConfig,
-  filters: CRUDFilters
+  filters: BaseFilters
 ) {
   const queryClient = useQueryClient();
 
