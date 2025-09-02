@@ -1,6 +1,6 @@
 // src/features/user-management/user-management.tsx
 import React from 'react';
-import { useTranslation } from '@1f/react-sdk';
+// import { useTranslation } from '@1f/react-sdk';
 
 import type { User, UserFilters, UserMutationData } from '../../types/user';
 import { EntityManagementPage, type EntityManagementConfig } from '../../components/EntityManagementPage';
@@ -10,7 +10,7 @@ import { UserDrawer } from './components/UserDrawer';
 interface UserManagementPageProps {}
 
 export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   // Configurazione per il componente generico
   const entityConfig: EntityManagementConfig<User, UserFilters, UserMutationData> = {
@@ -38,10 +38,9 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
       sortBy: 'registrationDate',
       sortOrder: 'desc'
     },
-    getGridConfig: (handleEdit, handleToggleStatus, handleDelete, handleBulkExport, handleBulkDeactivate, handleBulkDelete) => 
+    getGridConfig: (handleEdit, handleDelete, handleBulkExport, handleBulkDeactivate, handleBulkDelete) => 
       getUserGridConfig(
         handleEdit, 
-        handleToggleStatus!, 
         handleDelete!,
         handleBulkExport!,
         handleBulkDeactivate!,
