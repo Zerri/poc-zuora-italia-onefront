@@ -4,6 +4,10 @@
         "logged_in": "Collegato come: {{name}}",
         "common": {
             "welcome_user": "Benvenuto, {{name}}",
+            "cancel": "Annulla",
+            "saving": "Salvataggio...",
+            "create": "Crea",
+            "update": "Aggiorna",
             "dataGrid": {
                 "addButtonLabel": "Aggiungi Nuovo",
                 "actions": "Azioni",
@@ -55,6 +59,7 @@
             },
             "userManagement": {
                 "title": "Gestione Utenti",
+                "confirmDelete": "Sei sicuro di voler eliminare l'utente {{name}}?",
                 "dataGrid": {
                     "title": "Utenti",
                     "description": "Visualizza, modifica e gestisci gli utenti del sistema.",
@@ -68,14 +73,22 @@
                     "noPermission": "Non hai i permessi per accedere a questa sezione.",
                     "loadFailed": "Errore nel caricamento degli utenti",
                     "actionFailed": "Errore nell'esecuzione dell'azione",
-                    "saveFailed": "Errore nel salvataggio dell'utente"
+                    "saveFailed": "Errore nel salvataggio dell'utente",
+                    "create": "Errore nella creazione dell'utente",
+                    "update": "Errore nell'aggiornamento dell'utente",
+                    "delete": "Errore nell'eliminazione dell'utente",
+                    "status": "Errore nel cambio di stato dell'utente"
                 },
                 
                 "success": {
                     "userCreated": "Utente creato con successo",
-                    "userUpdated": "Utente aggiornato con successo",
+                    "userUpdated": "Utente aggiornato con successo", 
                     "userDeleted": "Utente eliminato con successo",
-                    "statusChanged": "Stato utente modificato con successo"
+                    "statusChanged": "Stato utente modificato con successo",
+                    "created": "Utente creato con successo",
+                    "updated": "Utente aggiornato con successo",
+                    "deleted": "Utente eliminato con successo",
+                    "statusUpdated": "Stato utente modificato con successo"
                 },
                 
                 "grid": {
@@ -146,11 +159,28 @@
                     
                     "statusChangeWarning": "La modifica dello stato avrà effetto immediato sull'accesso dell'utente.",
                     
+                    "unsavedChanges": "Ci sono modifiche non salvate che andranno perse.",
+                    
+                    "fields": {
+                        "name": "Nome Completo",
+                        "email": "Indirizzo Email",
+                        "role": "Ruolo",
+                        "status": "Stato"
+                    },
+                    
+                    "info": {
+                        "registrationDate": "Data Registrazione",
+                        "lastAccess": "Ultimo Accesso",
+                        "userId": "ID Utente"
+                    },
+                    
                     "validation": {
-                        "fullNameRequired": "Il nome completo è obbligatorio",
-                        "fullNameTooShort": "Il nome deve essere di almeno 2 caratteri",
+                        "nameRequired": "Il nome completo è obbligatorio",
+                        "nameMinLength": "Il nome deve essere di almeno 2 caratteri",
                         "emailRequired": "L'indirizzo email è obbligatorio",
-                        "emailInvalid": "Inserisci un indirizzo email valido"
+                        "emailInvalid": "Inserisci un indirizzo email valido",
+                        "roleRequired": "Il ruolo è obbligatorio",
+                        "statusRequired": "Lo stato è obbligatorio"
                     },
                     
                     "cancel": "Annulla",

@@ -4,6 +4,10 @@
         "logged_in": "Logged in as: {{name}}",
         "common": {
             "welcome_user": "Welcome, {{name}}",
+            "cancel": "Cancel",
+            "saving": "Saving...",
+            "create": "Create",
+            "update": "Update",
             "dataGrid": {
                 "addButtonLabel": "Add New",
                 "actions": "Actions",
@@ -55,11 +59,12 @@
             },
             "userManagement": {
                 "title": "User Management",
+                "confirmDelete": "Are you sure you want to delete user {{name}}?",
                 "dataGrid": {
                     "title": "Users",
                     "description": "View, edit and manage system users.",
                     "addButtonLabel": "Add New User",
-                    "emptyMessage": "Nessun utente trovato. Aggiungi il primo utente per iniziare.",
+                    "emptyMessage": "No users found. Add the first user to get started.",
                     "searchPlaceholder": "Search by name, email or user ID...",
                     "confirmDelete": "Are you sure you want to delete user {{name}}?"
                 },
@@ -68,14 +73,22 @@
                     "noPermission": "You don't have permission to access this section.",
                     "loadFailed": "Error loading users",
                     "actionFailed": "Error executing action",
-                    "saveFailed": "Error saving user"
+                    "saveFailed": "Error saving user",
+                    "create": "Error creating user",
+                    "update": "Error updating user",
+                    "delete": "Error deleting user",
+                    "status": "Error changing user status"
                 },
                 
                 "success": {
                     "userCreated": "User created successfully",
                     "userUpdated": "User updated successfully",
                     "userDeleted": "User deleted successfully",
-                    "statusChanged": "User status changed successfully"
+                    "statusChanged": "User status changed successfully",
+                    "created": "User created successfully",
+                    "updated": "User updated successfully",
+                    "deleted": "User deleted successfully",
+                    "statusUpdated": "User status updated successfully"
                 },
                 
                 "grid": {
@@ -146,11 +159,28 @@
                     
                     "statusChangeWarning": "Status change will take effect immediately on user access.",
                     
+                    "unsavedChanges": "There are unsaved changes that will be lost.",
+                    
+                    "fields": {
+                        "name": "Full Name",
+                        "email": "Email Address",
+                        "role": "Role",
+                        "status": "Status"
+                    },
+                    
+                    "info": {
+                        "registrationDate": "Registration Date",
+                        "lastAccess": "Last Access",
+                        "userId": "User ID"
+                    },
+                    
                     "validation": {
-                        "fullNameRequired": "Full name is required",
-                        "fullNameTooShort": "Name must be at least 2 characters",
+                        "nameRequired": "Full name is required",
+                        "nameMinLength": "Name must be at least 2 characters",
                         "emailRequired": "Email address is required",
-                        "emailInvalid": "Please enter a valid email address"
+                        "emailInvalid": "Please enter a valid email address",
+                        "roleRequired": "Role is required",
+                        "statusRequired": "Status is required"
                     },
                     
                     "cancel": "Cancel",
