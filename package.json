@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "typecheck": "tsc --noEmit --skipLibCheck",
     "preview": "vite preview",
     "update:deps": "npx npm-check-updates --dep dev,prod,optional,peer --root --format group -i"
   },

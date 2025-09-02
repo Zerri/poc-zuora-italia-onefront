@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `docker compose up -d` - Start the proxy service (required for API requests)
 - `npm run dev` - Start the development server
 - `npm run build` - Build the application (includes TypeScript compilation)
+- `npm run typecheck` - Fast TypeScript error checking without build
 - `npm run preview` - Build and preview the application locally
 
 ### Dependencies
