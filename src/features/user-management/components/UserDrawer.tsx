@@ -43,7 +43,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
 
   // State del form
   const [formData, setFormData] = useState<UserMutationData>({
-    name: '',
+    fullName: '',
     email: '',
     role: 'user',
     status: 'active'
@@ -60,7 +60,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
     if (user && isEditing) {
       setFormData({
         id: user.id,
-        name: user.name,
+        fullName: user.fullName,
         email: user.email,
         role: user.role,
         status: user.status,
@@ -70,7 +70,7 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
       setHasUnsavedChanges(false);
     } else {
       setFormData({
-        name: '',
+        fullName: '',
         email: '',
         role: 'user',
         status: 'active'
@@ -84,14 +84,14 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
   useEffect(() => {
     if (isEditing && user) {
       const hasChanges = 
-        formData.name !== user.name ||
+        formData.fullName !== user.fullName ||
         formData.email !== user.email ||
         formData.role !== user.role ||
         formData.status !== user.status;
       setHasUnsavedChanges(hasChanges);
     } else {
       const hasChanges = 
-        formData.name !== '' ||
+        formData.fullName !== '' ||
         formData.email !== '' ||
         formData.role !== 'user' ||
         formData.status !== 'active';
@@ -104,10 +104,10 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
     const newErrors: Record<string, string> = {};
 
     // Validazione nome
-    if (!formData.name.trim()) {
-      newErrors.name = t('features.userManagement.drawer.validation.nameRequired');
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = t('features.userManagement.drawer.validation.nameMinLength');
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = t('features.userManagement.drawer.validation.nameRequired');
+    } else if (formData.fullName.trim().length < 2) {
+      newErrors.fullName = t('features.userManagement.drawer.validation.nameMinLength');
     }
 
     // Validazione email
@@ -225,10 +225,10 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
             {/* Nome */}
             <TextField
               label={t('features.userManagement.drawer.fields.name')}
-              value={formData.name}
-              onChange={(e) => handleFieldChange('name', e.target.value)}
-              error={!!errors.name}
-              helperText={errors.name}
+              value={formData.fullName}
+              onChange={(e) => handleFieldChange('fullName', e.target.value)}
+              error={!!errors.fullName}
+              helperText={errors.fullName}
               required
               fullWidth
             />

@@ -6,12 +6,13 @@ import type { BaseEntity, BaseFilters } from './generic';
  */
 export interface User extends BaseEntity {
   // _id è già incluso da BaseEntity
-  name: string;
+  fullName: string;
   email: string;
   role: 'admin' | 'user' | 'moderator';
   status: 'active' | 'inactive' | 'pending';
   registrationDate: string;
   lastAccess: string | null;
+  avatar?: string | null;
 }
 
 /**
@@ -32,7 +33,7 @@ export interface UserFilters extends BaseFilters {
  */
 export interface UserMutationData {
   id?: string | number; // Opzionale per creazione, richiesto per aggiornamento
-  name: string;
+  fullName: string;
   email: string;
   role: 'admin' | 'user' | 'moderator';
   status: 'active' | 'inactive' | 'pending';
