@@ -1,17 +1,7 @@
 // src/hooks/useDataGridHandlers.ts
 import { useState, useCallback } from 'react';
-import type { SortInfo } from '../types/generic';
+import type { SortInfo, BaseFilters } from '../types/generic';
 import type { SnackbarState } from '../types';
-
-/**
- * Interfaccia base per filtri che supportano paginazione e sorting
- */
-interface BaseFilters {
-  page?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
-}
 
 /**
  * Hook per gestire handlers comuni delle DataGrid

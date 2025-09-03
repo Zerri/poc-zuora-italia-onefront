@@ -4,6 +4,7 @@ export * from './types/generic';
 export * from './types/user';
 export * from './types/grid';
 
+// Application-level roles (used by RoleContext for app navigation and permissions)
 export type Role = 'admin' | 'sales' | 'touchpoint';
 
 export type TagType = 
@@ -153,7 +154,7 @@ export interface MigrationPath {
   products?: Product[];
 }
 
-// User Management Types
+// User Management Types - DEPRECATED: Use types from types/user.ts instead
 export type UserRole = 'Administrator' | 'User' | 'Moderator';
 export type UserStatus = 'Active' | 'Inactive' | 'Pending';
 
@@ -162,12 +163,6 @@ export interface UserFormData {
   email: string;
   role: UserRole;
   status: UserStatus;
-}
-
-export interface UserFilters {
-  status: string; // 'all' | UserStatus
-  role: string;   // 'all' | UserRole  
-  searchTerm: string;
 }
 
 export interface UserMutationData {

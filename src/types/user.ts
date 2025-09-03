@@ -8,6 +8,7 @@ export interface User extends BaseEntity {
   // _id è già incluso da BaseEntity
   fullName: string;
   email: string;
+  // User entity roles (for user management CRUD operations)  
   role: 'admin' | 'user' | 'moderator';
   status: 'active' | 'inactive' | 'pending';
   registrationDate: string;
