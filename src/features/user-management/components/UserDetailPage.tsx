@@ -19,7 +19,9 @@ import {
   FormControlLabel,
   Switch,
   Avatar,
-  Chip
+  Chip,
+  Breadcrumbs,
+  Link
 } from "@vapor/v3-components";
 import { faArrowLeft, faFloppyDisk, faEllipsisVertical } from "@fortawesome/pro-regular-svg-icons";
 
@@ -82,6 +84,31 @@ export const UserDetailPage: React.FC<UserDetailPageProps> = () => {
           title={`${mockUser.fullName}`}
           description={`${mockUser.email} • ${mockUser.role.toUpperCase()}`}
         />
+
+        <VaporPage.Section>
+          {/* Breadcrumbs Navigation */}
+          <Breadcrumbs sx={{ mb: -5 }}>
+            <Link 
+              color="inherit" 
+              href="#" 
+              onClick={(e) => { e.preventDefault(); navigate('/'); }}
+              sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+            >
+              Dashboard
+            </Link>
+            <Link 
+              color="inherit" 
+              href="#" 
+              onClick={(e) => { e.preventDefault(); navigate('/admin/users'); }}
+              sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+            >
+              Gestione Utenti
+            </Link>
+            <Typography color="text.primary">
+              {mockUser.fullName}
+            </Typography>
+          </Breadcrumbs>
+        </VaporPage.Section>
 
         <VaporPage.Section>
           <ExtendedTabs value={activeTab} onChange={handleTabChange} size="small" variant="standard">
@@ -184,6 +211,77 @@ export const UserDetailPage: React.FC<UserDetailPageProps> = () => {
                   </Grid>
                 </Grid>
               </Grid>
+
+              {/* Status Implementation Timeline */}
+              <Box sx={{ mt: 4 }}>
+                <Typography variant="h6" component="h2" fontWeight="bold" sx={{ mb: 3 }}>
+                  Stato Implementazione
+                </Typography>
+
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {/* Funzionalità Completate */}
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main', mt: 1, flexShrink: 0 }} />
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="body2" fontWeight="medium">
+                        ✅ Funzionalità Completate
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        Navigation, UI, Breadcrumbs, Tab System
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        • Navigazione da griglia con pulsanti Visualizza/Modifica<br />
+                        • Route protetta admin (/admin/users/:id)<br />
+                        • Header layout con back button e actions<br />
+                        • Breadcrumb navigation completa<br />
+                        • Sistema a 4 tab responsive<br />
+                        • Mock data integration con avatar<br />
+                        • MongoDB _id standard integrato
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {/* Prossimi Step */}
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'info.main', mt: 1, flexShrink: 0 }} />
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="body2" fontWeight="medium">
+                        💡 Prossimi Step
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        API Integration, Form Validation, Backend
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        • Implementare caricamento dati da API<br />
+                        • Aggiungere validazione form editabili<br />
+                        • Integrare azioni salvataggio backend<br />
+                        • Popolare cronologia con dati reali<br />
+                        • Collegare sistema permessi<br />
+                        • Creare pattern riutilizzabile per altre entità
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {/* Info Tecnica */}
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'warning.main', mt: 1, flexShrink: 0 }} />
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="body2" fontWeight="medium">
+                        🔧 Info Tecnica
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        Pattern Template, MongoDB, Routing
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        • Route: /admin/users/{id}<br />
+                        • Template pronto per generalizzazione<br />
+                        • Compatibilità MongoDB _id standard<br />
+                        • Next: Creare EntityDetailPage generico
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
             </Box>
           )}
 
@@ -194,19 +292,67 @@ export const UserDetailPage: React.FC<UserDetailPageProps> = () => {
                 Cronologia Attività
               </Typography>
               
-              <Box sx={{ 
-                p: 4,
-                textAlign: 'center',
-                border: '1px dashed #ccc',
-                borderRadius: 2,
-                backgroundColor: '#f9f9f9'
-              }}>
-                <Typography variant="body1" color="text.secondary">
-                  📈 Sezione Attività in sviluppo
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  Qui verranno mostrati i log di accesso, le modifiche al profilo e altre attività dell'utente
-                </Typography>
+              {/* Activity Timeline Placeholder */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main', mt: 1, flexShrink: 0 }} />
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="body2" fontWeight="medium">
+                      Ultimo accesso al sistema
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      01 Marzo 2024, 14:20
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      IP: 192.168.1.100 • Browser: Chrome 122.0
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'primary.main', mt: 1, flexShrink: 0 }} />
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="body2" fontWeight="medium">
+                      Profilo modificato
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      28 Febbraio 2024, 09:15
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Modificato: Email, Telefono • Admin: admin@example.com
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'warning.main', mt: 1, flexShrink: 0 }} />
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="body2" fontWeight="medium">
+                      Tentativo di accesso fallito
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      25 Febbraio 2024, 18:45
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      IP: 192.168.1.205 • Motivo: Password errata
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'info.main', mt: 1, flexShrink: 0 }} />
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="body2" fontWeight="medium">
+                      Account creato
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      15 Gennaio 2024, 10:30
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Creato da: system@example.com • Ruolo iniziale: User
+                    </Typography>
+                  </Box>
+                </Box>
               </Box>
             </Box>
           )}
