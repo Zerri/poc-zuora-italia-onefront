@@ -16,6 +16,14 @@
                 "applyFilters": "Applica Filtri"
             }
         },
+        "actions": {
+            "save": "Salva",
+            "edit": "Modifica",
+            "delete": "Elimina",
+            "create": "Crea",
+            "update": "Aggiorna",
+            "cancel": "Annulla"
+        },
         "nav": {
             "administration": "Amministrazione",
             "dashboard": "Dashboard",

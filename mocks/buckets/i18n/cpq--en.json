@@ -45,6 +45,14 @@
                 "bills": "Bills"
             }   
         },
+        "actions": {
+            "save": "Save",
+            "edit": "Edit",
+            "delete": "Delete",
+            "create": "Create",
+            "update": "Update",
+            "cancel": "Cancel"
+        },
         "features": {
             "customerManagement" : {
                 "title": "Customer Management",

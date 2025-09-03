@@ -1,35 +1,29 @@
 // src/features/user-management/components/UserDetailPage.tsx
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useTranslation } from '@1f/react-sdk';
 import {
-  VaporThemeProvider,
-  VaporPage,
   Box,
   Typography,
-  Button,
-  Paper,
   Grid,
-  IconButton,
   ExtendedTabs,
   ExtendedTab,
-  Title,
-  VaporIcon,
   TextField,
   FormControl,
   FormControlLabel,
   Switch,
   Avatar,
   Chip,
-  Breadcrumbs,
-  Link
+  Paper,
+  Button
 } from "@vapor/v3-components";
-import { faArrowLeft, faFloppyDisk, faEllipsisVertical } from "@fortawesome/pro-regular-svg-icons";
+import { EntityDetailLayout, type BreadcrumbItem } from '../../../components/EntityDetailLayout';
 
 interface UserDetailPageProps {}
 
 export const UserDetailPage: React.FC<UserDetailPageProps> = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<number>(0);
 
   // Mock user data - in futuro sarà caricato da API
@@ -44,10 +38,6 @@ export const UserDetailPage: React.FC<UserDetailPageProps> = () => {
     avatar: null
   };
 
-  const handleBack = () => {
-    navigate('/admin/users');
-  };
-
   const handleSave = () => {
     console.log('💾 Saving user data...');
     // TODO: Implement save functionality
@@ -57,60 +47,21 @@ export const UserDetailPage: React.FC<UserDetailPageProps> = () => {
     setActiveTab(newValue);
   };
 
+  const breadcrumbs: BreadcrumbItem[] = [
+    { label: t("nav.dashboard", "Dashboard"), path: "/" },
+    { label: t("features.userManagement.title", "Gestione Utenti"), path: "/admin/users" },
+    { label: mockUser.fullName }
+  ];
+
   return (
-    <VaporThemeProvider>
-      <VaporPage>
-        <Title
-          leftItems={[
-            <IconButton key="back" color="primary" size="small" onClick={handleBack}>
-              <VaporIcon icon={faArrowLeft} size="xl" />
-            </IconButton>
-          ]}
-          rightItems={[
-            <Button 
-              key="save-user" 
-              size="small" 
-              variant="contained" 
-              startIcon={<VaporIcon icon={faFloppyDisk} />}
-              onClick={handleSave}
-            >
-              Salva
-            </Button>,
-            <IconButton key="options" size="small">
-              <VaporIcon icon={faEllipsisVertical} size="xl" />
-            </IconButton>
-          ]}
-          size="small"
-          title={`${mockUser.fullName}`}
-          description={`${mockUser.email} • ${mockUser.role.toUpperCase()}`}
-        />
-
-        <VaporPage.Section>
-          {/* Breadcrumbs Navigation */}
-          <Breadcrumbs sx={{ mb: -5 }}>
-            <Link 
-              color="inherit" 
-              href="#" 
-              onClick={(e) => { e.preventDefault(); navigate('/'); }}
-              sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
-            >
-              Dashboard
-            </Link>
-            <Link 
-              color="inherit" 
-              href="#" 
-              onClick={(e) => { e.preventDefault(); navigate('/admin/users'); }}
-              sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
-            >
-              Gestione Utenti
-            </Link>
-            <Typography color="text.primary">
-              {mockUser.fullName}
-            </Typography>
-          </Breadcrumbs>
-        </VaporPage.Section>
-
-        <VaporPage.Section>
+    <EntityDetailLayout
+      title={mockUser.fullName}
+      description={`${mockUser.email} • ${mockUser.role.toUpperCase()}`}
+      backPath="/admin/users"
+      breadcrumbs={breadcrumbs}
+      primaryActionLabel={t("actions.save", "Salva")}
+      onPrimaryAction={handleSave}
+    >
           <ExtendedTabs value={activeTab} onChange={handleTabChange} size="small" variant="standard">
             <ExtendedTab label="Profile" />
             <ExtendedTab label="Activity" />
@@ -455,8 +406,6 @@ export const UserDetailPage: React.FC<UserDetailPageProps> = () => {
               </Grid>
             </Box>
           )}
-        </VaporPage.Section>
-      </VaporPage>
-    </VaporThemeProvider>
+    </EntityDetailLayout>
   );
 };
