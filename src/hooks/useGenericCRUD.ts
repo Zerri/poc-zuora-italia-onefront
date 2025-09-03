@@ -18,8 +18,7 @@ export interface CRUDConfig {
 }
 
 export interface CRUDItem {
-  _id?: string | number;
-  id: string | number;
+  _id: string | number;
   [key: string]: any;
 }
 

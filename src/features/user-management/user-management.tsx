@@ -15,6 +15,7 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
   // Configurazione per il componente generico
   const entityConfig: EntityManagementConfig<User, UserFilters, UserMutationData> = {
     entityKey: 'users',
+    detailRoutePath: '/admin/users',
     crudConfig: {
       endpoints: {
         list: `${import.meta.env.VITE_APP_BE}/users`,
@@ -38,9 +39,10 @@ export const UserManagementPage: React.FC<UserManagementPageProps> = () => {
       sortBy: 'registrationDate',
       sortOrder: 'desc'
     },
-    getGridConfig: (handleEdit, handleDelete, handleBulkExport, handleBulkDeactivate, handleBulkDelete) => 
+    getGridConfig: (handleEdit, handleDelete, handleBulkExport, handleBulkDeactivate, handleBulkDelete, handleView) => 
       getUserGridConfig(
-        handleEdit, 
+        handleView!, // onView - apre il drawer
+        handleEdit, // onEdit - naviga alla pagina dettaglio
         handleDelete!,
         handleBulkExport!,
         handleBulkDeactivate!,

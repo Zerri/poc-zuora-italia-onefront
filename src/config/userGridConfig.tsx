@@ -1,6 +1,6 @@
 // src/config/userGridConfig.tsx
 import { Box, Typography, Chip, Avatar } from "@vapor/v3-components";
-import { faEdit, faTrash, faDownload, faUserSlash } from "@fortawesome/pro-regular-svg-icons";
+import { faEdit, faTrash, faDownload, faUserSlash, faEye } from "@fortawesome/pro-regular-svg-icons";
 import dayjs from 'dayjs';
 import type { User } from '../types/user';
 import type { DataGridConfig, ColumnConfig, FilterConfig, ActionConfig, BulkActionConfig } from '../types/grid';
@@ -125,12 +125,20 @@ export const USER_FILTERS: FilterConfig[] = [
  * Funzione per generare le azioni per Users
  */
 export const getUserActions = (
+  onView: (user: User) => void,
   onEdit: (user: User) => void,
   onDelete: (user: User) => void,
 ): ActionConfig<User>[] => [
   {
+    key: 'view',
+    label: 'Visualizza',
+    icon: faEye,
+    color: 'secondary',
+    onClick: onView
+  },
+  {
     key: 'edit',
-    label: 'Modifica Utente',
+    label: 'Modifica',
     icon: faEdit,
     color: 'primary',
     onClick: onEdit
@@ -196,6 +204,7 @@ export const getUserBulkActions = (
  * Configurazione completa DataGrid per Users con supporto sorting server-side e bulk actions
  */
 export const getUserGridConfig = (
+  onView: (user: User) => void,
   onEdit: (user: User) => void,
   onDelete: (user: User) => void,
   onBulkExport: (users: User[]) => void,
@@ -205,7 +214,7 @@ export const getUserGridConfig = (
   getRowId: (user) => user._id,
   columns: USER_COLUMNS,
   filters: USER_FILTERS,
-  actions: getUserActions(onEdit, onDelete),
+  actions: getUserActions(onView, onEdit, onDelete),
   bulkActions: getUserBulkActions(onBulkExport, onBulkDeactivate, onBulkDelete),
   enableMultiSelect: true,
   title: 'features.userManagement.dataGrid.title',

@@ -1,5 +1,6 @@
 // src/components/EntityManagementPage.tsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   VaporThemeProvider,
   VaporPage,
@@ -21,6 +22,8 @@ export interface EntityManagementConfig<TEntity extends CRUDItem, TFilters exten
   /** Chiave per identificare l'entità (es. 'users', 'quotes', 'customers') */
   entityKey: string;
   
+  /** Base path per le rotte di dettaglio (es. '/admin/users') */
+  detailRoutePath?: string;
   
   /** Configurazione CRUD (endpoints, permessi, ecc.) */
   crudConfig: CRUDConfig;
@@ -34,7 +37,8 @@ export interface EntityManagementConfig<TEntity extends CRUDItem, TFilters exten
     handleDelete?: (item: TEntity) => void,
     handleBulkExport?: (items: TEntity[]) => void,
     handleBulkDeactivate?: (items: TEntity[]) => void,
-    handleBulkDelete?: (items: TEntity[]) => void
+    handleBulkDelete?: (items: TEntity[]) => void,
+    handleView?: (item: TEntity) => void
   ) => DataGridConfig<TEntity>;
   
   /** Componente drawer per creazione/modifica */
@@ -74,6 +78,7 @@ export function EntityManagementPage<
   TMutationData
 >({ config }: EntityManagementPageProps<TEntity, TFilters, TMutationData>) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   
   // State per filtri
   const [filters, setFilters] = useState<TFilters>(config.initialFilters);
@@ -118,10 +123,24 @@ export function EntityManagementPage<
     setDrawerOpen(true);
   };
 
-  const handleEdit = (item: TEntity) => {
+  const handleView = (item: TEntity) => {
     setSelectedItem(item);
     setIsEditing(true);
     setDrawerOpen(true);
+  };
+
+  const handleEdit = (item: TEntity) => {
+    if (config.detailRoutePath) {
+      const detailPath = `${config.detailRoutePath}/${item._id}`;
+      console.log('🔄 Navigating to detail page:', detailPath);
+      navigate(detailPath);
+    } else {
+      console.warn('⚠️ detailRoutePath not configured for', config.entityKey);
+      // Fallback: open drawer as before
+      setSelectedItem(item);
+      setIsEditing(true);
+      setDrawerOpen(true);
+    }
   };
 
   const handleDelete = async (item: TEntity) => {
@@ -218,7 +237,8 @@ export function EntityManagementPage<
                   handleDelete,
                   handleBulkExport,
                   handleBulkDeactivate,
-                  handleBulkDelete
+                  handleBulkDelete,
+                  handleView
                 )}
                 currentFilters={filters}
                 onFiltersChange={handleFiltersChange}

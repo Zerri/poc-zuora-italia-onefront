@@ -2,10 +2,10 @@
 
 /**
  * Interfaccia base per tutte le entità del sistema CRUD
- * Ogni entità deve avere almeno un ID univoco
+ * Ogni entità deve avere almeno un ID univoco (MongoDB standard)
  */
 export interface BaseEntity {
-  id: string | number;
+  _id: string | number;
   [key: string]: any;
 }
 

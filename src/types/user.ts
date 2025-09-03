@@ -5,7 +5,7 @@ import type { BaseEntity, BaseFilters } from './generic';
  * Interfaccia User che estende BaseEntity
  */
 export interface User extends BaseEntity {
-  // _id è già incluso da BaseEntity
+  // _id è già incluso da BaseEntity (MongoDB standard)
   fullName: string;
   email: string;
   // User entity roles (for user management CRUD operations)  
